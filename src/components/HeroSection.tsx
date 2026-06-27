@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import ParticleCanvas from "./ParticleCanvas";
 
@@ -39,15 +38,14 @@ export default function HeroSection() {
   return (
     <section className="w-full max-w-[1200px] mx-auto px-6 lg:px-6 md:px-4">
       <div
-        className="grid grid-cols-[1.05fr_1fr] gap-8 items-start
-                   lg:grid-cols-[1.05fr_1fr]
-                   md:grid-cols-1 md:text-center"
+        className="flex flex-row gap-8 items-start
+                   md:flex-col md:items-center md:text-center"
         style={{ marginTop: "-40px" }}
       >
         {/* Left: Intro Text */}
         <div
           className="flex flex-col justify-start md:items-center"
-          style={{ paddingTop: "210px" }}
+          style={{ paddingTop: "210px", flex: "1.05" }}
         >
           <h1
             className="text-[18px] font-medium leading-[1.8] mb-6
@@ -79,17 +77,17 @@ export default function HeroSection() {
 
         {/* Right: Tree with Labels */}
         <div
-          className="relative flex justify-center lg:max-w-[520px] md:max-w-[420px]"
-          style={{ maxWidth: "520px", margin: "0 auto" }}
+          className="relative flex justify-center"
+          style={{ flex: "1", maxWidth: "520px", minWidth: "280px" }}
         >
-          <div className="relative w-full" style={{ aspectRatio: "520/688" }}>
-            <Image
+          <div className="relative w-full">
+            {/* Tree Image */}
+            <img
               src="/images/tree.png"
               alt="Hand-drawn tree illustration"
-              fill
-              className="w-full h-full object-contain"
-              priority
+              className="w-full h-auto block"
             />
+            {/* Particle Overlay */}
             <ParticleCanvas />
             {/* Tree Labels */}
             <Link

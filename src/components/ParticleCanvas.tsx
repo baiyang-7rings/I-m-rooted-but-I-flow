@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
-import p5 from "p5";
 
 const sonnet5 = `Those hours, that with gentle work did frame
 The lovely gaze where every eye doth dwell,
@@ -31,139 +30,156 @@ interface Particle {
 }
 
 export default function ParticleCanvas() {
-  const canvasRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const imageLoadedRef = useRef(false);
-  const treeImageRef = useRef<p5.Image | null>(null);
+  const treeImageRef = useRef<HTMLImageElement | null>(null);
+  const animationRef = useRef<number>(0);
 
-  const createParticle = useCallback((x: number, y: number, p: p5): Particle => {
+  const createParticle = useCallback((x: number, y: number): Particle => {
     const chars = sonnet5.replace(/\s/g, "").split("");
-    return {
+    const p = {
       x,
       y,
-      vx: (p.random(-0.3, 0.3)),
-      vy: p.random(0.5, 1.5),
-      char: chars[Math.floor(p.random(chars.length))],
-      size: p.random(8, 14),
-      opacity: p.random(0.3, 0.7),
+      vx: (Math.random() - 0.5) * 0.6,
+      vy: 0.5 + Math.random() * 1.0,
+      char: chars[Math.floor(Math.random() * chars.length)],
+      size: 8 + Math.random() * 6,
+      opacity: 0.3 + Math.random() * 0.4,
       life: 0,
-      maxLife: p.random(200, 400),
+      maxLife: 200 + Math.random() * 200,
     };
+    return p;
   }, []);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    let sketchInstance: p5 | null = null;
-    let animationId: number;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    const setup = (p: p5) => {
-      const container = canvasRef.current;
-      if (!container) return;
-      
-      const rect = container.getBoundingClientRect();
-      const canvas = p.createCanvas(rect.width, rect.height);
-      canvas.position(0, 0);
-      canvas.style("pointer-events", "none");
-      canvas.style("position", "absolute");
-      canvas.style("top", "0");
-      canvas.style("left", "0");
-      
-      p.textFont("Special Elite");
+    const parent = canvas.parentElement;
+    if (!parent) return;
 
-      const img = p.loadImage("/images/tree.png", (loadedImg) => {
-        treeImageRef.current = loadedImg;
-        imageLoadedRef.current = true;
-        
-        const scaleX = rect.width / loadedImg.width;
-        const scaleY = rect.height / loadedImg.height;
-        
-        loadedImg.loadPixels();
-        for (let y = 0; y < loadedImg.height; y += 8) {
-          for (let x = 0; x < loadedImg.width; x += 8) {
-            const index = (x + y * loadedImg.width) * 4;
-            const alpha = loadedImg.pixels[index + 3];
-            if (alpha > 50 && p.random() < 0.08) {
+    const resizeCanvas = () => {
+      const rect = parent.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    };
+    resizeCanvas();
+
+    // Load tree image to generate spawn points
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      treeImageRef.current = img;
+      imageLoadedRef.current = true;
+
+      const rect = parent.getBoundingClientRect();
+      const scaleX = rect.width / img.width;
+      const scaleY = rect.height / img.height;
+
+      // Create offscreen canvas to read pixel data
+      const offCanvas = document.createElement("canvas");
+      offCanvas.width = img.width;
+      offCanvas.height = img.height;
+      const offCtx = offCanvas.getContext("2d");
+      if (!offCtx) return;
+      offCtx.drawImage(img, 0, 0);
+
+      try {
+        const imageData = offCtx.getImageData(0, 0, img.width, img.height);
+        const pixels = imageData.data;
+
+        for (let y = 0; y < img.height; y += 8) {
+          for (let x = 0; x < img.width; x += 8) {
+            const index = (x + y * img.width) * 4;
+            const alpha = pixels[index + 3];
+            if (alpha > 50 && Math.random() < 0.06) {
               particlesRef.current.push(
-                createParticle(x * scaleX, y * scaleY, p)
+                createParticle(x * scaleX, y * scaleY)
               );
             }
           }
         }
-      });
+      } catch {
+        // Fallback: spawn particles from random positions in upper half
+        for (let i = 0; i < 80; i++) {
+          particlesRef.current.push(
+            createParticle(
+              Math.random() * rect.width,
+              Math.random() * rect.height * 0.5
+            )
+          );
+        }
+      }
     };
+    img.src = "/images/tree.png";
 
-    const draw = (p: p5) => {
-      const container = canvasRef.current;
-      if (!container) return;
+    let frameCount = 0;
 
-      p.clear();
+    const animate = () => {
+      if (!ctx || !canvas) return;
 
-      const wind = p.sin(p.frameCount * 0.02) * 0.03;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      frameCount++;
+
+      const wind = Math.sin(frameCount * 0.02) * 0.03;
 
       for (let i = particlesRef.current.length - 1; i >= 0; i--) {
         const part = particlesRef.current[i];
-        
-        part.vx += wind + p.random(-0.02, 0.02);
+
+        part.vx += wind + (Math.random() - 0.5) * 0.04;
         part.x += part.vx;
         part.y += part.vy;
-        
-        part.life++;
-        part.opacity = p.map(part.life, 0, part.maxLife * 0.5, 0.7, 0.3) * 
-                       p.map(part.life, part.maxLife * 0.5, part.maxLife, 1, 0);
 
-        if (part.life > part.maxLife || part.y > p.height) {
+        part.life++;
+        const fadeIn = Math.min(part.life / 60, 1);
+        const fadeOut = Math.max(0, 1 - (part.life - part.maxLife * 0.6) / (part.maxLife * 0.4));
+        part.opacity = part.opacity * fadeIn * fadeOut;
+
+        if (part.life > part.maxLife || part.y > canvas.height) {
           particlesRef.current.splice(i, 1);
           continue;
         }
 
-        p.fill(102, part.opacity * 255);
-        p.textSize(part.size);
-        p.textAlign(p.CENTER, p.CENTER);
-        p.text(part.char, part.x, part.y);
+        ctx.save();
+        ctx.globalAlpha = part.opacity;
+        ctx.fillStyle = "#666666";
+        ctx.font = `${part.size}px "Special Elite", serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(part.char, part.x, part.y);
+        ctx.restore();
       }
 
-      if (particlesRef.current.length < 150 && imageLoadedRef.current && treeImageRef.current) {
-        const img = treeImageRef.current;
-        const rect = container.getBoundingClientRect();
-        const scaleX = rect.width / img.width;
-        const scaleY = rect.height / img.height;
-        const x = Math.floor(p.random(img.width)) * scaleX;
-        const y = Math.floor(p.random(img.height * 0.5)) * scaleY;
-        particlesRef.current.push(createParticle(x, y, p));
+      // Spawn new particles
+      if (particlesRef.current.length < 100 && imageLoadedRef.current) {
+        const rect = parent.getBoundingClientRect();
+        const x = Math.random() * rect.width;
+        const y = Math.random() * rect.height * 0.4;
+        particlesRef.current.push(createParticle(x, y));
       }
 
-      animationId = requestAnimationFrame(() => draw(p));
+      animationRef.current = requestAnimationFrame(animate);
     };
 
-    const sketch = (p: p5) => {
-      sketchInstance = p;
-      setup(p);
-      p.draw = () => draw(p);
-      
-      p.windowResized = () => {
-        const container = canvasRef.current;
-        if (!container) return;
-        
-        const rect = container.getBoundingClientRect();
-        p.resizeCanvas(rect.width, rect.height);
-      };
-    };
+    animationRef.current = requestAnimationFrame(animate);
 
-    new p5(sketch, canvasRef.current);
+    const handleResize = () => {
+      resizeCanvas();
+    };
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      if (animationId) {
-        cancelAnimationFrame(animationId);
-      }
-      if (sketchInstance) {
-        sketchInstance.remove();
-      }
+      cancelAnimationFrame(animationRef.current);
+      window.removeEventListener("resize", handleResize);
     };
   }, [createParticle]);
 
   return (
-    <div
+    <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full"
       style={{ pointerEvents: "none" }}
