@@ -79,7 +79,7 @@
     footer{border-top:1px solid rgba(0,0,0,0.08);margin-top:24px;}
     .footer-inner{
       max-width:1200px;margin:0 auto;padding:18px 24px 28px;
-      display:grid;grid-template-columns:repeat(4,1fr);gap:12px;font-size:13px;
+      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:13px;
     }
     .footer-item b{display:block;font-weight:500;margin-bottom:6px;}
     .footer-item a{color:inherit;text-decoration:none;}
@@ -131,7 +131,7 @@
     <section class="visual">
       <div class="tree-wrap" aria-label="hand-drawn tree illustration">
         <div id="p5-overlay"></div>
-        <img class="tree" src="./images/tree.png" alt="Tree illustration">
+        <img class="tree" src="/images/tree.png" alt="Tree illustration">
         <a href="#experience" class="label experience cn-serif">个人经历 / Experience</a>
         <a href="#works" class="label portfolio cn-serif">作品集 / Portfolio</a>
         <a href="#about" class="label introduction cn-serif">自我介绍 / Introduction</a>
@@ -147,21 +147,16 @@
       </div>
       <div class="footer-item">
         <b>LinkedIn</b>
-        <a href="https://www.linkedin.com/in/jackie-li6699">Jackie Li</a>
+        <a href="https://www.linkedin.com/in/jackie-li6699" target="_blank" rel="noopener noreferrer">Jackie Li</a>
       </div>
       <div class="footer-item">
         <b>More</b>
         <span>Coming soon...</span>
       </div>
-      <div class="footer-item">
-        <b>Rights</b>
-        <span>Sonnet 5 by William Shakespeare</span>
-      </div>
     </div>
   </footer>
 
   <script>
-    // Character animation
     (function(){
       function animateChars(){
         var targets=[
@@ -198,39 +193,60 @@
   </script>
 
   <script>
-    // p5.js Sketch - exact copy of original with initial spawn and ambient sway
+    // ====== Tree & Leaves Animation ======
+    // States:
+    //   0 = initial ambient (gentle leaves falling, thin layer on ground)
+    //   1 = clicked, heavy falling (pile up to 1/3 tree height)
+    //   2 = finished (no more leaves ever)
     var treeImg;
     var particles = [];
     var branchPoints = [];
     var poem = "Those hours that with gentle work did frame The lovely gaze where every eye doth dwell, Will play the tyrants to the very same And that unfair which fairly doth excel: For never-resting time leads summer on To hideous winter and confounds him there; Sap check'd with frost and lusty leaves quite gone, Beauty o'ersnow'd and bareness every where: Then, were not summer's distillation left, A liquid prisoner pent in walls of glass, Beauty's effect with beauty were bereft, Nor it, nor no remembrance what it was: But flowers distill'd, though they with winter meet, Leese but their show; their substance still lives sweet.";
     var poemIndex = 0;
-    var isFinished = false;
     var groundMap = [];
     var currentSway = 0;
-    var mobileShakeTimer = 0;
-    var initialSpawned = false;
+    var state = 0;              // 0=ambient, 1=heavy, 2=done
+    var ambientCount = 0;       // count of ambient leaves spawned
+    var ambientTarget = 15;     // spawn ~15 leaves initially
+    var heavyCount = 0;         // count of heavy-fall leaves
+    var heavyTarget = 0;        // will be calculated when entering state 1
+    var initialAmbientDelay = 60; // frames before ambient starts
+    var hoverShakeTimer = 0;    // for mouse-hover sway only (not triggering fall)
+    var pileHeightLimit = 0;    // y coordinate: leaves can't pile above this (1/3 from bottom)
 
     var config = {
-      fontSize: 15, maxFallSpeed: 1.5, drag: 0.97,
-      spawnIntensity: 12, ambientSpawn: 0.3, initialSpawn: 20,
-      swayAmplitude: 0.03, letterSpacing: 20,
-      groundMargin: 8, maxPileHeight: 25, pileLift: 3,
-      driftRange: 0.5, rotateSpeed: 0.7, margin: 0.2,
-      fadeTime: 300
+      fontSize: 14,
+      maxFallSpeed: 0.8,        // slower fall
+      drag: 0.98,
+      gravity: 0.02,            // gentler gravity
+      swayAmpAmbient: 0.004,    // subtle ambient sway
+      swayAmpHover: 0.025,      // sway on hover
+      letterSpacing: 18,
+      pileLift: 2,              // very gentle pile
+      driftRange: 0.4,
+      rotateSpeed: 0.4,         // slower rotation
+      margin: 0.2,
+      ambientInterval: 8,       // spawn 1 leaf every N frames during ambient
     };
 
     function preload(){
-      treeImg = loadImage('./images/tree.png');
+      treeImg = loadImage('/images/tree.png');
     }
 
     function setup(){
       pixelDensity(1);
       var c = createCanvas(treeImg.width, treeImg.height);
       c.parent('p5-overlay');
-      // Ground is at the very bottom of canvas (below the tree roots)
-      var baseLine = height - config.groundMargin;
-      for(var i = 0; i < width; i++) groundMap[i] = baseLine;
 
+      // Ground at very bottom
+      var groundY = height - 5;
+      for(var i = 0; i < width; i++) groundMap[i] = groundY;
+
+      // Pile limit: 1/3 of tree height from the bottom
+      // Tree fills the canvas; bottom 1/3 means ground can rise up to height*2/3
+      pileHeightLimit = height * 0.62;  // leaves stop piling above this y (smaller y = higher up)
+
+      // Collect branch pixels (non-transparent pixels)
       treeImg.loadPixels();
       for(var x = 0; x < treeImg.width; x += 6){
         for(var y = 0; y < treeImg.height; y += 6){
@@ -244,74 +260,60 @@
       textAlign(CENTER, CENTER);
     }
 
-    class Letter{
+    class Leaf{
       constructor(x, y, ch){
         this.pos = createVector(x, y);
-        this.vel = createVector(random(-0.5, 0.5), random(0.1, 0.5));
-        this.acc = createVector(0, 0.04);
+        this.vel = createVector(random(-0.3, 0.3), random(0.05, 0.2));
+        this.acc = createVector(0, config.gravity);
         this.char = ch;
-        this.isStatic = false;
+        this.landed = false;
         this.angle = random(TWO_PI);
+        this.angleVel = random(-0.02, 0.02);
         this.noiseSeed = random(1000);
         this.finalAngle = random(-0.4, 0.4);
-        this.staticFrame = 0;
-        this.opacity = 200;
       }
       update(){
-        if(this.isStatic){
-          this.staticFrame++;
-          // Fade out after landing
-          if(this.staticFrame > config.fadeTime * 0.6){
-            this.opacity -= 1.5;
-          }
-          return;
-        }
-        var breeze = map(noise(this.noiseSeed, frameCount * 0.015), 0, 1, -config.driftRange, config.driftRange);
-        this.vel.x += breeze * 0.15;
+        if(this.landed) return;
+        var breeze = map(noise(this.noiseSeed, frameCount * 0.01), 0, 1, -config.driftRange, config.driftRange);
+        this.vel.x += breeze * 0.08;
         this.vel.add(this.acc);
         this.vel.mult(config.drag);
         if(this.vel.y > config.maxFallSpeed) this.vel.y = config.maxFallSpeed;
         this.pos.add(this.vel);
-        this.angle += this.vel.mag() * 0.08 * config.rotateSpeed;
+        this.angle += this.vel.mag() * 0.05 * config.rotateSpeed + this.angleVel;
 
-        // Remove if fallen off the bottom
-        if(this.pos.y > height + 20){
-          this.isStatic = true;
-          this.opacity = 0;
+        // Off screen bottom
+        if(this.pos.y > height + 10){
+          this.landed = true;
+          this.pos.y = height - 5;
           return;
         }
 
         var xIdx = floor(constrain(this.pos.x, 0, width - 1));
-        var groundY = groundMap[xIdx];
-        // Limit pile height: ground can't rise above baseline - maxPileHeight
-        var minGround = (height - config.groundMargin) - config.maxPileHeight;
-        if(this.pos.y >= groundY && groundY > minGround){
-          this.pos.y = groundY;
-          this.isStatic = true;
+        var gy = groundMap[xIdx];
+        if(this.pos.y >= gy){
+          this.pos.y = gy;
+          this.landed = true;
           this.finalAngle = random(-0.3, 0.3);
-          // Gently raise ground for next particles, but limited
+          // Raise ground gently, but not above pile limit
           var r = config.letterSpacing / 2;
           for(var i = -r; i <= r; i++){
             var cx = floor(constrain(xIdx + i, 0, width - 1));
             var lift = map(abs(i), 0, r, config.pileLift, 0);
-            if(groundMap[cx] - lift > minGround){
+            if(groundMap[cx] - lift > pileHeightLimit){
               groundMap[cx] -= lift;
             }
           }
         }
       }
       display(){
-        if(this.opacity <= 0) return;
         push();
         translate(this.pos.x, this.pos.y);
-        rotate(this.isStatic ? this.finalAngle : this.angle);
-        fill(70, this.opacity);
+        rotate(this.landed ? this.finalAngle : this.angle);
+        fill(70, this.landed ? 180 : 140);
         noStroke();
         text(this.char, 0, 0);
         pop();
-      }
-      isDead(){
-        return this.opacity <= 0;
       }
     }
 
@@ -327,19 +329,22 @@
 
       var m = width * config.margin;
       var isMouseHovering = (eMX > m && eMX < width - m && eMY > m && eMY < height - m);
-      if(mobileShakeTimer > 0) mobileShakeTimer--;
-      var isHovering = isMouseHovering || (mobileShakeTimer > 0);
+      if(hoverShakeTimer > 0) hoverShakeTimer--;
+      var isHovering = isMouseHovering || (hoverShakeTimer > 0);
 
-      if(frameCount > 5){
+      // Hide static tree image after p5 starts drawing
+      if(frameCount > 8){
         var st = document.querySelector('.tree');
         if(st) st.style.opacity = '0';
       }
 
-      // Subtle ambient sway always, strong sway when hovering
-      var ambientSway = sin(frameCount * 0.015) * 0.005;
-      var hoverSway = (isHovering && !isFinished) ? sin(frameCount * 0.08) * config.swayAmplitude : 0;
-      var targetSway = ambientSway + hoverSway;
-      currentSway = lerp(currentSway, targetSway, 0.05);
+      // Sway
+      var ambientSway = sin(frameCount * 0.012) * config.swayAmpAmbient;
+      var hoverSway = (isHovering && state < 2) ? sin(frameCount * 0.06) * config.swayAmpHover : 0;
+      // Stronger sway during heavy fall
+      var fallSway = (state === 1) ? sin(frameCount * 0.09) * 0.02 : 0;
+      var targetSway = ambientSway + hoverSway + fallSway;
+      currentSway = lerp(currentSway, targetSway, 0.06);
 
       push();
       translate(width / 2, height);
@@ -347,47 +352,40 @@
       image(treeImg, -width/2, -height, width, height);
       pop();
 
-      // Initial leaves fall when page loads
-      if(!initialSpawned && frameCount > 10 && branchPoints.length > 0){
-        for(var i = 0; i < config.initialSpawn; i++){
-          var pt = branchPoints[floor(random(branchPoints.length))];
-          var ch = poem[poemIndex % poem.length];
-          if(ch !== " "){
-            particles.push(new Letter(pt.x + random(-10,10), pt.y + random(-20,20), ch));
+      // ---- Spawning logic ----
+      // State 0: gentle ambient, spawn ~15 leaves slowly
+      if(state === 0){
+        if(frameCount > initialAmbientDelay && ambientCount < ambientTarget){
+          if(frameCount % config.ambientInterval === 0){
+            spawnLeaf();
+            ambientCount++;
           }
-          poemIndex++;
         }
-        initialSpawned = true;
+        // When ambient done, stop
       }
-
-      // Continuous spawning: ambient always, heavy on hover
-      var spawnN = isHovering ? config.spawnIntensity : config.ambientSpawn;
-      for(var i = 0; i < spawnN; i++){
-        if(branchPoints.length === 0) break;
-        var pt = branchPoints[floor(random(branchPoints.length))];
-        var ch = poem[poemIndex % poem.length];
-        if(ch !== " ") particles.push(new Letter(pt.x, pt.y, ch));
-        if(isHovering){
-          poemIndex++;
-          if(poemIndex >= poem.length){ isFinished = true; break; }
+      // State 1: heavy fall
+      if(state === 1){
+        if(heavyCount < heavyTarget){
+          // Spawn multiple per frame
+          var perFrame = 3;
+          for(var i = 0; i < perFrame; i++){
+            if(heavyCount < heavyTarget){
+              spawnLeaf();
+              heavyCount++;
+            }
+          }
         }else{
-          poemIndex = (poemIndex + 1) % poem.length;
+          state = 2; // done forever
         }
       }
 
+      // Update and draw all leaves
       for(var i = particles.length - 1; i >= 0; i--){
         particles[i].update();
         particles[i].display();
       }
-      // Remove dead (faded out) particles
-      for(var i = particles.length - 1; i >= 0; i--){
-        if(particles[i].isDead()){
-          particles.splice(i, 1);
-        }
-      }
-      if(particles.length > 400) particles = particles.slice(-300);
 
-      // Labels follow tree sway
+      // Labels follow sway
       if(canvasElem){
         var ch = canvasElem.offsetHeight;
         var labels = [
@@ -401,9 +399,9 @@
           if(el){
             var sx = -ch * l.h * Math.tan(currentSway);
             var wn = noise(frameCount * 0.01 + l.n);
-            var w = (wn - 0.5) * 0.2;
+            var w = (wn - 0.5) * 0.15;
             var rot = currentSway * 0.9 + w;
-            var sk = rot * 15;
+            var sk = rot * 12;
             el.style.transformOrigin = 'top center';
             el.style.transform = 'translateX('+sx+'px) rotate('+rot+'rad) skewX('+sk+'deg)';
           }
@@ -411,11 +409,44 @@
       }
     }
 
+    function spawnLeaf(){
+      if(branchPoints.length === 0) return;
+      // Spawn from upper portion of tree (branches/leaves area)
+      var pt;
+      var attempts = 0;
+      do {
+        pt = branchPoints[floor(random(branchPoints.length))];
+        attempts++;
+      } while(pt.y > height * 0.75 && attempts < 20); // prefer upper 3/4 of tree
+
+      var ch = poem[poemIndex % poem.length];
+      if(ch === " ") ch = poem[(poemIndex+1) % poem.length];
+      particles.push(new Leaf(
+        pt.x + random(-8, 8),
+        pt.y + random(-15, 5),
+        ch
+      ));
+      poemIndex++;
+    }
+
     function mousePressed(){
       var ce = document.querySelector('#p5-overlay canvas');
-      if(ce && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height){
-        mobileShakeTimer = 180;
-        if(isFinished){ isFinished = false; poemIndex = 0; }
+      if(!ce) return;
+      // Check click is within canvas bounds
+      var rect = ce.getBoundingClientRect();
+      var clickX = mouseX;
+      var clickY = mouseY;
+      if(clickX > 0 && clickX < width && clickY > 0 && clickY < height){
+        hoverShakeTimer = 120;
+        if(state === 0){
+          // Enter heavy fall state
+          state = 1;
+          heavyCount = 0;
+          // Target: enough leaves to cover ground to 1/3 height
+          // Rough estimate based on canvas width and pile lift
+          heavyTarget = floor(width / 3);
+        }
+        // state 1 or 2: do nothing (no re-trigger)
       }
     }
     function touchStarted(){ mousePressed(); }
