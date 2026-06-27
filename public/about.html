@@ -177,51 +177,6 @@
     }
 
     /* ================= 底部 Footer ================= */
-    /* About 内容区域 - 必须在 canvas 之上 */
-    .about-content {
-      position: relative;
-      z-index: 10;
-      pointer-events: auto;
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 20px 0 20px;
-      font-size: 14px;
-      line-height: 2;
-      color: #333;
-    }
-    .about-content h3 {
-      font-family: var(--font-main);
-      font-size: 18px;
-      font-weight: normal;
-      margin: 32px 0 12px;
-      letter-spacing: 0.5px;
-      border-bottom: 1px solid rgba(0,0,0,0.08);
-      padding-bottom: 6px;
-    }
-    .about-content p {
-      margin: 0 0 10px;
-    }
-    .about-content ul {
-      margin: 0;
-      padding-left: 20px;
-    }
-    .about-content li {
-      margin-bottom: 4px;
-    }
-    .about-content .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 8px 0;
-    }
-    .about-content .tag-chip {
-      font-family: var(--font-code);
-      font-size: 11px;
-      border: 1px solid #ccc;
-      border-radius: 50px;
-      padding: 3px 10px;
-      color: #888;
-    }
     footer{
       border-top:1px solid rgba(0,0,0,0.08);
       margin-top:0px;
@@ -336,60 +291,11 @@
 
       <!-- 副标题文字 -->
       <div class="subtitle">
-        用数据讲故事，在细节里寻光。像风穿过树梢，像叶落向大地，每一个数字背后都是一个等待被理解的世界。
+        用数据讲故事，在细节里寻光。<br>像风穿过树梢，像叶落向大地。
       </div>
       
       <!-- Canvas 占位空间 -->
       <div class="canvas-spacer"></div>
-    </div>
-
-    <!-- About 详细内容（在canvas交互区域下方） -->
-    <div class="about-content" style="font-family: var(--font-chinese);">
-      <h3 style="font-family: var(--font-main);">Education &nbsp;|&nbsp; 教育背景</h3>
-      <p>
-        <strong>Wuhan Technology and Business University</strong> &nbsp;|&nbsp; 武汉工商学院<br>
-        B.S. in Data Science and Big Data Technology &nbsp;|&nbsp; 数据科学与大数据技术 本科<br>
-        2023.09 – 2027.06 (Expected)
-      </p>
-      <ul>
-        <li>GPA: 3.7/5.0 — Ranked <strong>3/87</strong> (Top 3.4% of Major); no failed courses</li>
-        <li>Relevant coursework: Probability &amp; Statistics (87), Big Data Analytics (97), Python Programming (90), Database &amp; Data Warehouse (89)</li>
-        <li>Awards: University Scholarship (International Education College); University-level "Three Good Student" Award (校级三好学生)</li>
-      </ul>
-
-      <h3 style="font-family: var(--font-main);">About Me &nbsp;|&nbsp; 自我介绍</h3>
-      <p>
-        A motivated third-year undergraduate in Data Science and Big Data Technology with strong analytical thinking and a track record of turning raw data into business insight — from end-to-end pipelines (data collection, cleaning, modeling, visualization) across financial forecasting and e-commerce analytics, to hands-on proficiency in Python and Excel.
-      </p>
-      <p>
-        学习能力强，逻辑思维清晰，擅长用数据驱动决策——具备从数据采集、清洗、建模到可视化的端到端实践经验，涵盖金融预测、电商大数据分析等多种场景。好奇心强、关注细节，适应快速变化的环境。担任学生社团负责人期间展现出色的项目管理、团队协作与跨部门沟通能力。
-      </p>
-
-      <h3 style="font-family: var(--font-main);">Interests &nbsp;|&nbsp; 兴趣方向</h3>
-      <div class="tag-row">
-        <span class="tag-chip">Data Analysis</span>
-        <span class="tag-chip">Financial Forecasting</span>
-        <span class="tag-chip">Business Intelligence</span>
-        <span class="tag-chip">E-Commerce Analytics</span>
-        <span class="tag-chip">Python</span>
-        <span class="tag-chip">Data Visualization</span>
-        <span class="tag-chip">Finance</span>
-        <span class="tag-chip">Operations</span>
-        <span class="tag-chip">Technology</span>
-      </div>
-
-      <h3 style="font-family: var(--font-main);">Languages &nbsp;|&nbsp; 语言能力</h3>
-      <p>
-        CET-4; IELTS 7.5 level (mock test); fluent in spoken and written Chinese and English.
-      </p>
-
-      <h3 style="font-family: var(--font-main);">Availability &nbsp;|&nbsp; 到岗情况</h3>
-      <p>
-        Available full-time for 6+ months internship. Based in Wuhan, available to relocate to Shanghai for the internship.
-      </p>
-      <p style="color:#999;font-size:12px;margin-top:20px;">
-        目前大三，可全职实习六个月以上，可常驻上海。
-      </p>
     </div>
   </div>
 
@@ -424,7 +330,7 @@
 
   <!-- P5.js Sketch -->
   <script>
-    let bgImg, img1, img2, img3, img4;
+    let bgImg, img1, img2, img3, img4, img5;
     let isExtracted = false; 
     let currentImg1X = 105; // 从 110 改为 105，向左移动5px    
     let img3Pos; 
@@ -438,7 +344,7 @@
     let img3State = "HIDDEN"; 
     let dropStartTime = 0; 
     let imagesLoaded = 0;
-    let totalImages = 5;
+    let totalImages = 6;
     let scaleFactor = 1; // 缩放比例
     let isMobileMode = false;
 
@@ -460,6 +366,13 @@
       h: 134                // 高度
     };
 
+    let img5Config = {
+      x: 200,
+      y: 460,
+      w: 130,
+      h: 160
+    };
+
     let config = {
       canvasW: 1280,
       canvasH: 623,
@@ -469,6 +382,7 @@
       img1Size: { w: 117, h: 145 }, 
       img3Size: { w: 135, h: 32 },  
       img4Size: { w: 260, h: 134 }, 
+      img5Size: { w: 130, h: 160 },
       extractDist: 200,              
       triggerThreshold: 186, 
       img3InitialX: 70,      
@@ -502,6 +416,8 @@
         () => { console.log('image_4 加载成功'); imagesLoaded++; },
         () => { console.error('image_4 加载失败'); }
       );   
+      
+      img5 = loadImage('./images/profile.jpg', () => { imagesLoaded++; }, () => { console.error('profile.jpg load failed'); });
     }
 
     function setup() {
@@ -545,6 +461,8 @@
          img4Config.x = cx;
          img4Config.y = cy + 100;
          
+         img5Config = { x: cx, y: cy + 220, w: 100, h: 124 };
+         
       } else {
          scaleFactor = canvasWidth / config.canvasW;
          // 恢复默认配置
@@ -552,6 +470,7 @@
          config.baseY = 623 * 0.40;
          img4Config.x = 850;
          img4Config.y = 420;
+         img5Config = { x: 200, y: 460, w: 130, h: 160 };
       }
       
       // Auto-align footer to the bottom of the canvas
@@ -585,12 +504,14 @@
          config.baseY = cy - 80;
          img4Config.x = cx;
          img4Config.y = cy + 100;
+         img5Config = { x: cx, y: cy + 220, w: 100, h: 124 };
       } else {
          scaleFactor = canvasWidth / config.canvasW;
          config.baseX = 1280 * 0.35;
          config.baseY = 623 * 0.40;
          img4Config.x = 850;
          img4Config.y = 420;
+         img5Config = { x: 200, y: 460, w: 130, h: 160 };
       }
       
       // Re-align footer on resize
@@ -684,6 +605,21 @@
       // 绘制钉子（在卡片内部顶部中间）
       drawPin(0, -img4Config.h * scaleFactor / 2 + 10 * scaleFactor);
       
+      pop();
+
+      // --- Draw img5 (profile photo - polaroid style) ---
+      push();
+      translate(img5Config.x * scaleFactor, img5Config.y * scaleFactor);
+      rotate(-3);
+      fill(255, 255, 255, 240);
+      noStroke();
+      rectMode(CENTER);
+      let pad = 8 * scaleFactor;
+      let bottomPad = 24 * scaleFactor;
+      rect(0, 0, img5Config.w * scaleFactor + pad*2, img5Config.h * scaleFactor + pad + bottomPad, 3 * scaleFactor);
+      image(img5, 0, -(bottomPad-pad)/2 * scaleFactor, img5Config.w * scaleFactor, img5Config.h * scaleFactor);
+      drawPin(0, -(img5Config.h * scaleFactor + pad + bottomPad)/2 + 10 * scaleFactor);
+      rectMode(CORNER);
       pop();
 
       push();

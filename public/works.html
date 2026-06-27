@@ -601,9 +601,14 @@
       /* Social Media 调整 */
       .gallery-container#socialMediaGallery {
         position: relative;
-        top: 0 !important;
-        margin-top: 40px;
-        height: 60vh; /* 限制高度 */
+        top: auto !important;
+        bottom: auto !important;
+        left: auto !important;
+        right: auto !important;
+        margin-top: 20px;
+        height: auto !important;
+        padding: 20px !important;
+        z-index: 25;
       }
       
       /* 初始状态禁止滚动，等待内容展示 */
@@ -657,8 +662,7 @@
       
       /* 移动端内容区域需要给底部留出空间，防止被固定的 Footer 和 Canvas 遮挡 */
       .gallery-container#graphicDesignGallery,
-      .gallery-container#visualDisplayGallery,
-      .gallery-container#socialMediaGallery {
+      .gallery-container#visualDisplayGallery {
         padding-bottom: 20px !important; /* 底部内边距 */
         top: 90px !important; /* 上移：从130px改为100px */
         bottom: 220px !important; /* 底部留白给波浪线 */
@@ -719,45 +723,20 @@
       }
       
       .gallery-container#socialMediaGallery.show {
-        display: flex !important; /* Restore flex for centering stage */
+        display: flex !important;
         opacity: 1 !important;
         visibility: visible !important;
         pointer-events: auto !important;
-        
-        /* Mobile Adjustment: Lower top, restrict height */
-        overflow: visible !important; /* Allow Sort Bar to be seen outside */
-        /* top and height handled by JS now */
-        align-items: flex-start; /* Align to top of container */
-        justify-content: center;
-      }
-      
-      .accordion-stage {
-        height: 100% !important;
-        width: 100% !important;
-        display: flex !important;
-        perspective: 800px !important; /* Reduce perspective for mobile */
+        overflow: visible !important;
         align-items: center;
         justify-content: center;
       }
       
-      .folder-page {
-        position: absolute !important; /* Restore absolute */
-        width: 44vw !important; /* 缩小宽度以同时显示两页 */
-        height: calc(100% - 25px) !important; /* 减去顶部偏移，保证底部位置不变 */
-        top: 25px !important; /* 下移避免顶部被容器裁切 */
-        max-height: none !important;
-        min-height: 0;
-        /* transform handled by JS */
-        margin-bottom: 0;
-        opacity: 1 !important;
-        background: #fff; 
-        border: 1px solid #eee;
-        overflow: hidden; /* 内容过多时自动排版，溢出隐藏 */
+      .accordion-stage {
+        display: none !important;
       }
-      
-      /* Restore decorations */
-      .folder-page::after, .ripple-layer {
-        display: block !important;
+      .folder-page {
+        display: none !important;
       }
     }
     
@@ -770,29 +749,28 @@
 
     /* ================= Social Media Content (Accordion Fold) ================= */
     .gallery-container#socialMediaGallery {
-      display: flex;
-      flex-direction: column; 
+      display: none;
+      flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      padding: 0; /* Remove padding */
+      justify-content: center;
+      padding: 20px;
       overflow: visible;
-      perspective: 2500px;
+      perspective: none;
       gap: 0;
       opacity: 0;
       transition: opacity 0.5s ease;
       pointer-events: none;
       width: 100%;
-      height: 500px; /* Increased height to occupy Sort Bar space */
       min-height: 0;
-      position: absolute; 
-      top: 130px; 
-      z-index: 200; /* Increased from 15 to 200 to match sort bar and sit above container */
+      position: relative;
+      z-index: 200;
       margin-top: 0;
     }
 
     .gallery-container#socialMediaGallery.show {
       opacity: 1;
       pointer-events: auto;
+      display: flex !important;
     }
 
     /* Sort Bar */
@@ -1147,77 +1125,248 @@
       }
     }
 
-    /* Phone mockup for WeChat Articles */
-    .accordion-stage {
-      width: 320px !important;
-      margin: 0 auto;
-      padding: 40px 12px 12px !important;
-      background: #1a1a1a !important;
-      border-radius: 36px !important;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3), inset 0 0 0 2px #333 !important;
-      position: relative !important;
-      height: 560px !important;
-      overflow: hidden !important;
+    /* ===== Phone mockup for WeChat Articles ===== */
+    #socialMediaGallery {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      z-index: 200;
+      pointer-events: auto;
     }
-    .accordion-stage::before {
+    #socialMediaGallery.show {
+      display: flex !important;
+    }
+    .phone-frame {
+      width: 320px;
+      height: 580px;
+      background: #1a1a1a;
+      border-radius: 40px;
+      padding: 12px;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.35), inset 0 0 0 2px #333;
+      position: relative;
+      overflow: hidden;
+    }
+    .phone-frame::before {
       content: '';
       position: absolute;
-      top: 12px;
+      top: 16px;
       left: 50%;
       transform: translateX(-50%);
-      width: 80px;
-      height: 6px;
-      background: #333;
-      border-radius: 3px;
+      width: 90px;
+      height: 26px;
+      background: #1a1a1a;
+      border-radius: 0 0 18px 18px;
       z-index: 100;
     }
-    .accordion-stage::after {
+    .phone-frame::after {
       content: '';
       position: absolute;
       bottom: 8px;
       left: 50%;
       transform: translateX(-50%);
-      width: 40px;
+      width: 110px;
       height: 4px;
       background: #333;
       border-radius: 2px;
       z-index: 100;
     }
-    .folder-page {
-      background: #fff !important;
-      background-image: none !important;
-      border: none !important;
-      box-shadow: none !important;
-      border-radius: 0 !important;
-      height: 100% !important;
-      overflow-y: auto !important;
-      padding: 16px !important;
-      width: 100% !important;
-      top: 0 !important;
-      left: 0 !important;
-      margin: 0 !important;
+    .phone-status-bar {
+      position: absolute;
+      top: 0;
+      left: 12px;
+      right: 12px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      font-family: -apple-system, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #000;
+      z-index: 50;
+      pointer-events: none;
     }
-    .folder-page::after {
-      display: none !important;
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      border-radius: 30px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
     }
-    .folder-page .post-item {
-      padding: 12px 0;
-      border-bottom: 1px solid #f0f0f0;
+    .wechat-header {
+      background: #ededed;
+      padding: 44px 12px 10px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #e0e0e0;
+      flex-shrink: 0;
+      min-height: 30px;
     }
-    .folder-page .post-title {
-      color: #333 !important;
-      text-decoration: none !important;
+    .wechat-back {
+      font-size: 20px;
+      color: #333;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+    .wechat-header-title {
+      flex: 1;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 500;
+      color: #333;
+      font-family: -apple-system, "Noto Sans SC", sans-serif;
+    }
+    .wechat-more {
+      font-size: 20px;
+      color: #333;
+      padding: 4px 8px;
+    }
+    .article-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+    }
+    .article-page {
+      display: none;
+      padding: 0;
+      background: #fff;
+    }
+    .article-page.active {
       display: block;
     }
-    .folder-page .post-title:hover {
-      color: #07c160 !important;
-      text-decoration: underline;
+    .article-cover {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
     }
-    .sort-bar {
-      position: relative !important;
-      bottom: auto !important;
-      justify-content: center !important;
-      padding: 0 0 12px 0 !important;
+    .article-body {
+      padding: 16px 18px 20px;
+    }
+    .article-account {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .article-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #07c160, #10ad54);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      font-family: "Noto Sans SC", sans-serif;
+      flex-shrink: 0;
+    }
+    .article-account-info {
+      flex: 1;
+    }
+    .article-account-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      font-family: "Noto Sans SC", sans-serif;
+    }
+    .article-date {
+      font-size: 11px;
+      color: #999;
+      margin-top: 2px;
+    }
+    .article-follow-btn {
+      background: #07c160;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: "Noto Sans SC", sans-serif;
+      pointer-events: auto;
+    }
+    .article-title {
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 1.4;
+      color: #000;
+      margin-bottom: 14px;
+      font-family: "Noto Sans SC", sans-serif;
+    }
+    .article-excerpt {
+      font-size: 15px;
+      line-height: 1.8;
+      color: #333;
+      font-family: "Noto Sans SC", sans-serif;
+      margin-bottom: 16px;
+    }
+    .article-read-original {
+      display: inline-block;
+      background: #f7f7f7;
+      color: #576b95;
+      text-decoration: none;
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 4px;
+      font-family: "Noto Sans SC", sans-serif;
+      pointer-events: auto;
+      cursor: pointer;
+      border: 1px solid #e5e5e5;
+    }
+    .article-read-original:hover {
+      background: #eee;
+    }
+    .phone-dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      padding: 10px 0 0;
+    }
+    .phone-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ccc;
+      cursor: pointer;
+      transition: all 0.3s;
+      pointer-events: auto;
+    }
+    .phone-dot.active {
+      background: #07c160;
+      width: 20px;
+      border-radius: 4px;
+    }
+    .phone-hint {
+      text-align: center;
+      font-size: 11px;
+      color: #999;
+      font-family: "AR One Sans", sans-serif;
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+    }
+    .sort-bar { display: none !important; }
+    .accordion-stage { display: none !important; }
+    .folder-page { display: none !important; }
+    @media (max-width: 480px) {
+      .phone-frame {
+        width: 280px;
+        height: 520px;
+      }
+      .article-cover {
+        height: 170px;
+      }
     }
 
     .gallery-container#visualDisplayGallery.show {
@@ -1228,31 +1377,6 @@
     .gallery-container#graphicDesignGallery,
     .gallery-container#visualDisplayGallery {
       z-index: 200;
-    }
-
-    @media (max-width: 480px) {
-      .accordion-stage {
-        width: 280px !important;
-        height: 480px !important;
-        padding: 30px 10px 10px !important;
-      }
-      .folder-page {
-        position: absolute !important;
-        width: 100% !important;
-        top: 0 !important;
-        left: 0 !important;
-        height: 100% !important;
-        overflow-y: auto !important;
-        border: none !important;
-        background: #fff !important;
-        background-image: none !important;
-        box-shadow: none !important;
-        border-radius: 0 !important;
-        margin: 0 !important;
-      }
-      .folder-page::after {
-        display: none !important;
-      }
     }
   </style>
 </head>
@@ -1387,8 +1511,20 @@
         account: "星火学社",
         platform: "WeChat",
         posts: [
-          { title: "星火社·养老院公益行活动回顾 | 传播公益思想，共筑美好未来", date: "2025", views: "-", likes: "-", comments: "-", favs: "-", shares: "-", link: "https://mp.weixin.qq.com/s/zOJ3kT-4f_0eyjcer2D56w" },
-          { title: "星火社·活动宣发 | 更多精彩，等你参与", date: "2025", views: "-", likes: "-", comments: "-", favs: "-", shares: "-", link: "https://mp.weixin.qq.com/s/Z-_i5gsXK2_nD-f4SSWO5g" }
+          {
+            title: "传播公益思想，共筑美好未来——星火学社养老院公益行活动回顾",
+            date: "2025",
+            cover: "./images/spark-activity.jpg",
+            excerpt: "近日，星火学社组织成员前往养老院开展公益探访活动，为老人们送去温暖与关怀，用实际行动传递公益力量。",
+            link: "https://mp.weixin.qq.com/s/zOJ3kT-4f_0eyjcer2D56w"
+          },
+          {
+            title: "星火学社招新 | 加入我们，一起发光发热",
+            date: "2025",
+            cover: "./images/spark-activity.jpg",
+            excerpt: "星火学社是一个致力于公益传播与社会实践的学生社团。我们相信，每一颗星星都能照亮夜空。",
+            link: "https://mp.weixin.qq.com/s/Z-_i5gsXK2_nD-f4SSWO5g"
+          }
         ]
       }
     ];
@@ -1462,7 +1598,7 @@
          scaleFactor = canvasWidth / 1280;
       }
 
-      let labels = ["Data Projects", "Leadership", "WeChat Articles"];
+      let labels = ["Data Projects", "Leadership", "Content Showcase"];
       // 初始位置由 updateTargetPositions 计算，这里先用临时值
       let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
       let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
@@ -1542,7 +1678,7 @@
       
       // 重新初始化波浪
       waves = [];
-      let labels = ["Data Projects", "Leadership", "WeChat Articles"];
+      let labels = ["Data Projects", "Leadership", "Content Showcase"];
       // 初始位置由 updateTargetPositions 计算
       let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
       let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
@@ -1814,14 +1950,16 @@
 <div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">金融服务机构资金流量预测 · SARIMA · Python · 2026</div>
 <div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
 Built a daily fund-inflow time series from anonymized user-level subscription/redemption records. Conducted stationarity tests (ADF), seasonal differencing, and ACF/PACF analysis to identify SARIMA parameters. Delivered a 7-day rolling forecast with MAE/RMSE evaluation. Visualized trends, seasonality, and residual diagnostics using matplotlib.
-</div>`
+</div>`,
+          rotation: -1.5
         },
         {
-          html: `<div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">E-Commerce Review Analytics</div>
+          html: `<div style="margin: -4px -4px 12px -4px;"><img src="./images/ecommerce-dashboard.png" style="width:100%;border-radius:3px 3px 0 0;display:block;"></div><div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">E-Commerce Review Analytics</div>
 <div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">电商大数据用户评论分析 · NLP · Python · 2026</div>
 <div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
 Crawled and cleaned 50,000+ e-commerce user reviews. Performed Chinese word segmentation (jieba), stopword removal, and TF-IDF keyword extraction. Conducted sentiment classification and topic modeling (LDA) to identify consumer pain points. Built an interactive visualization dashboard summarizing rating distributions, review volume trends, and high-frequency complaint categories.
-</div>`
+</div>`,
+          rotation: 1
         }
       ];
 
@@ -1834,10 +1972,7 @@ Crawled and cleaned 50,000+ e-commerce user reviews. Performed Chinese word segm
         cardEl.style.borderRadius = '4px';
         cardEl.style.padding = '18px 22px';
         cardEl.style.position = 'relative';
-        const rotation = (Math.random() * 4 - 2);
-        const offsetX = (Math.random() * 20 - 10);
-        const offsetY = (Math.random() * 10 - 5);
-        cardEl.style.transform = `rotate(${rotation}deg) translate(${offsetX}px, ${offsetY}px)`;
+        cardEl.style.transform = `rotate(${card.rotation}deg)`;
         cardEl.innerHTML = card.html;
         graphicDesignGallery.appendChild(cardEl);
       });
@@ -1858,6 +1993,7 @@ Crawled and cleaned 50,000+ e-commerce user reviews. Performed Chinese word segm
       visualDisplayGallery.style.right = '';
       visualDisplayGallery.style.bottom = '';
       visualDisplayGallery.innerHTML = `<div style="max-width:600px;width:100%;background:rgba(255,255,255,0.7);border:1px solid #ddd;border-radius:4px;padding:22px 26px;transform:rotate(-1deg);">
+  <div style="margin: -4px -4px 14px -4px;"><img src="./images/spark-activity.jpg" style="width:100%;border-radius:3px 3px 0 0;display:block;max-height:280px;object-fit:cover;"></div>
   <div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">Spark Society · 星火学社</div>
   <div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">Founder &amp; President · 2023.09 – Present · Wuhan</div>
   <div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
@@ -2237,200 +2373,112 @@ Crawled and cleaned 50,000+ e-commerce user reviews. Performed Chinese word segm
     let activePairIndex = 0; // The index of the LEFT page of the active pair (0, 2, 4...)
 
     function initSocialMediaGallery() {
-      if (!socialMediaGallery) return;
-      socialMediaGallery.innerHTML = '';
-      
-      // 1. Create Sort Control Bar
-      const sortBar = document.createElement('div');
-      sortBar.className = 'sort-bar';
-      // Ensure clicks are captured
-      sortBar.style.pointerEvents = 'auto';
-      
-      const btnDate = document.createElement('button');
-      btnDate.className = 'sort-btn active';
-      btnDate.textContent = 'Date';
-      // Use addEventListener for better reliability
-      btnDate.addEventListener('click', (e) => {
-          e.stopPropagation();
-          console.log('Sort by Date clicked');
-          handleSortChange('date', btnDate, btnPopular);
-      });
-      
-      const btnPopular = document.createElement('button');
-      btnPopular.className = 'sort-btn';
-      btnPopular.textContent = 'Popularity';
-      btnPopular.addEventListener('click', (e) => {
-          e.stopPropagation();
-          console.log('Sort by Popularity clicked');
-          handleSortChange('popular', btnPopular, btnDate);
-      });
-      
-      sortBar.appendChild(btnDate);
-      sortBar.appendChild(btnPopular);
-      socialMediaGallery.appendChild(sortBar);
-      
-      // 2. Create 3D Stage
-      const stage = document.createElement('div');
-      stage.className = 'accordion-stage';
-      stage.id = 'accordionStage';
-      socialMediaGallery.appendChild(stage);
+      const gallery = document.getElementById('socialMediaGallery');
+      gallery.innerHTML = '';
+      gallery.style.position = 'relative';
+      gallery.style.display = 'none';
 
-      // --- Add Swipe/Drag Listeners ---
-      let swipeStartX = 0;
-      let swipeStartY = 0;
-      let isSwiping = false;
+      if (socialMediaData.length === 0) return;
 
-      // Mouse Events
-      stage.addEventListener('mousedown', (e) => {
-          // Only trigger if clicking on a page
-          if (e.target.closest('.folder-page')) {
-              isSwiping = true;
-              swipeStartX = e.clientX;
-              swipeStartY = e.clientY;
-          }
-      });
+      const account = socialMediaData[0];
+      const posts = account.posts;
 
-      window.addEventListener('mousemove', (e) => {
-          if (!isSwiping) return;
-          // Optional: Visual feedback during drag could go here
+      const phoneFrame = document.createElement('div');
+      phoneFrame.className = 'phone-frame';
+
+      const statusBar = document.createElement('div');
+      statusBar.className = 'phone-status-bar';
+      statusBar.innerHTML = '<span>9:41</span><span>●●● 📶 🔋</span>';
+      phoneFrame.appendChild(statusBar);
+
+      const screen = document.createElement('div');
+      screen.className = 'phone-screen';
+
+      const wxHeader = document.createElement('div');
+      wxHeader.className = 'wechat-header';
+      wxHeader.innerHTML = `<div class="wechat-back">‹</div><div class="wechat-header-title">${account.account}</div><div class="wechat-more">···</div>`;
+      screen.appendChild(wxHeader);
+
+      const articleScroll = document.createElement('div');
+      articleScroll.className = 'article-scroll';
+
+      posts.forEach((post, idx) => {
+        const page = document.createElement('div');
+        page.className = 'article-page' + (idx === 0 ? ' active' : '');
+
+        let coverHtml = '';
+        if (post.cover) {
+          coverHtml = `<img class="article-cover" src="${post.cover}" alt="">`;
+        }
+
+        page.innerHTML = coverHtml + `
+          <div class="article-body">
+            <div class="article-account">
+              <div class="article-avatar">星</div>
+              <div class="article-account-info">
+                <div class="article-account-name">${account.account}</div>
+                <div class="article-date">${post.date}</div>
+              </div>
+              <button class="article-follow-btn">关注</button>
+            </div>
+            <div class="article-title">${post.title}</div>
+            <div class="article-excerpt">${post.excerpt || ''}</div>
+            <a class="article-read-original" href="${post.link}" target="_blank" rel="noopener">阅读原文 Read Original →</a>
+          </div>
+        `;
+        articleScroll.appendChild(page);
       });
 
-      window.addEventListener('mouseup', (e) => {
-          if (!isSwiping) return;
-          isSwiping = false;
-          handleSwipeEnd(e.clientX, e.clientY);
-      });
+      screen.appendChild(articleScroll);
+      phoneFrame.appendChild(screen);
+      gallery.appendChild(phoneFrame);
 
-      // Touch Events
-      stage.addEventListener('touchstart', (e) => {
-          if (e.target.closest('.folder-page') && e.touches.length === 1) {
-              isSwiping = true;
-              swipeStartX = e.touches[0].clientX;
-              swipeStartY = e.touches[0].clientY;
-          }
+      const dotsContainer = document.createElement('div');
+      dotsContainer.className = 'phone-dots';
+      posts.forEach((_, idx) => {
+        const dot = document.createElement('div');
+        dot.className = 'phone-dot' + (idx === 0 ? ' active' : '');
+        dot.addEventListener('click', () => showArticle(idx));
+        dotsContainer.appendChild(dot);
+      });
+      gallery.appendChild(dotsContainer);
+
+      const hint = document.createElement('div');
+      hint.className = 'phone-hint';
+      hint.textContent = '←  Swipe to browse articles  →';
+      gallery.appendChild(hint);
+
+      let currentIdx = 0;
+
+      function showArticle(idx) {
+        currentIdx = idx;
+        const pages = articleScroll.querySelectorAll('.article-page');
+        const dots = dotsContainer.querySelectorAll('.phone-dot');
+        pages.forEach((p, i) => p.classList.toggle('active', i === idx));
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        articleScroll.scrollTop = 0;
+      }
+
+      let touchStartX = 0;
+      let touchEndX = 0;
+      articleScroll.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+      articleScroll.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
       }, {passive: true});
-
-      stage.addEventListener('touchend', (e) => {
-          if (!isSwiping) return;
-          isSwiping = false;
-          if (e.changedTouches.length > 0) {
-              handleSwipeEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-          }
+      let mouseStartX = 0;
+      let isDragging = false;
+      articleScroll.addEventListener('mousedown', e => { mouseStartX = e.screenX; isDragging = true; });
+      articleScroll.addEventListener('mouseup', e => {
+        if (isDragging) { touchEndX = e.screenX; handleSwipe(); isDragging = false; }
       });
 
-      function handleSwipeEnd(endX, endY) {
-          const deltaX = endX - swipeStartX;
-          const deltaY = endY - swipeStartY;
-          
-          // Thresholds
-          const minSwipeDistance = 50;
-          
-          // Check if horizontal swipe dominates
-          if (Math.abs(deltaX) > minSwipeDistance && Math.abs(deltaX) > Math.abs(deltaY)) {
-              if (deltaX > 0) {
-                  // Swipe Right -> Prev Page
-                  navigateGallery(-1);
-              } else {
-                  // Swipe Left -> Next Page
-                  navigateGallery(1);
-              }
-          }
+      function handleSwipe() {
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) < 50) return;
+        if (diff > 0 && currentIdx < posts.length - 1) showArticle(currentIdx + 1);
+        else if (diff < 0 && currentIdx > 0) showArticle(currentIdx - 1);
       }
-
-      // 3. Prepare Data
-      allSocialPosts = [];
-      socialMediaData.forEach(accountData => {
-        accountData.posts.forEach(post => {
-          allSocialPosts.push({
-            ...post,
-            account: accountData.account,
-            platform: accountData.platform
-          });
-        });
-      });
-      
-      // Dynamic positioning
-      const titleElement = document.querySelector('.page-title');
-      if (titleElement) {
-         const titleRect = titleElement.getBoundingClientRect();
-         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-         
-         const topPos = titleRect.bottom + scrollTop; 
-         
-         // 动态计算高度（包含移动端和桌面端）
-         let waveAbsTop;
-         let isTabletMode = windowWidth > 480 && windowWidth <= 1200;
-         
-         if (isMobileMode) {
-             // 移动端 Canvas 固定在底部
-             // Canvas 高度 500, top = windowHeight - 500
-             const canvasH = 500;
-             const canvasTop = window.innerHeight - canvasH;
-             
-             // 波浪线在 Canvas 内部的坐标
-             // lastLineY = 500 - paddingBottom * scale
-             // firstLineY = lastLineY - 2 * gap * scale
-             // 注意：这里必须使用当前的 config 和 scaleFactor
-             const lastLineY = canvasH - config.paddingBottom * scaleFactor;
-             const firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
-             
-             // 波浪线绝对位置 = CanvasTop + firstLineY
-             waveAbsTop = canvasTop + firstLineY;
-             
-             // 顶部位置：标题下方 + 留白
-              // 移动端标题较大，topPos 可能会比较大，我们给它一个最小 marginTop
-              // 增加 30px 给 Sort Bar 留出空间
-              const mobileTop = Math.max(topPos, 90) + 35; 
-              
-              // 可用高度 = 波浪线顶部 - 顶部位置 - 底部安全距离
-              const safetyMargin = 20; // 避免紧贴波浪
-             const newHeight = waveAbsTop - mobileTop - safetyMargin;
-             
-             socialMediaGallery.style.top = mobileTop + 'px';
-             socialMediaGallery.style.height = Math.max(200, newHeight) + 'px'; // 最小高度保护
-             
-         } else if (isTabletMode) {
-             // Tablet: Canvas Fixed at Bottom
-             let canvasWidth = windowWidth;
-             let canvasHeight = canvasWidth * (623 / 1280) - 20;
-             let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
-             let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
-             
-             // Wave Top relative to Viewport (canvas is at bottom - 10px)
-             let waveViewportTop = (window.innerHeight - canvasHeight - 10) + firstLineY;
-             
-             // Available height relative to document top (assuming scrolled to top)
-             // We use topPos (document relative)
-             
-             // If we assume initial load is at top:
-             waveAbsTop = waveViewportTop + (window.pageYOffset || 0);
-             
-             // Subtract margin to avoid overlap (shorten the bottom)
-             const newHeight = waveAbsTop - topPos - 40; 
-             socialMediaGallery.style.top = topPos + 'px';
-             // Use a safer min-height, or allow it to be smaller if space is tight
-             socialMediaGallery.style.height = Math.max(300, newHeight) + 'px';
-             
-         } else {
-            // Desktop
-            let canvasWidth = windowWidth;
-            let canvasHeight = canvasWidth * (623 / 1280) - 20;
-            let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
-            let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
-            
-            waveAbsTop = 40 + firstLineY;
-            const newHeight = waveAbsTop - topPos + 10;
-            
-            socialMediaGallery.style.top = topPos + 'px';
-            socialMediaGallery.style.height = newHeight + 'px';
-         }
-         
-         // Force pointer events for Sort Bar container
-         socialMediaGallery.style.pointerEvents = 'none'; 
-      }
-      
-      // Initial Render (moved after positioning so height is correct)
-      renderSocialMediaGallery();
     }
 
     function handleSortChange(mode, activeBtn, otherBtn) {
