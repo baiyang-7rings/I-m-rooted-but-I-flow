@@ -177,11 +177,14 @@
     }
 
     /* ================= 底部 Footer ================= */
-    /* About 内容区域 */
+    /* About 内容区域 - 必须在 canvas 之上 */
     .about-content {
+      position: relative;
+      z-index: 10;
+      pointer-events: auto;
       max-width: 700px;
       margin: 0 auto;
-      padding: 40px 0 20px;
+      padding: 20px 0 20px;
       font-size: 14px;
       line-height: 2;
       color: #333;

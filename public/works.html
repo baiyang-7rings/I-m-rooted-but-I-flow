@@ -1146,6 +1146,114 @@
         text-align: left;
       }
     }
+
+    /* Phone mockup for WeChat Articles */
+    .accordion-stage {
+      width: 320px !important;
+      margin: 0 auto;
+      padding: 40px 12px 12px !important;
+      background: #1a1a1a !important;
+      border-radius: 36px !important;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3), inset 0 0 0 2px #333 !important;
+      position: relative !important;
+      height: 560px !important;
+      overflow: hidden !important;
+    }
+    .accordion-stage::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 6px;
+      background: #333;
+      border-radius: 3px;
+      z-index: 100;
+    }
+    .accordion-stage::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 4px;
+      background: #333;
+      border-radius: 2px;
+      z-index: 100;
+    }
+    .folder-page {
+      background: #fff !important;
+      background-image: none !important;
+      border: none !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      height: 100% !important;
+      overflow-y: auto !important;
+      padding: 16px !important;
+      width: 100% !important;
+      top: 0 !important;
+      left: 0 !important;
+      margin: 0 !important;
+    }
+    .folder-page::after {
+      display: none !important;
+    }
+    .folder-page .post-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .folder-page .post-title {
+      color: #333 !important;
+      text-decoration: none !important;
+      display: block;
+    }
+    .folder-page .post-title:hover {
+      color: #07c160 !important;
+      text-decoration: underline;
+    }
+    .sort-bar {
+      position: relative !important;
+      bottom: auto !important;
+      justify-content: center !important;
+      padding: 0 0 12px 0 !important;
+    }
+
+    .gallery-container#visualDisplayGallery.show {
+      display: flex !important;
+      pointer-events: auto !important;
+    }
+
+    .gallery-container#graphicDesignGallery,
+    .gallery-container#visualDisplayGallery {
+      z-index: 200;
+    }
+
+    @media (max-width: 480px) {
+      .accordion-stage {
+        width: 280px !important;
+        height: 480px !important;
+        padding: 30px 10px 10px !important;
+      }
+      .folder-page {
+        position: absolute !important;
+        width: 100% !important;
+        top: 0 !important;
+        left: 0 !important;
+        height: 100% !important;
+        overflow-y: auto !important;
+        border: none !important;
+        background: #fff !important;
+        background-image: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+      }
+      .folder-page::after {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1276,11 +1384,11 @@
     // WeChat Articles Data
     const socialMediaData = [
       {
-        account: "WeChat Articles",
-        platform: "公众号",
+        account: "星火学社",
+        platform: "WeChat",
         posts: [
-          { title: "星火社·活动宣发（一）", date: "2025", views: "-", likes: "-", comments: "-", favs: "-", shares: "-", link: "https://mp.weixin.qq.com/s/zOJ3kT-4f_0eyjcer2D56w" },
-          { title: "星火社·活动宣发（二）", date: "2025", views: "-", likes: "-", comments: "-", favs: "-", shares: "-", link: "https://mp.weixin.qq.com/s/Z-_i5gsXK2_nD-f4SSWO5g" }
+          { title: "星火社·养老院公益行活动回顾 | 传播公益思想，共筑美好未来", date: "2025", views: "-", likes: "-", comments: "-", favs: "-", shares: "-", link: "https://mp.weixin.qq.com/s/zOJ3kT-4f_0eyjcer2D56w" },
+          { title: "星火社·活动宣发 | 更多精彩，等你参与", date: "2025", views: "-", likes: "-", comments: "-", favs: "-", shares: "-", link: "https://mp.weixin.qq.com/s/Z-_i5gsXK2_nD-f4SSWO5g" }
         ]
       }
     ];
@@ -1354,7 +1462,7 @@
          scaleFactor = canvasWidth / 1280;
       }
 
-      let labels = ["Graphic Design", "Visual Display", "Social Media Content"];
+      let labels = ["Data Projects", "Leadership", "WeChat Articles"];
       // 初始位置由 updateTargetPositions 计算，这里先用临时值
       let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
       let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
@@ -1379,6 +1487,9 @@
       
       // 初始化图片展示
       initImageGalleries();
+      
+      populateProjectCards();
+      populateLeadership();
       
       console.log('Setup 完成，缩放比例：' + scaleFactor);
     }
@@ -1431,7 +1542,7 @@
       
       // 重新初始化波浪
       waves = [];
-      let labels = ["Graphic Design", "Visual Display", "Social Media Content"];
+      let labels = ["Data Projects", "Leadership", "WeChat Articles"];
       // 初始位置由 updateTargetPositions 计算
       let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
       let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
@@ -1679,6 +1790,85 @@
       initVisualDisplayGallery();
       // 初始化 Social Media
       initSocialMediaGallery();
+    }
+
+    function populateProjectCards() {
+      if (!graphicDesignGallery) return;
+      graphicDesignGallery.style.position = 'relative';
+      graphicDesignGallery.style.flexDirection = 'column';
+      graphicDesignGallery.style.alignItems = 'center';
+      graphicDesignGallery.style.padding = '30px 20px';
+      graphicDesignGallery.style.gap = '20px';
+      graphicDesignGallery.style.overflowY = 'auto';
+      graphicDesignGallery.style.top = '';
+      graphicDesignGallery.style.height = '';
+      graphicDesignGallery.style.maxHeight = '';
+      graphicDesignGallery.style.paddingLeft = '20px';
+      graphicDesignGallery.style.paddingRight = '20px';
+      graphicDesignGallery.style.justifyContent = 'flex-start';
+      graphicDesignGallery.style.flexWrap = 'nowrap';
+
+      const cards = [
+        {
+          html: `<div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">Fund Flow Forecasting</div>
+<div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">金融服务机构资金流量预测 · SARIMA · Python · 2026</div>
+<div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
+Built a daily fund-inflow time series from anonymized user-level subscription/redemption records. Conducted stationarity tests (ADF), seasonal differencing, and ACF/PACF analysis to identify SARIMA parameters. Delivered a 7-day rolling forecast with MAE/RMSE evaluation. Visualized trends, seasonality, and residual diagnostics using matplotlib.
+</div>`
+        },
+        {
+          html: `<div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">E-Commerce Review Analytics</div>
+<div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">电商大数据用户评论分析 · NLP · Python · 2026</div>
+<div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
+Crawled and cleaned 50,000+ e-commerce user reviews. Performed Chinese word segmentation (jieba), stopword removal, and TF-IDF keyword extraction. Conducted sentiment classification and topic modeling (LDA) to identify consumer pain points. Built an interactive visualization dashboard summarizing rating distributions, review volume trends, and high-frequency complaint categories.
+</div>`
+        }
+      ];
+
+      cards.forEach((card, i) => {
+        const cardEl = document.createElement('div');
+        cardEl.style.maxWidth = '600px';
+        cardEl.style.width = '100%';
+        cardEl.style.background = 'rgba(255,255,255,0.7)';
+        cardEl.style.border = '1px solid #ddd';
+        cardEl.style.borderRadius = '4px';
+        cardEl.style.padding = '18px 22px';
+        cardEl.style.position = 'relative';
+        const rotation = (Math.random() * 4 - 2);
+        const offsetX = (Math.random() * 20 - 10);
+        const offsetY = (Math.random() * 10 - 5);
+        cardEl.style.transform = `rotate(${rotation}deg) translate(${offsetX}px, ${offsetY}px)`;
+        cardEl.innerHTML = card.html;
+        graphicDesignGallery.appendChild(cardEl);
+      });
+    }
+
+    function populateLeadership() {
+      if (!visualDisplayGallery) return;
+      visualDisplayGallery.style.position = 'relative';
+      visualDisplayGallery.style.flexDirection = 'column';
+      visualDisplayGallery.style.alignItems = 'center';
+      visualDisplayGallery.style.justifyContent = 'center';
+      visualDisplayGallery.style.padding = '40px 20px';
+      visualDisplayGallery.style.overflowY = 'auto';
+      visualDisplayGallery.style.top = '';
+      visualDisplayGallery.style.height = '';
+      visualDisplayGallery.style.maxHeight = '';
+      visualDisplayGallery.style.left = '';
+      visualDisplayGallery.style.right = '';
+      visualDisplayGallery.style.bottom = '';
+      visualDisplayGallery.innerHTML = `<div style="max-width:600px;width:100%;background:rgba(255,255,255,0.7);border:1px solid #ddd;border-radius:4px;padding:22px 26px;transform:rotate(-1deg);">
+  <div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">Spark Society · 星火学社</div>
+  <div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">Founder &amp; President · 2023.09 – Present · Wuhan</div>
+  <div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
+    Founded and led a student association of 50+ members. Organized public welfare events including nursing home visits (养老公益行) and community outreach. Managed a cross-functional team across event planning, marketing, design, and communications. Produced WeChat Official Account promotional content, handling copywriting and content strategy.
+  </div>
+  <div style="font-family:'Noto Sans SC',sans-serif;font-size:12px;line-height:1.6;color:#888;margin-top:10px;">
+    · 社团成员50+人<br>
+    · 组织养老院公益探访等活动<br>
+    · 负责公众号宣发文案与内容策划
+  </div>
+</div>`;
     }
 
     function initGraphicDesignGallery() {
@@ -1952,6 +2142,8 @@
            visualDisplayGallery.classList.add('show');
            runVisualDisplayAnimation();
         }
+
+        populateLeadership();
         
       }, 100);
     }
@@ -2586,6 +2778,7 @@
         <div style="font-size: 11px; color: #888;">@${cleanAccount}</div>
         <div style="font-family: 'Noto Sans SC', sans-serif; white-space: normal; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: ${lineClamp}; -webkit-box-orient: vertical; overflow: hidden;">${post.title}</div>`;
       postTitle.target = "_blank";  
+      postTitle.style.pointerEvents = 'auto';
       
       const postDate = document.createElement('div');
       postDate.className = 'post-date';
