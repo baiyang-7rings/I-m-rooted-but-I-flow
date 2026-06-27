@@ -8,362 +8,553 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400;500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;700&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+  
   <style>
     :root {
       --bg-color: #F2F2F1;
       --text-color: #000000;
       --muted-color: #666666;
       --border-color: #DDDDDD;
-      --font-main: "Special Elite", "Noto Sans SC", "Noto Sans HK", "Source Han Sans SC", sans-serif;
+      --font-main: "Special Elite", "Noto Sans HK", "Noto Sans SC", "Source Han Sans SC", sans-serif;
       --font-code: "AR One Sans", sans-serif;
-      --font-cn: "Noto Sans SC", "Noto Sans HK", sans-serif;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * {
+      box-sizing: border-box;
+    }
+
     html, body {
+      margin: 0;
+      padding: 0;
       background-color: var(--bg-color);
       color: var(--text-color);
       font-family: var(--font-main);
       -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
     }
+
     a {
       color: var(--text-color);
       text-decoration: none;
       position: relative;
     }
-    a:hover { text-decoration: underline; }
-
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 32px 60px;
+    
+    a:hover {
+      text-decoration: underline;
     }
 
-    /* ===== Nav ===== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 40px;
+      position: relative;
+    }
+
     header {
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      padding-top: 20px;
+      padding-top: 10px;
       margin-bottom: 20px;
     }
+
+    .page-title {
+      font-size: 48px;
+      font-weight: bold;
+      letter-spacing: -1px;
+      margin-bottom: 0px;
+      font-family: var(--font-main);
+      position: relative;
+      z-index: 10;
+    }
+
     .nav-links {
       display: flex;
       gap: 30px;
       font-size: 14px;
       color: #999;
+      margin: 0;
       font-family: var(--font-code);
     }
-    .nav-links a {
-      color: #999;
+    
+    .nav-links a { 
+      color: #999; 
       transition: all 0.2s ease;
       display: inline-block;
       text-decoration: none;
       transform-origin: bottom center;
     }
-    .nav-links a:hover { color: #333; text-decoration: none; }
-    .nav-links a.active { color: #333; }
+    .nav-links a:hover { 
+      color: #333; 
+    }
     .nav-links a:active {
       color: #ccc;
+      text-shadow: none;
       transform: perspective(500px) rotateX(60deg) skewX(-15deg);
     }
 
-    /* ===== Page Title ===== */
-    .page-title {
-      font-size: 56px;
-      font-weight: bold;
-      letter-spacing: -1px;
-      margin-bottom: 60px;
-      font-family: var(--font-main);
+    .hero-section {
+      position: relative;
+      margin-top: 40px;
+      margin-bottom: 40px;
+      min-height: 120px;
     }
 
-    /* ===== Experience Timeline ===== */
-    .timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
+    .hero-text {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--muted-color);
+      max-width: 700px;
+      font-family: "Noto Sans HK", "Noto Sans SC", sans-serif;
     }
-    .timeline-item {
+
+    .collaboration-text {
+      position: absolute;
+      bottom: -20px;
+      right: 0px;
+      font-size: 80px;
+      color: rgba(0, 0, 0, 0.03);
+      text-transform: capitalize;
+      pointer-events: none;
+      z-index: 0;
+      text-align: right;
+    }
+
+    .experience-list {
       display: grid;
-      grid-template-columns: 180px 1fr;
+      grid-template-columns: 200px 1fr;
       column-gap: 40px;
-      padding: 32px 0;
-      border-top: 1px solid var(--border-color);
-      transition: opacity 0.3s ease;
+      row-gap: 60px;
+      margin-bottom: 80px;
+      position: relative;
+      z-index: 1;
     }
-    .timeline-item:last-child { border-bottom: 1px solid var(--border-color); }
-    .timeline:hover .timeline-item { opacity: 0.45; }
-    .timeline:hover .timeline-item:hover { opacity: 1; }
 
-    .tl-left {
+    .col-left {
+      font-size: 16px;
+      line-height: 1.5;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 12px;
+      align-items: flex-start;
     }
-    .tl-period {
-      font-size: 18px;
+    .col-left .years {
+      font-size: 20px;
+      display: block;
       line-height: 1.3;
-      font-family: var(--font-main);
     }
-    .tl-tag {
+    .col-left .company {
+      font-size: 12px;
+      color: var(--muted-color);
+      display: block;
+      line-height: 1.4;
+    }
+    .tag {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       border: 1px solid #ccc;
       border-radius: 50px;
-      padding: 2px 10px 0;
+      padding: 0px 6px;
+      padding-top: 2px;
       font-size: 10px;
       color: #888;
-      font-family: var(--font-code);
-      height: 24px;
-      width: fit-content;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      line-height: 1;
+      height: 26px;
+      box-sizing: border-box;
     }
-    .tl-tag.full { border-color: #999; color: #555; }
-    .tl-tag.part { border-style: dashed; }
 
-    .tl-right {
+    .col-content {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 40px;
     }
-    .tl-company {
-      font-size: 20px;
-      font-family: var(--font-main);
-      letter-spacing: -0.3px;
-    }
-    .tl-location {
-      font-size: 12px;
-      color: var(--muted-color);
-      font-family: var(--font-code);
-    }
-    .tl-roles {
-      margin-top: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .tl-role {
+
+    .job-item {
       display: grid;
-      grid-template-columns: 180px 1fr;
-      column-gap: 20px;
-      font-size: 14px;
-      line-height: 1.7;
-    }
-    .tl-role-title {
-      font-family: var(--font-code);
-      font-size: 13px;
-      color: var(--muted-color);
-    }
-    .tl-role-desc {
-      font-family: var(--font-cn);
-      font-weight: 300;
-      font-size: 14px;
-      color: #333;
-      line-height: 1.8;
-    }
-    .tl-role-desc.placeholder {
-      color: #bbb;
-      font-style: italic;
-    }
-
-    /* ===== Placeholder Section ===== */
-    .placeholder-note {
-      margin-top: 80px;
-      padding: 40px;
-      border: 1px dashed var(--border-color);
-      border-radius: 4px;
-      text-align: center;
-      color: #aaa;
-      font-family: var(--font-code);
-      font-size: 14px;
-      line-height: 1.8;
-    }
-    .placeholder-note .placeholder-title {
-      font-family: var(--font-main);
-      font-size: 20px;
-      color: #999;
-      margin-bottom: 12px;
-    }
-
-    /* ===== Part-time / Events ===== */
-    .section-label {
-      font-size: 14px;
-      font-family: var(--font-code);
-      color: #999;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-top: 80px;
-      margin-bottom: 32px;
-    }
-    .events-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-    .event-item {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 120px;
-      gap: 20px;
-      padding: 16px 0;
-      border-top: 1px solid var(--border-color);
-      font-size: 14px;
-      align-items: baseline;
+      grid-template-columns: 1fr 200px;
+      gap: 40px;
+      align-items: flex-start;
       transition: opacity 0.3s ease;
     }
-    .event-item:last-child { border-bottom: 1px solid var(--border-color); }
-    .events-list:hover .event-item { opacity: 0.45; }
-    .events-list:hover .event-item:hover { opacity: 1; }
-    .event-place { font-family: var(--font-cn); font-weight: 400; }
-    .event-role { font-family: var(--font-code); color: var(--muted-color); font-size: 13px; }
-    .event-time { font-family: var(--font-code); color: var(--muted-color); font-size: 12px; text-align: right; }
 
-    /* ===== Footer ===== */
-    footer {
-      border-top: 1px solid rgba(0,0,0,0.08);
-      margin-top: 80px;
+    .experience-list:hover .job-item {
+      opacity: 0.5;
     }
-    .footer-inner {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 20px 32px 32px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      font-size: 13px;
-      color: #666;
-      font-family: var(--font-code);
+
+    .job-item:hover {
+      opacity: 1 !important;
     }
-    .footer-item b {
-      display: block;
-      font-weight: 500;
+
+    .job-desc {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #333;
+      font-family: "Noto Sans HK", "Noto Sans SC", sans-serif;
+    }
+    .job-desc p {
+      margin: 0 0 8px 0;
+    }
+    .job-desc ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    .job-desc li {
       margin-bottom: 6px;
-      color: #666;
     }
-    .footer-item a { color: #666; }
-    .footer-item a:hover { color: #333; }
 
-    /* ===== Responsive ===== */
+    .job-role {
+      text-align: right;
+    }
+    .role-zh {
+      font-size: 15px;
+      font-weight: bold;
+      display: block;
+    }
+    .role-en {
+      font-size: 12px;
+      color: var(--muted-color);
+      display: block;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .skill-category b {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 8px;
+      font-family: var(--font-main);
+    }
+    .skill-category span {
+      font-size: 13px;
+      color: var(--muted-color);
+      line-height: 1.7;
+      font-family: "Noto Sans HK", "Noto Sans SC", sans-serif;
+    }
+
+    footer{
+      border-top:1px solid rgba(0,0,0,0.08);
+      margin-top:24px;
+    }
+    .footer-inner{
+      max-width:1200px;
+      margin:0 auto;
+      padding:18px 24px 28px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      font-size:13px;
+      color: #666666;
+      font-family: "AR One Sans", sans-serif;
+    }
+    .footer-item b{
+      display:block;
+      font-weight:500;
+      margin-bottom:6px;
+      color: #666666;
+    }
+    .footer-item a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    @media (max-width: 900px) {
+      .experience-list {
+        grid-template-columns: 150px 1fr;
+      }
+      .job-item {
+        grid-template-columns: 1fr 150px;
+        gap: 20px;
+      }
+    }
     @media (max-width: 768px) {
-      .container { padding: 0 20px 40px; }
-      .nav-links { gap: 20px; font-size: 12px; }
-      .page-title { font-size: 36px; margin-bottom: 40px; }
-      .timeline-item { grid-template-columns: 1fr; gap: 12px; padding: 24px 0; }
-      .tl-role { grid-template-columns: 1fr; gap: 4px; }
-      .event-item { grid-template-columns: 1fr 1fr; gap: 8px; }
-      .event-time { text-align: left; grid-column: 1 / -1; }
-      .footer-inner { grid-template-columns: 1fr 1fr; font-size: 12px; }
+      .page-title {
+        font-size: 36px;
+      }
+      .hero-section {
+        margin-top: 10px;
+        min-height: auto;
+      }
+      .collaboration-text {
+        font-size: 40px;
+        bottom: -10px;
+        right: 10px;
+      }
+      .experience-list {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+      }
+      .col-left {
+        position: relative;
+        min-height: 60px;
+      }
+      .job-item {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 10px;
+      }
+      .job-role {
+        text-align: left;
+      }
+      .skills-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .footer-inner{
+        grid-template-columns:1fr 1fr;
+        row-gap:16px;
+        font-size:12px;
+      }
+      .job-item {
+        opacity: 0.2 !important; 
+        transition: opacity 0.5s ease;
+      }
+      .job-item.scroll-active {
+        opacity: 1 !important;
+      }
+      .job-role {
+        align-self: flex-end;
+        text-align: right;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links {
+        gap: 20px;
+        font-size: 12px;
+      }
+      .page-title {
+        font-size: 28px;
+      }
     }
   </style>
 </head>
 <body>
+
   <div class="container">
     <header>
       <nav class="nav-links">
-        <a href="/site.html">Sketchbook</a>
-        <a href="/works.html">Works</a>
-        <a href="/experience.html" class="active">Experience</a>
-        <a href="/about.html">About</a>
+        <a href="./index.html">Sketchbook</a>
+        <a href="./works.html">Works</a>
+        <a href="./experience.html">Experience</a>
+        <a href="./about.html">About</a>
       </nav>
     </header>
+    
+    <div class="page-title">Experience.</div>
 
-    <h1 class="page-title">Experience.</h1>
+    <section class="hero-section">
+      <div class="collaboration-text">Data &amp; Insight</div>
+    </section>
 
-    <div class="timeline">
-      <div class="timeline-item">
-        <div class="tl-left">
-          <span class="tl-period">2025 —</span>
-          <span class="tl-tag full">Full Time</span>
+    <section class="experience-list">
+      
+      <!-- Block 1: Education -->
+      <div class="exp-row" style="display:contents">
+        <div class="col-left">
+          <span class="years">2027/06<br>2023/09</span>
+          <span class="tag">EDUCATION</span>
+          <span class="company">Wuhan Technology<br>and Business University<br>武汉工商学院<br>(Wuhan 武汉)</span>
         </div>
-        <div class="tl-right">
-          <div class="tl-company">Coming Soon</div>
-          <div class="tl-location">Location TBD</div>
-          <div class="tl-roles">
-            <div class="tl-role">
-              <span class="tl-role-title">Role Title</span>
-              <span class="tl-role-desc placeholder">你的工作经历描述将在这里展示...</span>
+        <div class="col-content">
+          <div class="job-item">
+            <div class="job-desc">
+              <p style="font-weight:400;margin-bottom:8px;">B.S. in Data Science and Big Data Technology &nbsp;|&nbsp; 数据科学与大数据技术 本科</p>
+              <ul>
+                <li>GPA: 3.7/5.0 (Top 3.4% of Major, ranked 3/87); no failed courses</li>
+                <li>Relevant coursework: Probability &amp; Statistics (87), Big Data Analytics (97), Python Programming (90), Database &amp; Data Warehouse (89)</li>
+                <li>Awards: University Scholarship, "Three Good Student" Award (university-level)</li>
+                <li>Languages: CET-4; IELTS 7.5 (mock test); fluent in spoken and written Chinese and English</li>
+              </ul>
+            </div>
+            <div class="job-role">
+              <span class="role-zh">数据科学与大数据技术</span>
+              <span class="role-en">B.S. Data Science</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="timeline-item">
-        <div class="tl-left">
-          <span class="tl-period">2023 — 2025</span>
-          <span class="tl-tag full">Full Time</span>
+      <!-- Block 2: Project 1 -->
+      <div class="exp-row" style="display:contents">
+        <div class="col-left">
+          <span class="years">2026</span>
+          <span class="tag">PROJECT</span>
+          <span class="company">Financial Institution<br>金融服务机构<br>(Wuhan 武汉)</span>
         </div>
-        <div class="tl-right">
-          <div class="tl-company">Coming Soon</div>
-          <div class="tl-location">Location TBD</div>
-          <div class="tl-roles">
-            <div class="tl-role">
-              <span class="tl-role-title">Role Title</span>
-              <span class="tl-role-desc placeholder">你的工作经历描述将在这里展示...</span>
+        <div class="col-content">
+          <div class="job-item">
+            <div class="job-desc">
+              <p style="font-weight:500;margin-bottom:8px;">Fund Flow Forecasting (SARIMA Time-Series Modeling) &nbsp;|&nbsp; 资金流量预测</p>
+              <ul>
+                <li>Built a daily fund-inflow time series from anonymized user-level subscription/redemption records using Python (pandas), including data cleaning, date aggregation, and train/test split</li>
+                <li>Resolved non-stationarity via ADF testing and 7-day seasonal differencing, confirming remaining autocorrelation with the Ljung-Box test</li>
+                <li>Ran grid search across 10 candidate SARIMA configurations, selecting the optimal model via residual whiteness tests and out-of-sample MAPE (≈15% average error), producing a forecast report to support cash-flow decisions</li>
+              </ul>
+            </div>
+            <div class="job-role">
+              <span class="role-zh">时间序列建模</span>
+              <span class="role-en">Time-Series Modeling</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="timeline-item">
-        <div class="tl-left">
-          <span class="tl-period">— 2023</span>
-          <span class="tl-tag">Education</span>
+      <!-- Block 3: Project 2 -->
+      <div class="exp-row" style="display:contents">
+        <div class="col-left">
+          <span class="years">2026</span>
+          <span class="tag">PROJECT</span>
+          <span class="company">E-Commerce Analytics<br>电商会员分析<br>(Wuhan 武汉)</span>
         </div>
-        <div class="tl-right">
-          <div class="tl-company">Coming Soon</div>
-          <div class="tl-location">University / School</div>
-          <div class="tl-roles">
-            <div class="tl-role">
-              <span class="tl-role-title">Degree</span>
-              <span class="tl-role-desc placeholder">你的教育经历描述将在这里展示...</span>
+        <div class="col-content">
+          <div class="job-item">
+            <div class="job-desc">
+              <p style="font-weight:500;margin-bottom:8px;">End-to-End Big Data Pipeline &amp; Dashboard &nbsp;|&nbsp; 大数据全流程与可视化大屏</p>
+              <ul>
+                <li>Independently built a full pipeline: data ingestion (Flume log collection into HDFS; Python web scraping for device data) → cleaning (Java MapReduce for field validation and activity-score computation) → Hive multi-dimensional analysis (by membership tier, gender, device brand) → Sqoop export to MySQL → Flask + ECharts interactive dashboard</li>
+                <li>Delivered an interactive dashboard giving operations teams multi-dimensional visibility into member structure and device usage to support business decisions</li>
+              </ul>
+            </div>
+            <div class="job-role">
+              <span class="role-zh">大数据全流程</span>
+              <span class="role-en">Big Data Pipeline</span>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="section-label">Part-time &amp; Events</div>
-    <div class="events-list">
-      <div class="event-item">
-        <span class="event-place placeholder">Place / Company</span>
-        <span class="event-role">Role</span>
-        <span class="event-time">Date</span>
+      <!-- Block 4: Extracurricular -->
+      <div class="exp-row" style="display:contents">
+        <div class="col-left">
+          <span class="years">2025/06<br>2023/09</span>
+          <span class="tag">LEADERSHIP</span>
+          <span class="company">Spark Society<br>星火学社<br>(Wuhan 武汉)</span>
+        </div>
+        <div class="col-content">
+          <div class="job-item">
+            <div class="job-desc">
+              <p style="font-weight:500;margin-bottom:8px;">President — Volunteer Project Management &amp; Team Leadership &nbsp;|&nbsp; 社长</p>
+              <ul>
+                <li>Designed activity plans based on direct needs assessments and coordinated staffing/resources for volunteer projects, ensuring smooth execution at every stage</li>
+                <li>Introduced a task-tracking system to streamline workflows, clarify responsibilities and timelines, and track progress in real time, improving efficiency and team cohesion</li>
+                <li>Organized regular training and experience-sharing sessions to develop new members' planning and communication skills, providing hands-on guidance that improved overall team performance</li>
+              </ul>
+            </div>
+            <div class="job-role">
+              <span class="role-zh">团队管理</span>
+              <span class="role-en">Team Leadership</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="event-item">
-        <span class="event-place placeholder">Place / Company</span>
-        <span class="event-role">Role</span>
-        <span class="event-time">Date</span>
-      </div>
-    </div>
 
-    <footer>
-      <div class="footer-inner">
-        <div class="footer-item">
-          <b>Email</b>
-          <a id="email-link-exp" href="#"></a>
+      <!-- Block 5: Skills -->
+      <div class="exp-row" style="display:contents">
+        <div class="col-left">
+          <span class="years">Skills</span>
+          <span class="tag">TECHNICAL</span>
+          <span class="company">Tools &amp; Languages</span>
         </div>
-        <div class="footer-item">
-          <b>LinkedIn</b>
-          <a href="https://www.linkedin.com/in/jackie-li6699" target="_blank" rel="noopener noreferrer">linkedin.com/in/jackie-li6699</a>
-        </div>
-        <div class="footer-item">
-          <b>More</b>
-          <span>Coming soon...</span>
+        <div class="col-content">
+          <div class="skills-grid">
+            <div class="skill-category">
+              <b>Data Analysis &amp; Modeling</b>
+              <span>Proficient in Python (pandas, matplotlib, statsmodels) for data processing, visualization, and forecasting models</span>
+            </div>
+            <div class="skill-category">
+              <b>Big Data Tools</b>
+              <span>Flume, Hadoop (HDFS/MapReduce), Hive, Sqoop</span>
+            </div>
+            <div class="skill-category">
+              <b>Office Tools</b>
+              <span>Advanced Excel (data organization, formulas, charts and visual analysis), Word, PowerPoint</span>
+            </div>
+            <div class="skill-category">
+              <b>Languages</b>
+              <span>CET-4, IELTS mock 7.5; fluent in written and spoken Chinese and English</span>
+            </div>
+          </div>
         </div>
       </div>
-    </footer>
+
+    </section>
+
   </div>
+
+  <footer>
+    <div class="footer-inner" style="font-family: var(--font-code);">
+      <div class="footer-item">
+        <b>Email</b>
+        <a id="email-link" href=""></a>
+      </div>
+      <div class="footer-item">
+        <b>LinkedIn</b>
+        <a href="https://www.linkedin.com/in/jackie-li6699" target="_blank" rel="noopener noreferrer">linkedin.com/in/jackie-li6699</a>
+      </div>
+      <div class="footer-item">
+        <b>Location</b>
+        <span>Wuhan / Shanghai</span>
+      </div>
+    </div>
+  </footer>
 
   <script>
     (function(){
       var user = 'l118183365';
       var dom = 'gm' + 'ail.c' + 'om';
       var addr = user + '@' + dom;
-      var el = document.getElementById('email-link-exp');
-      if(el){ el.href = 'mailto:' + addr; el.textContent = addr; }
+      var el = document.getElementById('email-link');
+      if(el){
+        el.href = 'mailto:' + addr;
+        el.textContent = addr;
+      }
     })();
+
+    function handleScrollLyrics() {
+      if (window.innerWidth > 768) {
+        document.querySelectorAll('.job-item').forEach(el => {
+          el.style.opacity = '';
+          el.classList.remove('scroll-active');
+        });
+        return;
+      }
+      const triggerLine = window.innerHeight * 0.33;
+      const items = document.querySelectorAll('.job-item');
+      let activeItem = null;
+      let minDist = Infinity;
+      items.forEach(item => {
+        const rect = item.getBoundingClientRect();
+        let dist = 0;
+        if (rect.top > triggerLine) {
+          dist = rect.top - triggerLine;
+        } else if (rect.bottom < triggerLine) {
+          dist = triggerLine - rect.bottom;
+        } else {
+          dist = 0;
+        }
+        if (dist < minDist) {
+          minDist = dist;
+          activeItem = item;
+        }
+      });
+      items.forEach(item => {
+        if (item === activeItem) {
+          item.classList.add('scroll-active');
+        } else {
+          item.classList.remove('scroll-active');
+        }
+      });
+    }
+    window.addEventListener('scroll', handleScrollLyrics);
+    window.addEventListener('resize', handleScrollLyrics);
+    window.addEventListener('load', handleScrollLyrics);
   </script>
 </body>
 </html>

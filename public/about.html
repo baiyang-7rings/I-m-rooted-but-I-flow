@@ -4,289 +4,457 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About Jackie</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400;500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;700&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.js"></script>
+  
   <style>
     :root {
       --bg-color: #F2F2F1;
       --text-color: #000000;
       --muted-color: #666666;
       --border-color: #DDDDDD;
-      --font-main: "Special Elite", "Noto Sans SC", "Noto Sans HK", "Source Han Sans SC", sans-serif;
+      --font-main: "Special Elite", "Noto Sans HK", "Noto Sans SC", "Source Han Sans SC", sans-serif;
       --font-code: "AR One Sans", sans-serif;
-      --font-cn: "Noto Sans SC", "Noto Sans HK", sans-serif;
+      --font-chinese: "Noto Sans HK", "Noto Sans SC", sans-serif;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * {
+      box-sizing: border-box;
+    }
+
     html, body {
+      margin: 0;
+      padding: 0;
       background-color: var(--bg-color);
       color: var(--text-color);
       font-family: var(--font-main);
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      overflow-y: auto;
       min-height: 100vh;
     }
+
     a {
       color: var(--text-color);
       text-decoration: none;
       position: relative;
     }
-    a:hover { text-decoration: underline; }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 32px 60px;
+    
+    a:hover {
+      text-decoration: underline;
     }
 
-    /* ===== Nav ===== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .canvas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    #p5-canvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+
     header {
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      padding-top: 20px;
+      padding-top: 10px;
       margin-bottom: 20px;
+      position: relative;
+      z-index: 10;
     }
+
     .nav-links {
       display: flex;
       gap: 30px;
       font-size: 14px;
       color: #999;
+      margin: 0;
       font-family: var(--font-code);
     }
-    .nav-links a {
-      color: #999;
+    
+    .nav-links a { 
+      color: #999; 
       transition: all 0.2s ease;
       display: inline-block;
       text-decoration: none;
       transform-origin: bottom center;
     }
-    .nav-links a:hover { color: #333; text-decoration: none; }
-    .nav-links a.active { color: #333; }
+    .nav-links a:hover { 
+      color: #333; 
+    }
     .nav-links a:active {
       color: #ccc;
+      text-shadow: none;
       transform: perspective(500px) rotateX(60deg) skewX(-15deg);
     }
 
-    /* ===== Page Title ===== */
     .page-title {
-      font-size: 56px;
+      font-size: 48px;
       font-weight: bold;
       letter-spacing: -1px;
-      margin-bottom: 20px;
+      margin-bottom: 40px;
       font-family: var(--font-main);
+      position: relative;
+      z-index: 10;
     }
 
-    /* ===== About Content ===== */
     .about-content {
-      margin-top: 60px;
-      display: flex;
-      flex-direction: column;
-      gap: 48px;
+      position: relative;
+      z-index: 10;
+      max-width: 680px;
+      padding-bottom: 80px;
     }
 
-    .intro-cn {
-      font-family: var(--font-cn);
-      font-weight: 300;
+    .poem-line {
       font-size: 16px;
       line-height: 2;
       color: #333;
-      max-width: 600px;
-    }
-    .intro-cn.placeholder {
-      color: #bbb;
-      font-style: italic;
+      font-family: var(--font-chinese);
+      font-weight: 400;
+      margin-bottom: 60px;
+      letter-spacing: 0.5px;
     }
 
-    .intro-en {
-      font-family: var(--font-main);
-      font-size: 15px;
+    .poem-line-en {
+      font-size: 14px;
       line-height: 1.9;
-      color: var(--muted-color);
-      max-width: 600px;
-    }
-    .intro-en.placeholder {
-      color: #ccc;
+      color: #666;
+      font-family: var(--font-main);
+      margin-top: -40px;
+      margin-bottom: 60px;
       font-style: italic;
     }
 
-    .divider {
-      width: 40px;
-      height: 1px;
-      background: var(--border-color);
-      margin: 8px 0;
+    .bio-section {
+      margin-bottom: 48px;
     }
 
-    /* ===== Skills / Interests Tags ===== */
-    .section-label {
-      font-size: 11px;
-      font-family: var(--font-code);
-      color: #999;
+    .bio-section h3 {
+      font-size: 13px;
+      font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 2.5px;
-      margin-bottom: 16px;
+      letter-spacing: 1.5px;
+      color: #999;
+      font-family: var(--font-code);
+      margin: 0 0 16px 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
     }
-    .tag-group {
+
+    .bio-text {
+      font-size: 14px;
+      line-height: 2;
+      color: #444;
+      font-family: var(--font-chinese);
+    }
+
+    .bio-text-en {
+      font-size: 13px;
+      line-height: 1.9;
+      color: #666;
+      font-family: var(--font-main);
+      margin-top: 12px;
+    }
+
+    .tags-row {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      max-width: 600px;
-    }
-    .skill-tag {
-      display: inline-flex;
-      align-items: center;
-      border: 1px solid #ccc;
-      border-radius: 50px;
-      padding: 4px 14px 2px;
-      font-size: 12px;
-      color: #666;
-      font-family: var(--font-code);
-      height: 28px;
-      transition: all 0.2s ease;
-    }
-    .skill-tag:hover {
-      border-color: #999;
-      color: #333;
-    }
-    .skill-tag.placeholder {
-      color: #ccc;
-      border-style: dashed;
+      margin-top: 8px;
     }
 
-    /* ===== Quote ===== */
-    .quote-section {
-      margin-top: 24px;
-      padding: 32px 0;
-      border-top: 1px solid var(--border-color);
-      max-width: 600px;
-    }
-    .quote-text {
-      font-family: var(--font-main);
-      font-size: 18px;
-      line-height: 1.7;
-      color: #555;
-      font-style: italic;
-    }
-    .quote-text.placeholder { color: #ccc; }
-    .quote-author {
+    .interest-tag {
+      font-size: 11px;
       font-family: var(--font-code);
-      font-size: 12px;
-      color: #999;
-      margin-top: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      color: #777;
+      background: rgba(0,0,0,0.04);
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,0.06);
     }
 
-    /* ===== Footer ===== */
-    footer {
+    .contact-quick {
+      margin-top: 60px;
+      padding-top: 24px;
       border-top: 1px solid rgba(0,0,0,0.08);
-      margin-top: 100px;
-    }
-    .footer-inner {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px 32px 32px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
       font-size: 13px;
-      color: #666;
+      color: #888;
       font-family: var(--font-code);
+      line-height: 2;
     }
-    .footer-item b {
-      display: block;
-      font-weight: 500;
-      margin-bottom: 6px;
-      color: #666;
-    }
-    .footer-item a { color: #666; }
-    .footer-item a:hover { color: #333; }
 
-    /* ===== Responsive ===== */
+    .contact-quick a {
+      color: #555;
+      border-bottom: 1px dotted #aaa;
+    }
+
+    footer{
+      border-top:1px solid rgba(0,0,0,0.08);
+      position: relative;
+      z-index: 10;
+    }
+    .footer-inner{
+      max-width:1200px;
+      margin:0 auto;
+      padding:18px 24px 28px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      font-size:13px;
+      color: #666666;
+      font-family: "AR One Sans", sans-serif;
+    }
+    .footer-item b{
+      display:block;
+      font-weight:500;
+      margin-bottom:6px;
+      color: #666666;
+    }
+    .footer-item a{
+      color:inherit;
+      text-decoration:none;
+    }
+
     @media (max-width: 768px) {
-      .container { padding: 0 20px 40px; }
-      .nav-links { gap: 20px; font-size: 12px; }
-      .page-title { font-size: 36px; margin-bottom: 40px; }
-      .about-content { margin-top: 40px; gap: 32px; }
-      .intro-cn { font-size: 15px; }
-      .footer-inner { grid-template-columns: 1fr 1fr; font-size: 12px; }
+      .page-title {
+        font-size: 36px;
+        margin-bottom: 30px;
+      }
+      .poem-line {
+        font-size: 15px;
+        margin-bottom: 40px;
+      }
+      .about-content {
+        padding-bottom: 40px;
+      }
+      .footer-inner{
+        grid-template-columns:1fr 1fr;
+        row-gap:16px;
+        font-size:12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links {
+        gap: 20px;
+        font-size: 12px;
+      }
+      .page-title {
+        font-size: 28px;
+      }
+      .poem-line {
+        font-size: 14px;
+        line-height: 1.9;
+      }
     }
   </style>
 </head>
 <body>
+
+  <div class="canvas-container" id="canvas-container"></div>
+
   <div class="container">
     <header>
       <nav class="nav-links">
-        <a href="/site.html">Sketchbook</a>
-        <a href="/works.html">Works</a>
-        <a href="/experience.html">Experience</a>
-        <a href="/about.html" class="active">About</a>
+        <a href="./index.html">Sketchbook</a>
+        <a href="./works.html">Works</a>
+        <a href="./experience.html">Experience</a>
+        <a href="./about.html">About</a>
       </nav>
     </header>
-
-    <h1 class="page-title">About.</h1>
+    
+    <div class="page-title">About.</div>
 
     <div class="about-content">
-      <div>
-        <p class="intro-cn placeholder">
-          你好，我是 Jackie。在这里写下关于你自己的介绍——你是谁、你热爱什么、你在追求什么。不必拘谨，这是属于你的一页。
+      <p class="poem-line">
+        用数据讲故事，在细节里寻光。<br>
+        像风穿过树梢，像叶落向大地，<br>
+        每一个数字背后都是一个等待被理解的世界。
+      </p>
+
+      <div class="bio-section">
+        <h3>Self Summary / 自我介绍</h3>
+        <p class="bio-text">
+          武汉工商学院数据科学与大数据技术专业大三在读，专业排名前3.4%（3/87）。好奇心强，关注细节，擅长用数据驱动决策——具备从数据采集、清洗、建模到可视化的端到端实践经验，涵盖金融预测、电商大数据分析等多种场景。熟练运用Python（pandas、statsmodels、matplotlib）与Excel进行数据分析，对Hadoop、Hive、Flume等大数据工具有实战经验。
+        </p>
+        <p class="bio-text-en">
+          A motivated third-year Data Science undergraduate with strong analytical thinking and a track record of turning raw data into business insight — from end-to-end pipelines across financial forecasting and e-commerce analytics, to hands-on proficiency in Python and Excel. Detail-oriented, curious, and comfortable adapting to fast-paced environments.
         </p>
       </div>
 
-      <div>
-        <p class="intro-en placeholder">
-          Hi, I'm Jackie. Write something about yourself here — who you are, what you love, what you're chasing after. Make it yours.
+      <div class="bio-section">
+        <h3>Leadership / 领导力</h3>
+        <p class="bio-text">
+          担任星火学社社长两年期间，带领团队完成志愿者项目策划与执行，引入任务跟踪系统优化协作流程，定期组织培训与经验分享，展现出色的项目管理、团队协作与跨部门沟通能力。
+        </p>
+        <p class="bio-text-en">
+          Demonstrated strong project management, teamwork, and cross-functional communication skills as President of Spark Society for two years — designing volunteer programs, introducing task-tracking systems, and mentoring new members.
         </p>
       </div>
 
-      <div class="divider"></div>
-
-      <div>
-        <div class="section-label">Skills &amp; Interests</div>
-        <div class="tag-group">
-          <span class="skill-tag placeholder">Skill 01</span>
-          <span class="skill-tag placeholder">Skill 02</span>
-          <span class="skill-tag placeholder">Skill 03</span>
-          <span class="skill-tag placeholder">Interest</span>
-          <span class="skill-tag placeholder">Interest</span>
+      <div class="bio-section">
+        <h3>Interests / 方向兴趣</h3>
+        <p class="bio-text">希望在Finance、Operations、E-Commerce、Technology等多元业务方向中学习成长，将数据思维应用于真实商业场景。</p>
+        <div class="tags-row">
+          <span class="interest-tag">Data Analysis</span>
+          <span class="interest-tag">Financial Forecasting</span>
+          <span class="interest-tag">Business Intelligence</span>
+          <span class="interest-tag">E-Commerce Analytics</span>
+          <span class="interest-tag">Python</span>
+          <span class="interest-tag">Data Visualization</span>
         </div>
       </div>
 
-      <div class="quote-section">
-        <p class="quote-text placeholder">
-          "A favorite quote or personal mantra that defines your approach to life and work."
+      <div class="bio-section">
+        <h3>Availability / 到岗情况</h3>
+        <p class="bio-text">
+          目前大三，可全职实习6个月以上，可常驻上海。中英文书写与口语流利（IELTS模拟考7.5，CET-4）。
         </p>
-        <div class="quote-author placeholder">— Your Name</div>
+        <p class="bio-text-en">
+          Available full-time for a 6+ month internship, based in Shanghai. Fluent in both written and spoken Chinese and English (IELTS mock 7.5, CET-4).
+        </p>
+      </div>
+
+      <div class="contact-quick">
+        <b>Get in touch:</b><br>
+        Email: <a id="email-link-inline" href=""></a><br>
+        LinkedIn: <a href="https://www.linkedin.com/in/jackie-li6699" target="_blank" rel="noopener noreferrer">linkedin.com/in/jackie-li6699</a><br>
+        Tel: +86 19153294495 &nbsp;|&nbsp; Wuhan / Shanghai
       </div>
     </div>
-
-    <footer>
-      <div class="footer-inner">
-        <div class="footer-item">
-          <b>Email</b>
-          <a id="email-link-about" href="#"></a>
-        </div>
-        <div class="footer-item">
-          <b>LinkedIn</b>
-          <a href="https://www.linkedin.com/in/jackie-li6699" target="_blank" rel="noopener noreferrer">linkedin.com/in/jackie-li6699</a>
-        </div>
-        <div class="footer-item">
-          <b>More</b>
-          <span>Coming soon...</span>
-        </div>
-      </div>
-    </footer>
   </div>
+
+  <footer>
+    <div class="footer-inner" style="font-family: var(--font-code);">
+      <div class="footer-item">
+        <b>Email</b>
+        <a id="email-link" href=""></a>
+      </div>
+      <div class="footer-item">
+        <b>LinkedIn</b>
+        <a href="https://www.linkedin.com/in/jackie-li6699" target="_blank" rel="noopener noreferrer">linkedin.com/in/jackie-li6699</a>
+      </div>
+      <div class="footer-item">
+        <b>Rights</b>
+        <span>Jackie Li &copy; 2026</span>
+      </div>
+    </div>
+  </footer>
 
   <script>
     (function(){
       var user = 'l118183365';
       var dom = 'gm' + 'ail.c' + 'om';
       var addr = user + '@' + dom;
-      var el = document.getElementById('email-link-about');
-      if(el){ el.href = 'mailto:' + addr; el.textContent = addr; }
+      var el1 = document.getElementById('email-link');
+      var el2 = document.getElementById('email-link-inline');
+      if(el1){ el1.href = 'mailto:' + addr; el1.textContent = addr; }
+      if(el2){ el2.href = 'mailto:' + addr; el2.textContent = addr; }
     })();
+  </script>
+
+  <script>
+    var leaves = [];
+    var poem = "Those hours that with gentle work did frame The lovely gaze where every eye doth dwell, Will play the tyrants to the very same And that unfair which fairly doth excel For never-resting time leads summer on To hideous winter and confounds him there Sap check'd with frost and lusty leaves quite gone Beauty o'ersnow'd and bareness every where";
+    var poemIdx = 0;
+
+    function setup() {
+      var c = createCanvas(windowWidth, windowHeight);
+      c.parent('canvas-container');
+      c.id('p5-canvas');
+      pixelDensity(1);
+      textFont('Georgia');
+      textSize(13);
+      textAlign(CENTER, CENTER);
+      noStroke();
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+
+    function draw() {
+      clear();
+      
+      if(frameCount % 20 === 0) {
+        var x = random(width * 0.1, width * 0.9);
+        var ch = poem[poemIdx % poem.length];
+        if(ch === ' ') { poemIdx++; ch = poem[poemIdx % poem.length]; }
+        leaves.push(new Leaf(x, -20, ch));
+        poemIdx++;
+      }
+
+      for(var i = leaves.length - 1; i >= 0; i--) {
+        leaves[i].update();
+        leaves[i].display();
+        if(leaves[i].offScreen()) {
+          leaves.splice(i, 1);
+        }
+      }
+
+      fill(0, 15);
+      noStroke();
+    }
+
+    class Leaf {
+      constructor(x, y, ch) {
+        this.x = x;
+        this.y = y;
+        this.ch = ch;
+        this.vx = random(-0.3, 0.3);
+        this.vy = random(0.3, 0.8);
+        this.rot = random(TWO_PI);
+        this.rotSpeed = random(-0.02, 0.02);
+        this.alpha = random(120, 200);
+        this.noiseSeed = random(1000);
+      }
+      update() {
+        var breeze = map(noise(this.noiseSeed, frameCount * 0.008), 0, 1, -0.3, 0.3);
+        this.vx += breeze * 0.05;
+        this.vx *= 0.99;
+        this.vy += 0.01;
+        if(this.vy > 1.2) this.vy = 1.2;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.rot += this.rotSpeed;
+        this.rotSpeed += random(-0.005, 0.005);
+        this.rotSpeed = constrain(this.rotSpeed, -0.04, 0.04);
+      }
+      display() {
+        push();
+        translate(this.x, this.y);
+        rotate(this.rot);
+        fill(60, this.alpha);
+        text(this.ch, 0, 0);
+        pop();
+      }
+      offScreen() {
+        return this.y > height + 30;
+      }
+    }
   </script>
 </body>
 </html>
