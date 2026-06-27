@@ -212,9 +212,11 @@
 
     var config = {
       fontSize: 15, maxFallSpeed: 1.5, drag: 0.97,
-      spawnIntensity: 12, ambientSpawn: 1, initialSpawn: 40,
-      swayAmplitude: 0.03, letterSpacing: 20, groundY: 0.95,
-      driftRange: 0.5, rotateSpeed: 0.7, margin: 0.2
+      spawnIntensity: 12, ambientSpawn: 0.3, initialSpawn: 20,
+      swayAmplitude: 0.03, letterSpacing: 20,
+      groundMargin: 8, maxPileHeight: 25, pileLift: 3,
+      driftRange: 0.5, rotateSpeed: 0.7, margin: 0.2,
+      fadeTime: 300
     };
 
     function preload(){
@@ -225,7 +227,8 @@
       pixelDensity(1);
       var c = createCanvas(treeImg.width, treeImg.height);
       c.parent('p5-overlay');
-      var baseLine = height * config.groundY;
+      // Ground is at the very bottom of canvas (below the tree roots)
+      var baseLine = height - config.groundMargin;
       for(var i = 0; i < width; i++) groundMap[i] = baseLine;
 
       treeImg.loadPixels();
@@ -251,9 +254,18 @@
         this.angle = random(TWO_PI);
         this.noiseSeed = random(1000);
         this.finalAngle = random(-0.4, 0.4);
+        this.staticFrame = 0;
+        this.opacity = 200;
       }
       update(){
-        if(this.isStatic) return;
+        if(this.isStatic){
+          this.staticFrame++;
+          // Fade out after landing
+          if(this.staticFrame > config.fadeTime * 0.6){
+            this.opacity -= 1.5;
+          }
+          return;
+        }
         var breeze = map(noise(this.noiseSeed, frameCount * 0.015), 0, 1, -config.driftRange, config.driftRange);
         this.vel.x += breeze * 0.15;
         this.vel.add(this.acc);
@@ -262,26 +274,44 @@
         this.pos.add(this.vel);
         this.angle += this.vel.mag() * 0.08 * config.rotateSpeed;
 
-        var xIdx = floor(constrain(this.pos.x, 0, width - 1));
-        if(this.pos.y >= groundMap[xIdx]){
-          this.pos.y = groundMap[xIdx];
+        // Remove if fallen off the bottom
+        if(this.pos.y > height + 20){
           this.isStatic = true;
+          this.opacity = 0;
+          return;
+        }
+
+        var xIdx = floor(constrain(this.pos.x, 0, width - 1));
+        var groundY = groundMap[xIdx];
+        // Limit pile height: ground can't rise above baseline - maxPileHeight
+        var minGround = (height - config.groundMargin) - config.maxPileHeight;
+        if(this.pos.y >= groundY && groundY > minGround){
+          this.pos.y = groundY;
+          this.isStatic = true;
+          this.finalAngle = random(-0.3, 0.3);
+          // Gently raise ground for next particles, but limited
           var r = config.letterSpacing / 2;
           for(var i = -r; i <= r; i++){
             var cx = floor(constrain(xIdx + i, 0, width - 1));
-            var lift = map(abs(i), 0, r, config.fontSize * 0.65, 0);
-            groundMap[cx] -= lift;
+            var lift = map(abs(i), 0, r, config.pileLift, 0);
+            if(groundMap[cx] - lift > minGround){
+              groundMap[cx] -= lift;
+            }
           }
         }
       }
       display(){
+        if(this.opacity <= 0) return;
         push();
         translate(this.pos.x, this.pos.y);
         rotate(this.isStatic ? this.finalAngle : this.angle);
-        fill(70, this.isStatic ? 200 : 160);
+        fill(70, this.opacity);
         noStroke();
         text(this.char, 0, 0);
         pop();
+      }
+      isDead(){
+        return this.opacity <= 0;
       }
     }
 
@@ -349,7 +379,13 @@
         particles[i].update();
         particles[i].display();
       }
-      if(particles.length > 800) particles = particles.slice(-600);
+      // Remove dead (faded out) particles
+      for(var i = particles.length - 1; i >= 0; i--){
+        if(particles[i].isDead()){
+          particles.splice(i, 1);
+        }
+      }
+      if(particles.length > 400) particles = particles.slice(-300);
 
       // Labels follow tree sway
       if(canvasElem){
