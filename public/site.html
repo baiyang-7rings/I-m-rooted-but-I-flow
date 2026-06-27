@@ -207,26 +207,28 @@
     var currentSway = 0;
     var state = 0;              // 0=ambient, 1=heavy, 2=done
     var ambientCount = 0;       // count of ambient leaves spawned
-    var ambientTarget = 15;     // spawn ~15 leaves initially
+    var ambientTarget = 8;      // fewer initial leaves
     var heavyCount = 0;         // count of heavy-fall leaves
     var heavyTarget = 0;        // will be calculated when entering state 1
-    var initialAmbientDelay = 60; // frames before ambient starts
+    var initialAmbientDelay = 40; // frames before ambient starts
     var hoverShakeTimer = 0;    // for mouse-hover sway only (not triggering fall)
     var pileHeightLimit = 0;    // y coordinate: leaves can't pile above this (1/3 from bottom)
 
     var config = {
       fontSize: 14,
-      maxFallSpeed: 2.4,        // 3x faster fall (was 0.8)
-      drag: 0.98,
-      gravity: 0.06,            // 3x gravity (was 0.02)
-      letterSpacing: 16,
-      pileLift: 5,
-      driftRange: 0.4,
-      rotateSpeed: 0.4,
+      maxFallSpeed: 4.0,        // much faster fall
+      drag: 0.985,
+      gravity: 0.12,            // stronger gravity
+      letterSpacing: 22,        // sparser spacing
+      pileLift: 4,              // gentler pile build-up
+      driftRange: 0.6,
+      rotateSpeed: 0.5,
       margin: 0.2,
-      ambientInterval: 8,
-      fallSwayAmp: 0.012,       // reduced sway amplitude during fall
-      fallSwayFreq: 0.04,       // slower sway frequency
+      ambientInterval: 12,      // fewer ambient leaves
+      fallSwayAmp: 0.025,       // bigger tree sway
+      fallSwayFreq: 0.05,
+      tagSwayAmp: 6,            // bigger tag sway (px)
+      tagRotAmp: 0.06,          // bigger tag rotation
     };
 
     function preload(){
@@ -238,13 +240,12 @@
       var c = createCanvas(treeImg.width, treeImg.height);
       c.parent('p5-overlay');
 
-      // Ground at root of tree (~93% of canvas height), not the very bottom edge
+      // Ground at root of tree (~93% of canvas height)
       var groundY = height * 0.93;
       for(var i = 0; i < width; i++) groundMap[i] = groundY;
 
-      // Pile can rise up to 1/3 of tree height above ground
-      // From ground (0.93h), pile up to ~0.60h (about 1/3 tree height upward)
-      pileHeightLimit = groundY - height * 0.33;
+      // Pile rises to about 1/4 of tree height above ground (slightly less than 1/3)
+      pileHeightLimit = groundY - height * 0.25;
 
       // Collect branch pixels (non-transparent pixels)
       treeImg.loadPixels();
@@ -371,8 +372,8 @@
         }
         var pileRatio = reachedCount / (width / 20);
         
-        if(heavyCount < heavyTarget && pileRatio < 0.7){
-          var perFrame = 15;
+        if(heavyCount < heavyTarget && pileRatio < 0.65){
+          var perFrame = 8;
           for(var i = 0; i < perFrame; i++){
             if(heavyCount < heavyTarget){
               spawnLeaf();
@@ -404,11 +405,11 @@
           if(el){
             // Tag follows tree sway during heavy fall, plus always has its own gentle sway
             var treeShift = -ch * l.h * Math.tan(currentSway);
-            var tagSway = sin(frameCount * 0.008 + l.n) * 3;
-            var wn = noise(frameCount * 0.008 + l.n);
-            var w = (wn - 0.5) * 0.08;
-            var rot = currentSway * 0.7 + sin(frameCount * 0.008 + l.n + 50) * 0.03 + w;
-            var sk = rot * 10;
+            var tagSway = sin(frameCount * 0.01 + l.n) * config.tagSwayAmp;
+            var wn = noise(frameCount * 0.01 + l.n);
+            var w = (wn - 0.5) * 0.12;
+            var rot = currentSway * 0.8 + sin(frameCount * 0.01 + l.n + 50) * config.tagRotAmp + w;
+            var sk = rot * 14;
             el.style.transformOrigin = 'top center';
             el.style.transform = 'translateX('+(treeShift + tagSway)+'px) rotate('+rot+'rad) skewX('+sk+'deg)';
           }
@@ -451,7 +452,7 @@
           heavyCount = 0;
           // Target: enough leaves to pile up to 1/3 tree height above ground
           // Rough estimate based on pile lift and canvas width
-          heavyTarget = floor(width * 2.5);
+          heavyTarget = floor(width * 1.5);
         }
         // state 1 or 2: do nothing (no re-trigger)
       }
