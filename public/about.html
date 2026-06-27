@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Jackie</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;700&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #F2F2F1;
+      --text-color: #000000;
+      --muted-color: #666666;
+      --border-color: #DDDDDD;
+      --font-main: "Special Elite", "Noto Sans SC", "Noto Sans HK", "Source Han Sans SC", sans-serif;
+      --font-code: "AR One Sans", sans-serif;
+      --font-cn: "Noto Sans SC", "Noto Sans HK", sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--font-main);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    a {
+      color: var(--text-color);
+      text-decoration: none;
+      position: relative;
+    }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 32px 60px;
+    }
+
+    /* ===== Nav ===== */
+    header {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding-top: 20px;
+      margin-bottom: 20px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      font-size: 14px;
+      color: #999;
+      font-family: var(--font-code);
+    }
+    .nav-links a {
+      color: #999;
+      transition: all 0.2s ease;
+      display: inline-block;
+      text-decoration: none;
+      transform-origin: bottom center;
+    }
+    .nav-links a:hover { color: #333; text-decoration: none; }
+    .nav-links a.active { color: #333; }
+    .nav-links a:active {
+      color: #ccc;
+      transform: perspective(500px) rotateX(60deg) skewX(-15deg);
+    }
+
+    /* ===== Page Title ===== */
+    .page-title {
+      font-size: 56px;
+      font-weight: bold;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+      font-family: var(--font-main);
+    }
+
+    /* ===== About Content ===== */
+    .about-content {
+      margin-top: 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    .intro-cn {
+      font-family: var(--font-cn);
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 2;
+      color: #333;
+      max-width: 600px;
+    }
+    .intro-cn.placeholder {
+      color: #bbb;
+      font-style: italic;
+    }
+
+    .intro-en {
+      font-family: var(--font-main);
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--muted-color);
+      max-width: 600px;
+    }
+    .intro-en.placeholder {
+      color: #ccc;
+      font-style: italic;
+    }
+
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: var(--border-color);
+      margin: 8px 0;
+    }
+
+    /* ===== Skills / Interests Tags ===== */
+    .section-label {
+      font-size: 11px;
+      font-family: var(--font-code);
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      margin-bottom: 16px;
+    }
+    .tag-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: 600px;
+    }
+    .skill-tag {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid #ccc;
+      border-radius: 50px;
+      padding: 4px 14px 2px;
+      font-size: 12px;
+      color: #666;
+      font-family: var(--font-code);
+      height: 28px;
+      transition: all 0.2s ease;
+    }
+    .skill-tag:hover {
+      border-color: #999;
+      color: #333;
+    }
+    .skill-tag.placeholder {
+      color: #ccc;
+      border-style: dashed;
+    }
+
+    /* ===== Quote ===== */
+    .quote-section {
+      margin-top: 24px;
+      padding: 32px 0;
+      border-top: 1px solid var(--border-color);
+      max-width: 600px;
+    }
+    .quote-text {
+      font-family: var(--font-main);
+      font-size: 18px;
+      line-height: 1.7;
+      color: #555;
+      font-style: italic;
+    }
+    .quote-text.placeholder { color: #ccc; }
+    .quote-author {
+      font-family: var(--font-code);
+      font-size: 12px;
+      color: #999;
+      margin-top: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      border-top: 1px solid rgba(0,0,0,0.08);
+      margin-top: 100px;
+    }
+    .footer-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px 32px 32px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      font-size: 13px;
+      color: #666;
+      font-family: var(--font-code);
+    }
+    .footer-item b {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #666;
+    }
+    .footer-item a { color: #666; }
+    .footer-item a:hover { color: #333; }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      .container { padding: 0 20px 40px; }
+      .nav-links { gap: 20px; font-size: 12px; }
+      .page-title { font-size: 36px; margin-bottom: 40px; }
+      .about-content { margin-top: 40px; gap: 32px; }
+      .intro-cn { font-size: 15px; }
+      .footer-inner { grid-template-columns: 1fr 1fr; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <nav class="nav-links">
+        <a href="/site.html">Sketchbook</a>
+        <a href="/works.html">Works</a>
+        <a href="/experience.html">Experience</a>
+        <a href="/about.html" class="active">About</a>
+      </nav>
+    </header>
+
+    <h1 class="page-title">About.</h1>
+
+    <div class="about-content">
+      <div>
+        <p class="intro-cn placeholder">
+          你好，我是 Jackie。在这里写下关于你自己的介绍——你是谁、你热爱什么、你在追求什么。不必拘谨，这是属于你的一页。
+        </p>
+      </div>
+
+      <div>
+        <p class="intro-en placeholder">
+          Hi, I'm Jackie. Write something about yourself here — who you are, what you love, what you're chasing after. Make it yours.
+        </p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div>
+        <div class="section-label">Skills &amp; Interests</div>
+        <div class="tag-group">
+          <span class="skill-tag placeholder">Skill 01</span>
+          <span class="skill-tag placeholder">Skill 02</span>
+          <span class="skill-tag placeholder">Skill 03</span>
+          <span class="skill-tag placeholder">Interest</span>
+          <span class="skill-tag placeholder">Interest</span>
+        </div>
+      </div>
+
+      <div class="quote-section">
+        <p class="quote-text placeholder">
+          "A favorite quote or personal mantra that defines your approach to life and work."
+        </p>
+        <div class="quote-author placeholder">— Your Name</div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-item">
+          <b>Email</b>
+          <a id="email-link-about" href="#"></a>
+        </div>
+        <div class="footer-item">
+          <b>LinkedIn</b>
+          <a href="https://www.linkedin.com/in/jackie-li6699" target="_blank" rel="noopener noreferrer">linkedin.com/in/jackie-li6699</a>
+        </div>
+        <div class="footer-item">
+          <b>More</b>
+          <span>Coming soon...</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function(){
+      var user = 'l118183365';
+      var dom = 'gm' + 'ail.c' + 'om';
+      var addr = user + '@' + dom;
+      var el = document.getElementById('email-link-about');
+      if(el){ el.href = 'mailto:' + addr; el.textContent = addr; }
+    })();
+  </script>
+</body>
+</html>
