@@ -394,7 +394,7 @@
         particles[i].display();
       }
 
-      // ---- Labels: top fixed, bottom swings ----
+      // ---- Labels: top fixed, bottom swings like blowing in wind ----
       if(canvasElem){
         var ch = canvasElem.offsetHeight;
         var labels = [
@@ -407,13 +407,24 @@
           var el = document.querySelector(l.sel);
           if(el){
             var swayX = -ch * l.h * Math.tan(currentSway);
-            var windNoise = noise(frameCount * 0.01 + l.n);
-            var wind = (windNoise - 0.5) * 0.15 * (0.3 + swayIntensity);
+            // Multi-layer noise for realistic wind: slow gusts + fast flutter
+            var t = frameCount * 0.008;
+            var slowWind = noise(t + l.n) - 0.5;           // slow gusts (0.008)
+            var medWind  = noise(t * 2.5 + l.n + 50) - 0.5; // medium gusts
+            var fastWind = noise(t * 6 + l.n + 80) - 0.5;   // fast flutter
+            var gust = abs(slowWind) * slowWind * 1.8;      // gust peaks
+            // Combine: slow gusts dominate, medium shapes it, fast adds flutter
+            var windRot = (slowWind * 0.35 + medWind * 0.18 + fastWind * 0.08 + gust * 0.3);
+            // Amplify when tree is being shaken
+            var windScale = 1.0 + swayIntensity * 2.5;
+            windRot *= windScale;
+            // Horizontal drift (bottom swings side to side more)
+            var driftX = (slowWind * 8 + medWind * 4 + fastWind * 1.5) * windScale;
             var baseSway = currentSway * 0.9;
-            var rot = baseSway + wind;
-            var softSkew = rot * 15;
+            var rot = baseSway + windRot;
+            var softSkew = rot * 20;
             el.style.transformOrigin = 'top center';
-            el.style.transform = 'translateX('+swayX+'px) rotate('+rot+'rad) skewX('+softSkew+'deg)';
+            el.style.transform = 'translateX('+(swayX + driftX)+'px) rotate('+rot+'rad) skewX('+softSkew+'deg)';
           }
         }
       }
