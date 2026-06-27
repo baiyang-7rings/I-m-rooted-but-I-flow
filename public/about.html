@@ -5,24 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About Jackie</title>
   
+  <!-- 引入字体 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Special Elite 字体 (英文标题) -->
   <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
+  <!-- AR One Sans 字体 (导航栏) -->
   <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400;500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;700&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+  <!-- 思源黑体简体 / Noto Sans SC (中文) -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+  <!-- Source Code Pro -->
   <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
   
+  <!-- 引入 P5.js -->
   <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.js"></script>
   
   <style>
+    /* ================= 基础样式 ================= */
     :root {
       --bg-color: #F2F2F1;
       --text-color: #000000;
       --muted-color: #666666;
       --border-color: #DDDDDD;
-      --font-main: "Special Elite", "Noto Sans HK", "Noto Sans SC", "Source Han Sans SC", sans-serif;
+      --font-main: "Special Elite", "Noto Sans SC", "Source Han Sans SC", sans-serif;
       --font-code: "AR One Sans", sans-serif;
-      --font-chinese: "Noto Sans HK", "Noto Sans SC", sans-serif;
+      --font-chinese: "Noto Sans SC", sans-serif;
     }
 
     * {
@@ -38,7 +45,6 @@
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
       overflow-y: auto;
-      min-height: 100vh;
     }
 
     a {
@@ -51,6 +57,26 @@
       text-decoration: underline;
     }
 
+    /* ================= 背景图片 ================= */
+    /* Removed per user request
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('./images/about-tree-bg.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      opacity: 0.25;
+      z-index: -1;
+      pointer-events: none;
+    }
+    */
+
+    /* ================= 布局容器 ================= */
     .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -58,32 +84,22 @@
       position: relative;
       z-index: 1;
     }
-
-    .canvas-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 0;
-      pointer-events: none;
-      opacity: 0.4;
+    
+    /* 为 canvas 预留空间 */
+    .canvas-spacer {
+      width: 100%;
+      padding-top: 48.67%; /* 623/1280 = 0.4867 保持原始比例 */
+      margin-top: 105px; /* 增加一些上边距 */
+      pointer-events: none; /* 防止遮挡 Canvas 点击事件 */
     }
 
-    #p5-canvas {
-      width: 100% !important;
-      height: 100% !important;
-      display: block;
-    }
-
+    /* ================= 顶部导航 ================= */
     header {
       display: flex;
       justify-content: flex-end;
       align-items: center;
       padding-top: 10px;
-      margin-bottom: 20px;
-      position: relative;
-      z-index: 10;
+      margin-bottom: 20px; /* 从 60px 缩小到 20px */
     }
 
     .nav-links {
@@ -100,160 +116,160 @@
       transition: all 0.2s ease;
       display: inline-block;
       text-decoration: none;
-      transform-origin: bottom center;
+      transform-origin: bottom center; /* 旋转轴在底部 */
     }
     .nav-links a:hover { 
       color: #333; 
     }
     .nav-links a:active {
-      color: #ccc;
+      color: #ccc; /* 颜色变浅 */
       text-shadow: none;
-      transform: perspective(500px) rotateX(60deg) skewX(-15deg);
+      transform: perspective(500px) rotateX(60deg) skewX(-15deg); /* 向斜后方倾倒 */
     }
 
+    /* ================= 页面标题 ================= */
     .page-title {
       font-size: 48px;
       font-weight: bold;
       letter-spacing: -1px;
-      margin-bottom: 40px;
+      margin-bottom: 0px; /* 从 20px 缩小到 10px */
       font-family: var(--font-main);
       position: relative;
       z-index: 10;
     }
 
-    .about-content {
-      position: relative;
-      z-index: 10;
-      max-width: 680px;
-      padding-bottom: 80px;
-    }
-
-    .poem-line {
-      font-size: 16px;
-      line-height: 2;
-      color: #333;
+    /* ================= 副标题文字 ================= */
+    .subtitle {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text-color);
+      margin-bottom: 0;
       font-family: var(--font-chinese);
       font-weight: 400;
-      margin-bottom: 60px;
-      letter-spacing: 0.5px;
+      max-width: 600px;
     }
 
-    .poem-line-en {
-      font-size: 14px;
-      line-height: 1.9;
-      color: #666;
-      font-family: var(--font-main);
-      margin-top: -40px;
-      margin-bottom: 60px;
-      font-style: italic;
+    /* ================= P5.js Canvas 容器 ================= */
+    .canvas-container {
+      position: absolute;
+      top: 40px; /* 从 150px 调整到 110px，跟随标题上移 */
+      left: 0;
+      width: 100vw;
+      z-index: 0;
     }
 
-    .bio-section {
-      margin-bottom: 48px;
+    #p5-canvas {
+      width: 100% !important;
+      height: auto !important;
+      display: block;
+      cursor: pointer;
+    }
+    
+    /* 内容区域 */
+    .content-wrapper {
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
+    }
+    
+    .content-wrapper * {
+      pointer-events: auto;
     }
 
-    .bio-section h3 {
-      font-size: 13px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: #999;
-      font-family: var(--font-code);
-      margin: 0 0 16px 0;
-      padding-bottom: 8px;
-      border-bottom: 1px solid rgba(0,0,0,0.08);
-    }
-
-    .bio-text {
+    /* ================= 底部 Footer ================= */
+    /* About 内容区域 */
+    .about-content {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 40px 0 20px;
       font-size: 14px;
       line-height: 2;
-      color: #444;
-      font-family: var(--font-chinese);
+      color: #333;
     }
-
-    .bio-text-en {
-      font-size: 13px;
-      line-height: 1.9;
-      color: #666;
+    .about-content h3 {
       font-family: var(--font-main);
-      margin-top: 12px;
+      font-size: 18px;
+      font-weight: normal;
+      margin: 32px 0 12px;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      padding-bottom: 6px;
     }
-
-    .tags-row {
+    .about-content p {
+      margin: 0 0 10px;
+    }
+    .about-content ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .about-content li {
+      margin-bottom: 4px;
+    }
+    .about-content .tag-row {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 8px;
+      margin: 8px 0;
     }
-
-    .interest-tag {
+    .about-content .tag-chip {
+      font-family: var(--font-code);
       font-size: 11px;
-      font-family: var(--font-code);
-      color: #777;
-      background: rgba(0,0,0,0.04);
-      padding: 4px 12px;
-      border-radius: 20px;
-      border: 1px solid rgba(0,0,0,0.06);
-    }
-
-    .contact-quick {
-      margin-top: 60px;
-      padding-top: 24px;
-      border-top: 1px solid rgba(0,0,0,0.08);
-      font-size: 13px;
+      border: 1px solid #ccc;
+      border-radius: 50px;
+      padding: 3px 10px;
       color: #888;
-      font-family: var(--font-code);
-      line-height: 2;
     }
-
-    .contact-quick a {
-      color: #555;
-      border-bottom: 1px dotted #aaa;
-    }
-
     footer{
       border-top:1px solid rgba(0,0,0,0.08);
-      position: relative;
-      z-index: 10;
+      margin-top:0px;
     }
     .footer-inner{
       max-width:1200px;
       margin:0 auto;
       padding:18px 24px 28px;
       display:grid;
-      grid-template-columns:repeat(3,1fr);
+      grid-template-columns:repeat(4,1fr);
       gap:12px;
-      font-size:13px;
-      color: #666666;
-      font-family: "AR One Sans", sans-serif;
+      font-size:13px; /* 12-14px */
+      color: #666666; /* 统一颜色 */
+      font-family: "AR One Sans", sans-serif; /* 统一字体 */
     }
     .footer-item b{
       display:block;
       font-weight:500;
       margin-bottom:6px;
-      color: #666666;
+      color: #666666; /* 统一颜色 */
     }
-    .footer-item a{
-      color:inherit;
-      text-decoration:none;
+    .footer-item span {
+      opacity: 1; /* 统一透明度 */
+    }
+
+    /* ================= 响应式设计 ================= */
+    /* Tablet Landscape adjustments */
+    @media (min-width: 481px) and (max-width: 1200px) {
+      .canvas-spacer {
+        /* Reduce spacing to pull footer up to the bottom of the canvas/image */
+        margin-top: 0px; 
+        margin-bottom: -60px;
+      }
+      
+      footer {
+        position: relative;
+        z-index: 10;
+      }
     }
 
     @media (max-width: 768px) {
       .page-title {
         font-size: 36px;
-        margin-bottom: 30px;
       }
-      .poem-line {
-        font-size: 15px;
+      
+      .subtitle {
+        font-size: 14px;
+      }
+      
+      .canvas-container {
         margin-bottom: 40px;
-      }
-      .about-content {
-        padding-bottom: 40px;
-      }
-      .footer-inner{
-        grid-template-columns:1fr 1fr;
-        row-gap:16px;
-        font-size:12px;
       }
     }
 
@@ -262,197 +278,668 @@
         gap: 20px;
         font-size: 12px;
       }
+      
       .page-title {
         font-size: 28px;
+        margin-left: 0; /* 保持一致 */
       }
-      .poem-line {
-        font-size: 14px;
-        line-height: 1.9;
+      
+      .footer-inner{
+        grid-template-columns:1fr 1fr;
+        row-gap:16px;
+        font-size:12px;
+      }
+      
+      /* 移动端 Canvas 容器调整 */
+      .canvas-container {
+        height: 400px !important; /* 增加高度 */
+        top: 100px; /* 调整位置 */
+      }
+      
+      #p5-canvas {
+        height: 100% !important;
+        width: 100% !important;
+        object-fit: cover;
+      }
+
+      footer {
+        position: relative;
+        z-index: 10;
+        /* margin-top: 50px; Handled by JS */
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="canvas-container" id="canvas-container"></div>
+  <div class="canvas-container" id="canvas-container">
+    <!-- P5.js 会在这里创建 canvas -->
+  </div>
 
   <div class="container">
+    <!-- 顶部导航 -->
     <header>
       <nav class="nav-links">
-        <a href="./index.html">Sketchbook</a>
-        <a href="./works.html">Works</a>
-        <a href="./experience.html">Experience</a>
-        <a href="./about.html">About</a>
+        <a href="index.html">Sketchbook</a>
+        <a href="works.html">Works</a>
+        <a href="experience.html">Experience</a>
+        <a href="about.html">About</a>
       </nav>
     </header>
     
-    <div class="page-title">About.</div>
+    <div class="content-wrapper">
+      <!-- 页面标题 -->
+      <div class="page-title">About.</div>
 
-    <div class="about-content">
-      <p class="poem-line">
-        用数据讲故事，在细节里寻光。<br>
-        像风穿过树梢，像叶落向大地，<br>
-        每一个数字背后都是一个等待被理解的世界。
+      <!-- 副标题文字 -->
+      <div class="subtitle">
+        用数据讲故事，在细节里寻光。像风穿过树梢，像叶落向大地，每一个数字背后都是一个等待被理解的世界。
+      </div>
+      
+      <!-- Canvas 占位空间 -->
+      <div class="canvas-spacer"></div>
+    </div>
+
+    <!-- About 详细内容（在canvas交互区域下方） -->
+    <div class="about-content" style="font-family: var(--font-chinese);">
+      <h3 style="font-family: var(--font-main);">Education &nbsp;|&nbsp; 教育背景</h3>
+      <p>
+        <strong>Wuhan Technology and Business University</strong> &nbsp;|&nbsp; 武汉工商学院<br>
+        B.S. in Data Science and Big Data Technology &nbsp;|&nbsp; 数据科学与大数据技术 本科<br>
+        2023.09 – 2027.06 (Expected)
+      </p>
+      <ul>
+        <li>GPA: 3.7/5.0 — Ranked <strong>3/87</strong> (Top 3.4% of Major); no failed courses</li>
+        <li>Relevant coursework: Probability &amp; Statistics (87), Big Data Analytics (97), Python Programming (90), Database &amp; Data Warehouse (89)</li>
+        <li>Awards: University Scholarship (International Education College); University-level "Three Good Student" Award (校级三好学生)</li>
+      </ul>
+
+      <h3 style="font-family: var(--font-main);">About Me &nbsp;|&nbsp; 自我介绍</h3>
+      <p>
+        A motivated third-year undergraduate in Data Science and Big Data Technology with strong analytical thinking and a track record of turning raw data into business insight — from end-to-end pipelines (data collection, cleaning, modeling, visualization) across financial forecasting and e-commerce analytics, to hands-on proficiency in Python and Excel.
+      </p>
+      <p>
+        学习能力强，逻辑思维清晰，擅长用数据驱动决策——具备从数据采集、清洗、建模到可视化的端到端实践经验，涵盖金融预测、电商大数据分析等多种场景。好奇心强、关注细节，适应快速变化的环境。担任学生社团负责人期间展现出色的项目管理、团队协作与跨部门沟通能力。
       </p>
 
-      <div class="bio-section">
-        <h3>Self Summary / 自我介绍</h3>
-        <p class="bio-text">
-          武汉工商学院数据科学与大数据技术专业大三在读，专业排名前3.4%（3/87）。好奇心强，关注细节，擅长用数据驱动决策——具备从数据采集、清洗、建模到可视化的端到端实践经验，涵盖金融预测、电商大数据分析等多种场景。熟练运用Python（pandas、statsmodels、matplotlib）与Excel进行数据分析，对Hadoop、Hive、Flume等大数据工具有实战经验。
-        </p>
-        <p class="bio-text-en">
-          A motivated third-year Data Science undergraduate with strong analytical thinking and a track record of turning raw data into business insight — from end-to-end pipelines across financial forecasting and e-commerce analytics, to hands-on proficiency in Python and Excel. Detail-oriented, curious, and comfortable adapting to fast-paced environments.
-        </p>
+      <h3 style="font-family: var(--font-main);">Interests &nbsp;|&nbsp; 兴趣方向</h3>
+      <div class="tag-row">
+        <span class="tag-chip">Data Analysis</span>
+        <span class="tag-chip">Financial Forecasting</span>
+        <span class="tag-chip">Business Intelligence</span>
+        <span class="tag-chip">E-Commerce Analytics</span>
+        <span class="tag-chip">Python</span>
+        <span class="tag-chip">Data Visualization</span>
+        <span class="tag-chip">Finance</span>
+        <span class="tag-chip">Operations</span>
+        <span class="tag-chip">Technology</span>
       </div>
 
-      <div class="bio-section">
-        <h3>Leadership / 领导力</h3>
-        <p class="bio-text">
-          担任星火学社社长两年期间，带领团队完成志愿者项目策划与执行，引入任务跟踪系统优化协作流程，定期组织培训与经验分享，展现出色的项目管理、团队协作与跨部门沟通能力。
-        </p>
-        <p class="bio-text-en">
-          Demonstrated strong project management, teamwork, and cross-functional communication skills as President of Spark Society for two years — designing volunteer programs, introducing task-tracking systems, and mentoring new members.
-        </p>
-      </div>
+      <h3 style="font-family: var(--font-main);">Languages &nbsp;|&nbsp; 语言能力</h3>
+      <p>
+        CET-4; IELTS 7.5 level (mock test); fluent in spoken and written Chinese and English.
+      </p>
 
-      <div class="bio-section">
-        <h3>Interests / 方向兴趣</h3>
-        <p class="bio-text">希望在Finance、Operations、E-Commerce、Technology等多元业务方向中学习成长，将数据思维应用于真实商业场景。</p>
-        <div class="tags-row">
-          <span class="interest-tag">Data Analysis</span>
-          <span class="interest-tag">Financial Forecasting</span>
-          <span class="interest-tag">Business Intelligence</span>
-          <span class="interest-tag">E-Commerce Analytics</span>
-          <span class="interest-tag">Python</span>
-          <span class="interest-tag">Data Visualization</span>
-        </div>
-      </div>
-
-      <div class="bio-section">
-        <h3>Availability / 到岗情况</h3>
-        <p class="bio-text">
-          目前大三，可全职实习6个月以上，可常驻上海。中英文书写与口语流利（IELTS模拟考7.5，CET-4）。
-        </p>
-        <p class="bio-text-en">
-          Available full-time for a 6+ month internship, based in Shanghai. Fluent in both written and spoken Chinese and English (IELTS mock 7.5, CET-4).
-        </p>
-      </div>
-
-      <div class="contact-quick">
-        <b>Get in touch:</b><br>
-        Email: <a id="email-link-inline" href=""></a><br>
-        LinkedIn: <a href="https://www.linkedin.com/in/jackie-li6699" target="_blank" rel="noopener noreferrer">linkedin.com/in/jackie-li6699</a><br>
-        Tel: +86 19153294495 &nbsp;|&nbsp; Wuhan / Shanghai
-      </div>
+      <h3 style="font-family: var(--font-main);">Availability &nbsp;|&nbsp; 到岗情况</h3>
+      <p>
+        Available full-time for 6+ months internship. Based in Wuhan, available to relocate to Shanghai for the internship.
+      </p>
+      <p style="color:#999;font-size:12px;margin-top:20px;">
+        目前大三，可全职实习六个月以上，可常驻上海。
+      </p>
     </div>
   </div>
 
+  <!-- 底部 Footer -->
   <footer>
     <div class="footer-inner" style="font-family: var(--font-code);">
       <div class="footer-item">
         <b>Email</b>
-        <a id="email-link" href=""></a>
+        <span id="footer-email"></span>
       </div>
       <div class="footer-item">
         <b>LinkedIn</b>
-        <a href="https://www.linkedin.com/in/jackie-li6699" target="_blank" rel="noopener noreferrer">linkedin.com/in/jackie-li6699</a>
+        <span><a href="https://www.linkedin.com/in/jackie-li6699" target="_blank" style="color:inherit;text-decoration:none;">linkedin.com/in/jackie-li6699</a></span>
       </div>
       <div class="footer-item">
-        <b>Rights</b>
-        <span>Jackie Li &copy; 2026</span>
+        <b>Tel</b>
+        <span>+86 19153294495</span>
+      </div>
+      <div class="footer-item">
+        <b>Based</b>
+        <span>Wuhan / Shanghai</span>
       </div>
     </div>
   </footer>
-
   <script>
     (function(){
-      var user = 'l118183365';
-      var dom = 'gm' + 'ail.c' + 'om';
-      var addr = user + '@' + dom;
-      var el1 = document.getElementById('email-link');
-      var el2 = document.getElementById('email-link-inline');
-      if(el1){ el1.href = 'mailto:' + addr; el1.textContent = addr; }
-      if(el2){ el2.href = 'mailto:' + addr; el2.textContent = addr; }
+      var u='l118183365',d='gm'+'ail.c'+'om';
+      var el=document.getElementById('footer-email');
+      if(el) el.textContent=u+'@'+d;
     })();
   </script>
 
+  <!-- P5.js Sketch -->
   <script>
-    var leaves = [];
-    var poem = "Those hours that with gentle work did frame The lovely gaze where every eye doth dwell, Will play the tyrants to the very same And that unfair which fairly doth excel For never-resting time leads summer on To hideous winter and confounds him there Sap check'd with frost and lusty leaves quite gone Beauty o'ersnow'd and bareness every where";
-    var poemIdx = 0;
+    let bgImg, img1, img2, img3, img4;
+    let isExtracted = false; 
+    let currentImg1X = 105; // 从 110 改为 105，向左移动5px    
+    let img3Pos; 
+    let img3Vel; 
+    
+    // img1 破土而出动画变量
+    let img1PopState = "IDLE"; // IDLE, POP1, PAUSE, POP2, RETURN
+    let img1PopTimer = 0;
+    let img1PopOffset = 0;
+    let img1PopTargetOffset = 0; 
+    let img3State = "HIDDEN"; 
+    let dropStartTime = 0; 
+    let imagesLoaded = 0;
+    let totalImages = 5;
+    let scaleFactor = 1; // 缩放比例
+    let isMobileMode = false;
 
-    function setup() {
-      var c = createCanvas(windowWidth, windowHeight);
-      c.parent('canvas-container');
-      c.id('p5-canvas');
-      pixelDensity(1);
-      textFont('Georgia');
-      textSize(13);
-      textAlign(CENTER, CENTER);
-      noStroke();
+    // --- 调节参数 ---
+    const driftConfig = {
+      speedY: 0.03,         // 垂直下落速度
+      finalX: 220,          
+      finalY: 100,          
+      swingRange: 3,        // 摆动幅度
+      swingSpeed: 2.5,      // 摆动频率
+      driftAmplitude: 15    // 纸片左右晃动的物理宽度
+    };
+
+    // --- img4 位置控制参数 ---
+    let img4Config = {
+      x: 850,               // 画布水平位置
+      y: 420,               // 画布垂直位置
+      w: 260,               // 宽度
+      h: 134                // 高度
+    };
+
+    let config = {
+      canvasW: 1280,
+      canvasH: 623,
+      baseX: 1280 * 0.35, 
+      baseY: 623 * 0.40, 
+      img2Size: { w: 308, h: 159 }, 
+      img1Size: { w: 117, h: 145 }, 
+      img3Size: { w: 135, h: 32 },  
+      img4Size: { w: 260, h: 134 }, 
+      extractDist: 200,              
+      triggerThreshold: 186, 
+      img3InitialX: 70,      
+      img3InitialY: 65,       
+    };
+
+    function preload() {
+      console.log('开始加载图片...');
+      
+      bgImg = loadImage('./images/about-tree-bg.png', 
+        () => { console.log('背景图加载成功'); imagesLoaded++; },
+        () => { console.error('背景图加载失败'); }
+      ); 
+      
+      img1 = loadImage('./images/image_1.svg',
+        () => { console.log('image_1 加载成功'); imagesLoaded++; },
+        () => { console.error('image_1 加载失败'); }
+      );   
+      
+      img2 = loadImage('./images/image_2.svg',
+        () => { console.log('image_2 加载成功'); imagesLoaded++; },
+        () => { console.error('image_2 加载失败'); }
+      );   
+      
+      img3 = loadImage('./images/image_3.svg',
+        () => { console.log('image_3 加载成功'); imagesLoaded++; },
+        () => { console.error('image_3 加载失败'); }
+      );   
+      
+      img4 = loadImage('./images/image_4.svg',
+        () => { console.log('image_4 加载成功'); imagesLoaded++; },
+        () => { console.error('image_4 加载失败'); }
+      );   
     }
 
+    function setup() {
+      console.log('Setup 开始，已加载图片数量：' + imagesLoaded + '/' + totalImages);
+      
+      // 检测移动端
+      isMobileMode = windowWidth <= 480;
+
+      // 计算画布尺寸，保持原始比例
+      let canvasWidth = windowWidth;
+      let canvasHeight;
+      
+      if (isMobileMode) {
+        canvasHeight = 400; // 移动端固定高度
+      } else {
+        canvasHeight = canvasWidth * (config.canvasH / config.canvasW); 
+      }
+      
+      let canvas = createCanvas(canvasWidth, canvasHeight);
+      canvas.parent('canvas-container');
+      canvas.id('p5-canvas');
+      clear(); // 设置透明背景
+      imageMode(CENTER);
+      angleMode(DEGREES);
+      
+      // 根据窗口宽度计算缩放比例
+      if (isMobileMode) {
+         scaleFactor = 0.6; // 移动端固定缩放，保证卡片够大
+         
+         // 调整位置配置，使卡片居中
+         // 屏幕中心 X
+         let cx = canvasWidth / 2 / scaleFactor;
+         let cy = canvasHeight / 2 / scaleFactor;
+         
+         // 垂直排列，互不遮挡
+         // 信封在上
+         config.baseX = cx - 70; 
+         config.baseY = cy - 80; 
+         
+         // 卡片在下
+         img4Config.x = cx;
+         img4Config.y = cy + 100;
+         
+      } else {
+         scaleFactor = canvasWidth / config.canvasW;
+         // 恢复默认配置
+         config.baseX = 1280 * 0.35;
+         config.baseY = 623 * 0.40;
+         img4Config.x = 850;
+         img4Config.y = 420;
+      }
+      
+      // Auto-align footer to the bottom of the canvas
+      adjustFooterPosition();
+      
+      img3Pos = createVector(config.img3InitialX * scaleFactor, config.img3InitialY * scaleFactor);
+      img3Vel = createVector(0, 0);
+      console.log('Setup 完成，缩放比例：' + scaleFactor);
+    }
+    
     function windowResized() {
-      resizeCanvas(windowWidth, windowHeight);
+      isMobileMode = windowWidth <= 480;
+      
+      // 窗口大小改变时重新调整画布
+      let canvasWidth = windowWidth;
+      let canvasHeight;
+      
+      if (isMobileMode) {
+        canvasHeight = 400;
+      } else {
+        canvasHeight = canvasWidth * (config.canvasH / config.canvasW);
+      }
+      
+      resizeCanvas(canvasWidth, canvasHeight);
+      
+      if (isMobileMode) {
+         scaleFactor = 0.6;
+         let cx = canvasWidth / 2 / scaleFactor;
+         let cy = canvasHeight / 2 / scaleFactor;
+         config.baseX = cx; 
+         config.baseY = cy - 80;
+         img4Config.x = cx;
+         img4Config.y = cy + 100;
+      } else {
+         scaleFactor = canvasWidth / config.canvasW;
+         config.baseX = 1280 * 0.35;
+         config.baseY = 623 * 0.40;
+         img4Config.x = 850;
+         img4Config.y = 420;
+      }
+      
+      // Re-align footer on resize
+      adjustFooterPosition();
+    }
+    
+    function adjustFooterPosition() {
+        const canvasContainer = document.getElementById('canvas-container');
+        const footer = document.querySelector('footer');
+        
+        if (canvasContainer && footer) {
+            // Get Canvas bottom position relative to document
+            const canvasRect = canvasContainer.getBoundingClientRect();
+            // Since canvasContainer is absolute, we need to consider scrollY for absolute position if needed,
+            // but margin-top is relative to the element flow.
+            // Actually, footer is in normal flow.
+            // We want Footer Top (border) to be at Canvas Bottom.
+            
+            // Canvas Top is relative to viewport + scrollY
+            // Actually canvasContainer.offsetTop is relative to offsetParent (body).
+            const canvasBottom = canvasContainer.offsetTop + canvasContainer.offsetHeight;
+            
+            // Footer's natural position is determined by content above it (.container).
+            // We can set margin-top to push it down or pull it up.
+            
+            // Let's find where the content ends
+            const container = document.querySelector('.container');
+            const contentBottom = container.offsetTop + container.offsetHeight;
+            
+            // We want footer to start at canvasBottom.
+            // The gap currently is (contentBottom) -> Footer.
+            // So we need margin-top = canvasBottom - contentBottom.
+            
+            const requiredMargin = canvasBottom - contentBottom;
+            
+            // Apply margin. Note: this might be negative if content is taller than canvas.
+            // If content is taller, maybe we should respect content? 
+            // User said "align with background bottom", assuming background is the canvas.
+            // Usually background should cover content. If content is taller, footer inside content flow is fine?
+            // But user specifically asked to align with background bottom.
+            // Let's strictly follow "align with background bottom".
+            
+            footer.style.marginTop = requiredMargin + 'px';
+        }
     }
 
     function draw() {
-      clear();
+      clear(); // 使用 clear() 代替 background() 来保持透明
       
-      if(frameCount % 20 === 0) {
-        var x = random(width * 0.1, width * 0.9);
-        var ch = poem[poemIdx % poem.length];
-        if(ch === ' ') { poemIdx++; ch = poem[poemIdx % poem.length]; }
-        leaves.push(new Leaf(x, -20, ch));
-        poemIdx++;
+      // 计算背景图移动偏移量 (仅桌面端)
+      let bgOffsetX = 0;
+      let bgOffsetY = 0;
+      if (!isMobileMode) {
+        // 限制最大移动范围，防止过度移动
+        bgOffsetX = constrain((mouseX - width / 2) * 0.015, -20, 20);
+        bgOffsetY = constrain((mouseY - height / 2) * 0.015, -20, 20);
       }
-
-      for(var i = leaves.length - 1; i >= 0; i--) {
-        leaves[i].update();
-        leaves[i].display();
-        if(leaves[i].offScreen()) {
-          leaves.splice(i, 1);
+      
+      // 绘制背景图 (截取中间部分适配移动端)
+      if (isMobileMode && bgImg) {
+        // 计算截取区域：保持高度充满，截取水平中心
+        // 假设背景图宽高比大于画布宽高比
+        let sH = bgImg.height;
+        let sW = sH * (width / height);
+        let sX = (bgImg.width - sW) / 2;
+        let sY = 0;
+        
+        // 如果计算出的宽度比原图还宽，则以宽度为基准
+        if (sW > bgImg.width) {
+           sW = bgImg.width;
+           sH = sW * (height / width);
+           sX = 0;
+           sY = (bgImg.height - sH) / 2;
         }
+        
+        image(bgImg, width/2, height/2, width, height, sX, sY, sW, sH);
+      } else if (bgImg) {
+        // 桌面端：背景图稍微放大一点，并随鼠标移动
+        // 放大 1.05 倍以确保移动时边缘不会露白
+        let bgScale = 1.05;
+        image(bgImg, width/2 + bgOffsetX, height/2 + bgOffsetY, width * bgScale, height * bgScale);
       }
 
-      fill(0, 15);
+      // --- 绘制 img4 (绝对位置，不随信封旋转，顺时针倾斜3度) ---
+      push();
+      translate(img4Config.x * scaleFactor, img4Config.y * scaleFactor);
+      rotate(3); // 顺时针旋转 3 度
+      
+      image(img4, 0, 0, img4Config.w * scaleFactor, img4Config.h * scaleFactor);
+      
+      // 绘制钉子（在卡片内部顶部中间）
+      drawPin(0, -img4Config.h * scaleFactor / 2 + 10 * scaleFactor);
+      
+      pop();
+
+      push();
+      translate(config.baseX * scaleFactor, config.baseY * scaleFactor);
+      rotate(-2); 
+
+      // 1. 图1 逻辑
+      let targetX = isExtracted ? config.extractDist : 105; // 从 110 改为 105
+      currentImg1X = lerp(currentImg1X, targetX, 0.1);
+      
+      // 处理破土而出动画
+      if (!isExtracted) {
+        handleImg1PopAnimation();
+      } else {
+        img1PopState = "IDLE";
+        img1PopTimer = 0;
+        img1PopOffset = 0;
+      }
+      
+      push();
+      translate((currentImg1X + img1PopOffset) * scaleFactor, 0 * scaleFactor); // 从 -5 改为 0，向下移动5px
+      rotate(isExtracted ? 5 : 0); // 移除晃动，只在抽出时旋转
+      image(img1, 0, 0, config.img1Size.w * scaleFactor, config.img1Size.h * scaleFactor);
+      pop();
+
+      // 2. 图3 逻辑
+      handleImg3Physics();
+      
+      push();
+      translate(img3Pos.x, img3Pos.y);
+      let rotSway = (img3State === "DROPPING") ? sin(frameCount * driftConfig.swingSpeed) * driftConfig.swingRange : 0;
+      rotate(rotSway + (isExtracted ? 2 : 0));
+      image(img3, 0, 0, config.img3Size.w * scaleFactor, config.img3Size.h * scaleFactor);
+      pop();
+
+      // 3. 图2 - 先绘制卡片，再绘制钉子在上面
+      push();
+      image(img2, 0, 0, config.img2Size.w * scaleFactor, config.img2Size.h * scaleFactor);
+      // 绘制钉子（在卡片内部顶部中间）
+      drawPin(0, -config.img2Size.h * scaleFactor / 2 + 10 * scaleFactor);
+      pop();
+      
+      pop();
+    }
+    
+    // 绘制钉子函数 - 手绘风格
+    function drawPin(x, y) {
+      push();
+      translate(x, y);
+      
+      // 钉子主体 - 不规则圆形（手绘感）- 浅灰色
+      fill(150, 150, 150);
       noStroke();
+      
+      // 使用多个小圆形叠加，创造手绘不规则效果
+      for (let i = 0; i < 8; i++) {
+        let angle = (360 / 8) * i;
+        let offsetX = cos(angle) * 0.5 * scaleFactor;
+        let offsetY = sin(angle) * 0.5 * scaleFactor;
+        circle(offsetX, offsetY, 7 * scaleFactor);
+      }
+      
+      // 中心圆
+      fill(140, 140, 140);
+      circle(0, 0, 6 * scaleFactor);
+      
+      // 手绘描边效果
+      noFill();
+      stroke(100, 100, 100);
+      strokeWeight(0.8 * scaleFactor);
+      
+      // 绘制不规则的圆形轮廓（模拟手绘线条）
+      beginShape();
+      for (let a = 0; a < 360; a += 30) {
+        let r = 3.5 * scaleFactor + random(-0.3, 0.3) * scaleFactor;
+        let px = cos(a) * r;
+        let py = sin(a) * r;
+        vertex(px, py);
+      }
+      endShape(CLOSE);
+      
+      // 高光 - 手绘风格
+      noStroke();
+      fill(200, 200, 200, 150);
+      ellipse(-1 * scaleFactor, -1 * scaleFactor, 2.5 * scaleFactor, 2 * scaleFactor);
+      
+      // 钉子阴影 - 柔和的手绘阴影
+      fill(80, 80, 80, 60);
+      ellipse(0.5 * scaleFactor, 1.5 * scaleFactor, 7 * scaleFactor, 2 * scaleFactor);
+      
+      pop();
+    }
+    
+    // img1 破土而出动画处理函数
+    function handleImg1PopAnimation() {
+      const popDistance = 10; // 突出距离
+      const popSpeed = 0.3; // 突出速度
+      const pauseDuration = 8; // 两次突出之间的暂停帧数
+      const cycleDuration = 120; // 3秒 = 180帧 (60fps)
+      
+      img1PopTimer++;
+      
+      // 每3秒重置一次循环
+      if (img1PopTimer >= cycleDuration) {
+        img1PopTimer = 0;
+        img1PopState = "POP1";
+      }
+      
+      switch(img1PopState) {
+        case "IDLE":
+          // 等待下一个循环
+          img1PopTargetOffset = 0;
+          img1PopOffset = lerp(img1PopOffset, img1PopTargetOffset, 0.2);
+          break;
+          
+        case "POP1":
+          // 第一次突出
+          img1PopTargetOffset = popDistance;
+          img1PopOffset = lerp(img1PopOffset, img1PopTargetOffset, popSpeed);
+          if (abs(img1PopOffset - img1PopTargetOffset) < 0.5) {
+            img1PopState = "RETURN1";
+          }
+          break;
+          
+        case "RETURN1":
+          // 第一次回缩
+          img1PopTargetOffset = 0;
+          img1PopOffset = lerp(img1PopOffset, img1PopTargetOffset, popSpeed);
+          if (abs(img1PopOffset - img1PopTargetOffset) < 0.5) {
+            img1PopState = "PAUSE";
+            img1PopTimer = 0; // 重置计时器用于暂停
+          }
+          break;
+          
+        case "PAUSE":
+          // 暂停
+          img1PopOffset = 0;
+          if (img1PopTimer >= pauseDuration) {
+            img1PopState = "POP2";
+          }
+          break;
+          
+        case "POP2":
+          // 第二次突出
+          img1PopTargetOffset = popDistance;
+          img1PopOffset = lerp(img1PopOffset, img1PopTargetOffset, popSpeed);
+          if (abs(img1PopOffset - img1PopTargetOffset) < 0.5) {
+            img1PopState = "RETURN2";
+          }
+          break;
+          
+        case "RETURN2":
+          // 第二次回缩
+          img1PopTargetOffset = 0;
+          img1PopOffset = lerp(img1PopOffset, img1PopTargetOffset, popSpeed);
+          if (abs(img1PopOffset - img1PopTargetOffset) < 0.5) {
+            img1PopState = "IDLE";
+            img1PopTimer = 0; // 重置计时器，等待下一个3秒循环
+          }
+          break;
+      }
     }
 
-    class Leaf {
-      constructor(x, y, ch) {
-        this.x = x;
-        this.y = y;
-        this.ch = ch;
-        this.vx = random(-0.3, 0.3);
-        this.vy = random(0.3, 0.8);
-        this.rot = random(TWO_PI);
-        this.rotSpeed = random(-0.02, 0.02);
-        this.alpha = random(120, 200);
-        this.noiseSeed = random(1000);
+    function handleImg3Physics() {
+      if (!isExtracted) {
+        // 复位
+        img3State = "HIDDEN";
+        img3Pos.x = lerp(img3Pos.x, config.img3InitialX * scaleFactor, 0.1);
+        img3Pos.y = lerp(img3Pos.y, config.img3InitialY * scaleFactor, 0.1);
+        img3Vel.set(0, 0);
+      } else {
+        if (img3State === "HIDDEN" || img3State === "SLIDING") {
+          if (currentImg1X < config.triggerThreshold) {
+            img3Pos.x = lerp(img3Pos.x, config.img3InitialX * scaleFactor, 0.1);
+            img3Pos.y = config.img3InitialY * scaleFactor;
+          } else {
+            img3State = "DROPPING";
+            dropStartTime = frameCount; 
+          }
+        } 
+        
+        if (img3State === "DROPPING") {
+          let targetPos = createVector(driftConfig.finalX * scaleFactor, driftConfig.finalY * scaleFactor);
+          img3Pos.y = lerp(img3Pos.y, driftConfig.finalY * scaleFactor, driftConfig.speedY);
+          
+          let time = (frameCount - dropStartTime) * driftConfig.swingSpeed;
+          let wave = sin(time) * driftConfig.driftAmplitude * scaleFactor * (1 - img3Pos.y/(driftConfig.finalY * scaleFactor));
+          
+          let baseX = lerp(img3Pos.x, driftConfig.finalX * scaleFactor, 0.03);
+          img3Pos.x = baseX + wave;
+
+          if (dist(img3Pos.x, img3Pos.y, targetPos.x, targetPos.y) < 0.01) {
+            img3Pos.set(targetPos);
+            img3State = "STILL";
+          }
+        }
       }
-      update() {
-        var breeze = map(noise(this.noiseSeed, frameCount * 0.008), 0, 1, -0.3, 0.3);
-        this.vx += breeze * 0.05;
-        this.vx *= 0.99;
-        this.vy += 0.01;
-        if(this.vy > 1.2) this.vy = 1.2;
-        this.x += this.vx;
-        this.y += this.vy;
-        this.rot += this.rotSpeed;
-        this.rotSpeed += random(-0.005, 0.005);
-        this.rotSpeed = constrain(this.rotSpeed, -0.04, 0.04);
+    }
+
+    function mousePressed() {
+      handleInput();
+    }
+    
+    function touchStarted() {
+      handleInput();
+      // 不阻止默认行为，允许滚动
+    }
+
+    function handleInput() {
+      // 如果已经抽出，点击任意位置复位
+      if (isExtracted) {
+        isExtracted = false;
+        return;
       }
-      display() {
-        push();
-        translate(this.x, this.y);
-        rotate(this.rot);
-        fill(60, this.alpha);
-        text(this.ch, 0, 0);
-        pop();
+      
+      // 计算各个图片的点击区域（在画布坐标系中）
+      let baseX = config.baseX * scaleFactor;
+      let baseY = config.baseY * scaleFactor;
+      
+      // 将鼠标坐标转换为相对于 baseX, baseY 的坐标
+      // 需要考虑 rotate(-2) 的旋转，但为了简化，我们使用近似矩形区域
+      
+      // img2 的点击区域（中心位置，最底层）
+      let img2X = baseX;
+      let img2Y = baseY;
+      let img2W = config.img2Size.w * scaleFactor;
+      let img2H = config.img2Size.h * scaleFactor;
+      
+      // img1 的点击区域（右侧）
+      let img1X = baseX + currentImg1X * scaleFactor;
+      let img1Y = baseY + 0 * scaleFactor; // 从 -5 改为 0
+      let img1W = config.img1Size.w * scaleFactor;
+      let img1H = config.img1Size.h * scaleFactor;
+      
+      // img3 的点击区域（左上角）
+      let img3X = baseX + img3Pos.x;
+      let img3Y = baseY + img3Pos.y;
+      let img3W = config.img3Size.w * scaleFactor;
+      let img3H = config.img3Size.h * scaleFactor;
+      
+      // 检查是否点击了 img1
+      if (mouseX > img1X - img1W/2 && mouseX < img1X + img1W/2 &&
+          mouseY > img1Y - img1H/2 && mouseY < img1Y + img1H/2) {
+        isExtracted = true;
+        return;
       }
-      offScreen() {
-        return this.y > height + 30;
+      
+      // 检查是否点击了 img2
+      if (mouseX > img2X - img2W/2 && mouseX < img2X + img2W/2 &&
+          mouseY > img2Y - img2H/2 && mouseY < img2Y + img2H/2) {
+        isExtracted = true;
+        return;
+      }
+      
+      // 检查是否点击了 img3
+      if (mouseX > img3X - img3W/2 && mouseX < img3X + img3W/2 &&
+          mouseY > img3Y - img3H/2 && mouseY < img3Y + img3H/2) {
+        isExtracted = true;
+        return;
       }
     }
   </script>
