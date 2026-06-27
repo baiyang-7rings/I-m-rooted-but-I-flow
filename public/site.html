@@ -221,8 +221,8 @@
       gravity: 0.02,            // gentler gravity
       swayAmpAmbient: 0.004,    // subtle ambient sway
       swayAmpHover: 0.025,      // sway on hover
-      letterSpacing: 18,
-      pileLift: 2,              // very gentle pile
+      letterSpacing: 16,
+      pileLift: 5,              // stronger pile build-up
       driftRange: 0.4,
       rotateSpeed: 0.4,         // slower rotation
       margin: 0.2,
@@ -238,13 +238,13 @@
       var c = createCanvas(treeImg.width, treeImg.height);
       c.parent('p5-overlay');
 
-      // Ground at very bottom
-      var groundY = height - 5;
+      // Ground at root of tree (~93% of canvas height), not the very bottom edge
+      var groundY = height * 0.93;
       for(var i = 0; i < width; i++) groundMap[i] = groundY;
 
-      // Pile limit: 1/3 of tree height from the bottom
-      // Tree fills the canvas; bottom 1/3 means ground can rise up to height*2/3
-      pileHeightLimit = height * 0.62;  // leaves stop piling above this y (smaller y = higher up)
+      // Pile can rise up to 1/3 of tree height above ground
+      // From ground (0.93h), pile up to ~0.60h (about 1/3 tree height upward)
+      pileHeightLimit = groundY - height * 0.33;
 
       // Collect branch pixels (non-transparent pixels)
       treeImg.loadPixels();
@@ -282,10 +282,10 @@
         this.pos.add(this.vel);
         this.angle += this.vel.mag() * 0.05 * config.rotateSpeed + this.angleVel;
 
-        // Off screen bottom
+        // Off screen below ground
         if(this.pos.y > height + 10){
           this.landed = true;
-          this.pos.y = height - 5;
+          this.pos.y = height * 0.93;
           return;
         }
 
@@ -365,9 +365,15 @@
       }
       // State 1: heavy fall
       if(state === 1){
-        if(heavyCount < heavyTarget){
-          // Spawn multiple per frame
-          var perFrame = 3;
+        // Check if pile has reached 1/3 height across most of the ground
+        var reachedCount = 0;
+        for(var gi = 0; gi < width; gi += 20){
+          if(groundMap[gi] <= pileHeightLimit + 20) reachedCount++;
+        }
+        var pileRatio = reachedCount / (width / 20);
+        
+        if(heavyCount < heavyTarget && pileRatio < 0.7){
+          var perFrame = 5;
           for(var i = 0; i < perFrame; i++){
             if(heavyCount < heavyTarget){
               spawnLeaf();
@@ -442,9 +448,9 @@
           // Enter heavy fall state
           state = 1;
           heavyCount = 0;
-          // Target: enough leaves to cover ground to 1/3 height
-          // Rough estimate based on canvas width and pile lift
-          heavyTarget = floor(width / 3);
+          // Target: enough leaves to pile up to 1/3 tree height above ground
+          // Rough estimate based on pile lift and canvas width
+          heavyTarget = floor(width * 2.5);
         }
         // state 1 or 2: do nothing (no re-trigger)
       }
