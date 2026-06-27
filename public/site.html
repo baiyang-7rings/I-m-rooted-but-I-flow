@@ -217,17 +217,19 @@
 
     var config = {
       fontSize: 14,
-      maxFallSpeed: 5.0,          // much faster fall
+      maxFallSpeed: 5.0,
       drag: 0.985,
-      gravity: 0.15,              // stronger gravity for fast fall
-      letterSpacing: 24,          // sparser
+      gravity: 0.15,
+      letterSpacing: 24,
       pileLift: 4,
       driftRange: 0.5,
       rotateSpeed: 0.5,
       margin: 0.2,
-      swayAmplitude: 0.03,        // match original site exactly
+      swayAmplitude: 0.015,       // gentler sway
+      swayFreq: 0.04,             // slower sway
+      swayLerp: 0.03,             // smoother transition
       groundY_ratio: 0.93,
-      pileHeight_ratio: 0.25      // pile up to 1/4 tree height
+      pileHeight_ratio: 0.25
     };
 
     function preload(){
@@ -330,14 +332,24 @@
         if(st) st.style.opacity = '0';
       }
 
-      // ---- Sway logic (matches original site) ----
-      // Tree ONLY sways when hovering (state 1) or mobile shake active
-      // No ambient sway when still - matches original
-      var targetSway = 0;
-      if(state === 1 || (isHovering && state < 2)){
-        targetSway = sin(frameCount * 0.08) * config.swayAmplitude;
+      // ---- Calculate pile ratio (reused by sway and spawning) ----
+      var pileReached = 0, pileSamples = 0;
+      for(var gi = 0; gi < width; gi += 20){
+        pileSamples++;
+        if(groundMap[gi] <= pileHeightLimit + 15) pileReached++;
       }
-      currentSway = lerp(currentSway, targetSway, 0.05);
+      var pileRatio = pileReached / pileSamples;
+
+      // ---- Sway logic ----
+      // Tree ONLY sways during heavy leaf fall (state 1), then returns to still
+      // No sway at rest (state 0), no sway after finish (state 2)
+      var targetSway = 0;
+      if(state === 1){
+        var pileProgress = constrain(pileRatio / pileRatioTarget, 0, 1);
+        var envelope = sin(pileProgress * PI);
+        targetSway = sin(frameCount * config.swayFreq) * config.swayAmplitude * envelope;
+      }
+      currentSway = lerp(currentSway, targetSway, config.swayLerp);
 
       push();
       translate(width / 2, height);
@@ -346,7 +358,6 @@
       pop();
 
       // ---- Spawning logic ----
-      // State 0: ambient thin layer (tree still, very few leaves)
       if(state === 0){
         if(frameCount > ambientDelay && ambientCount < ambientTarget){
           if(frameCount % 15 === 0){
@@ -354,32 +365,19 @@
             ambientCount++;
           }
         }
-        // When hover detected, transition to state 1
         if(isHovering){
           state = 1;
           heavySpawned = 0;
         }
       }
 
-      // State 1: heavy fall on hover
       if(state === 1){
-        // Check pile height
-        var reachedCount = 0;
-        var samples = 0;
-        for(var gi = 0; gi < width; gi += 20){
-          samples++;
-          if(groundMap[gi] <= pileHeightLimit + 15) reachedCount++;
-        }
-        var pileRatio = reachedCount / samples;
-
-        if(isHovering && pileRatio < pileRatioTarget){
+        if(pileRatio < pileRatioTarget){
           for(var i = 0; i < heavySpawnRate; i++){
             spawnLeaf();
             heavySpawned++;
           }
         }
-
-        // If pile is high enough OR mouse left and we've spawned enough, finish
         if(pileRatio >= pileRatioTarget){
           state = 2;
         }
