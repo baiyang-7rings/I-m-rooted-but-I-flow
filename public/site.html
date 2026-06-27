@@ -216,17 +216,17 @@
 
     var config = {
       fontSize: 14,
-      maxFallSpeed: 0.8,        // slower fall
+      maxFallSpeed: 2.4,        // 3x faster fall (was 0.8)
       drag: 0.98,
-      gravity: 0.02,            // gentler gravity
-      swayAmpAmbient: 0.004,    // subtle ambient sway
-      swayAmpHover: 0.025,      // sway on hover
+      gravity: 0.06,            // 3x gravity (was 0.02)
       letterSpacing: 16,
-      pileLift: 5,              // stronger pile build-up
+      pileLift: 5,
       driftRange: 0.4,
-      rotateSpeed: 0.4,         // slower rotation
+      rotateSpeed: 0.4,
       margin: 0.2,
-      ambientInterval: 8,       // spawn 1 leaf every N frames during ambient
+      ambientInterval: 8,
+      fallSwayAmp: 0.012,       // reduced sway amplitude during fall
+      fallSwayFreq: 0.04,       // slower sway frequency
     };
 
     function preload(){
@@ -263,12 +263,12 @@
     class Leaf{
       constructor(x, y, ch){
         this.pos = createVector(x, y);
-        this.vel = createVector(random(-0.3, 0.3), random(0.05, 0.2));
+        this.vel = createVector(random(-0.6, 0.6), random(0.2, 0.6));
         this.acc = createVector(0, config.gravity);
         this.char = ch;
         this.landed = false;
         this.angle = random(TWO_PI);
-        this.angleVel = random(-0.02, 0.02);
+        this.angleVel = random(-0.03, 0.03);
         this.noiseSeed = random(1000);
         this.finalAngle = random(-0.4, 0.4);
       }
@@ -338,13 +338,12 @@
         if(st) st.style.opacity = '0';
       }
 
-      // Sway
-      var ambientSway = sin(frameCount * 0.012) * config.swayAmpAmbient;
-      var hoverSway = (isHovering && state < 2) ? sin(frameCount * 0.06) * config.swayAmpHover : 0;
-      // Stronger sway during heavy fall
-      var fallSway = (state === 1) ? sin(frameCount * 0.09) * 0.02 : 0;
-      var targetSway = ambientSway + hoverSway + fallSway;
-      currentSway = lerp(currentSway, targetSway, 0.06);
+      // Tree only sways during heavy fall (state 1) — gentler, slower sway
+      var targetSway = 0;
+      if(state === 1){
+        targetSway = sin(frameCount * config.fallSwayFreq) * config.fallSwayAmp;
+      }
+      currentSway = lerp(currentSway, targetSway, 0.08);
 
       push();
       translate(width / 2, height);
@@ -373,7 +372,7 @@
         var pileRatio = reachedCount / (width / 20);
         
         if(heavyCount < heavyTarget && pileRatio < 0.7){
-          var perFrame = 5;
+          var perFrame = 15;
           for(var i = 0; i < perFrame; i++){
             if(heavyCount < heavyTarget){
               spawnLeaf();
@@ -391,7 +390,7 @@
         particles[i].display();
       }
 
-      // Labels follow sway
+      // Labels always sway gently and independently (like dangling tags)
       if(canvasElem){
         var ch = canvasElem.offsetHeight;
         var labels = [
@@ -403,13 +402,15 @@
           var l = labels[li];
           var el = document.querySelector(l.sel);
           if(el){
-            var sx = -ch * l.h * Math.tan(currentSway);
-            var wn = noise(frameCount * 0.01 + l.n);
-            var w = (wn - 0.5) * 0.15;
-            var rot = currentSway * 0.9 + w;
-            var sk = rot * 12;
+            // Tag follows tree sway during heavy fall, plus always has its own gentle sway
+            var treeShift = -ch * l.h * Math.tan(currentSway);
+            var tagSway = sin(frameCount * 0.008 + l.n) * 3;
+            var wn = noise(frameCount * 0.008 + l.n);
+            var w = (wn - 0.5) * 0.08;
+            var rot = currentSway * 0.7 + sin(frameCount * 0.008 + l.n + 50) * 0.03 + w;
+            var sk = rot * 10;
             el.style.transformOrigin = 'top center';
-            el.style.transform = 'translateX('+sx+'px) rotate('+rot+'rad) skewX('+sk+'deg)';
+            el.style.transform = 'translateX('+(treeShift + tagSway)+'px) rotate('+rot+'rad) skewX('+sk+'deg)';
           }
         }
       }
