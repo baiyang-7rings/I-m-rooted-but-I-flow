@@ -23,7 +23,7 @@ export default function Footer() {
           <div>
             <p className="text-[13px] text-[#666666] opacity-70 mb-1 md:text-[12px]">LinkedIn</p>
             <a
-              href="https://www.linkedin.com/in/jackie-li6699/"
+              href="https://www.linkedin.com/in/jackie-li6699"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[13px] text-[#666666] opacity-70 hover:opacity-100 transition-opacity duration-200 md:text-[12px]"
@@ -35,15 +35,6 @@ export default function Footer() {
             <p className="text-[13px] text-[#666666] opacity-70 mb-1 md:text-[12px]">More</p>
             <span className="text-[13px] text-[#666666] opacity-70 md:text-[12px]">
               Coming soon...
-            </span>
-          </div>
-          <div>
-            <p className="text-[13px] text-[#666666] opacity-70 mb-1 md:text-[12px]">Philosophy</p>
-            <span
-              className="text-[13px] text-[#666666] opacity-70 md:text-[12px]"
-              style={{ fontFamily: "var(--font-noto-sans-hk), 'Source Han Sans SC', sans-serif" }}
-            >
-              意识才是唯一的现实
             </span>
           </div>
         </div>

@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import ParticleCanvas from "./ParticleCanvas";
 
 function AnimatedText({ text, delay = 0 }: { text: string; delay?: number }) {
   const chars = text.split("");
@@ -74,24 +75,6 @@ export default function HeroSection() {
               <AnimatedText text="Let's Flip Through It." delay={2.0} />
             </span>
           </div>
-          {/* Philosophy tagline */}
-          <div
-            className="mt-16 self-start md:self-center md:mt-8"
-            style={{ paddingLeft: "40px" }}
-          >
-            <p
-              className="text-[14px] italic leading-[1.8] opacity-50 md:text-[12px]"
-              style={{ fontFamily: "var(--font-special-elite), serif", color: "#666666" }}
-            >
-              <AnimatedText text="&quot;Consciousness is the only reality.&quot;" delay={3.5} />
-            </p>
-            <p
-              className="text-[12px] mt-2 opacity-40 md:text-[11px]"
-              style={{ fontFamily: "var(--font-noto-sans-hk), 'Source Han Sans SC', sans-serif", color: "#666666" }}
-            >
-              <AnimatedText text="—— 意识才是唯一的现实" delay={4.0} />
-            </p>
-          </div>
         </div>
 
         {/* Right: Tree with Labels */}
@@ -99,15 +82,15 @@ export default function HeroSection() {
           className="relative flex justify-center lg:max-w-[520px] md:max-w-[420px]"
           style={{ maxWidth: "520px", margin: "0 auto" }}
         >
-          <div className="relative w-full">
+          <div className="relative w-full" style={{ aspectRatio: "520/688" }}>
             <Image
               src="/images/tree.png"
               alt="Hand-drawn tree illustration"
-              width={520}
-              height={688}
-              className="w-full h-auto"
+              fill
+              className="w-full h-full object-contain"
               priority
             />
+            <ParticleCanvas />
             {/* Tree Labels */}
             <Link
               href="#experience"
