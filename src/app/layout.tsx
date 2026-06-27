@@ -1,20 +1,30 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Special_Elite, AR_One_Sans, Noto_Sans_HK } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const specialElite = Special_Elite({
+  weight: "400",
+  variable: "--font-special-elite",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const arOneSans = AR_One_Sans({
+  variable: "--font-ar-one-sans",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const notoSansHK = Noto_Sans_HK({
+  weight: ["400", "500", "700"],
+  variable: "--font-noto-sans-hk",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Website Clone",
-  description: "Pixel-perfect website clone",
+  title: "Jackie's Sketchbook",
+  description: "Personal portfolio and sketchbook — 意识才是唯一的现实",
 };
 
 export default function RootLayout({
@@ -24,10 +34,10 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      lang="zh-CN"
+      className={`${specialElite.variable} ${arOneSans.variable} ${notoSansHK.variable} antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full">{children}</body>
     </html>
   );
 }

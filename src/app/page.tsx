@@ -1,9 +1,15 @@
+import Navbar from "@/components/Navbar";
+import HeroSection from "@/components/HeroSection";
+import Footer from "@/components/Footer";
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center justify-center">
-      <p className="text-muted-foreground">
-        Clone target not yet built. Run <code className="font-mono text-foreground">/clone-website</code> to start.
-      </p>
-    </main>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F2F2F1" }}>
+      <Navbar />
+      <main className="flex-1">
+        <HeroSection />
+      </main>
+      <Footer />
+    </div>
   );
 }
