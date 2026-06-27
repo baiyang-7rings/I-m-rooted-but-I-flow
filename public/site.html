@@ -193,11 +193,10 @@
   </script>
 
   <script>
-    // ====== Tree & Leaves - matched to original site behavior ======
-    // States:
-    //   0 = initial ambient (a few leaves fall gently to form thin layer, tree still)
-    //   1 = hovering on tree (tree sways, leaves fall heavily)
-    //   2 = finished (pile reached 1/4 height, tree still, no more leaves ever)
+    // ====== Tree & Leaves - speed-based interaction ======
+    // - Mouse not on tree: completely still, no leaves
+    // - Slow mouse pass: few leaves, small sway, ends quickly
+    // - Fast mouse pass: more leaves, slightly bigger sway, ends quickly
     var treeImg;
     var particles = [];
     var branchPoints = [];
@@ -205,15 +204,11 @@
     var poemIndex = 0;
     var groundMap = [];
     var currentSway = 0;
-    var state = 0;
-    var ambientCount = 0;
-    var ambientTarget = 6;        // very few initial leaves for thin layer
-    var ambientDelay = 60;
+    var swayIntensity = 0;      // 0-1, controls both sway amplitude and leaf spawn rate
     var pileHeightLimit = 0;
-    var heavySpawned = 0;
-    var heavySpawnRate = 4;       // fewer leaves per frame (original was 12)
-    var pileRatioTarget = 0.6;    // stop when 60% of ground reaches pile limit
-    var mobileShakeTimer = 0;     // for mobile touch
+    var prevMouseX = 0, prevMouseY = 0;
+    var mouseSpeed = 0;         // smoothed mouse velocity in canvas coords
+    var wasInTree = false;
 
     var config = {
       fontSize: 14,
@@ -225,11 +220,12 @@
       driftRange: 0.5,
       rotateSpeed: 0.5,
       margin: 0.2,
-      swayAmplitude: 0.015,       // gentler sway
-      swayFreq: 0.04,             // slower sway
-      swayLerp: 0.03,             // smoother transition
-      groundY_ratio: 0.93,
-      pileHeight_ratio: 0.25
+      swayAmpMax: 0.02,         // max sway amplitude at highest intensity
+      swayFreq: 0.06,           // sway frequency
+      swayLerp: 0.12,           // how fast sway responds
+      intensityDecay: 0.08,     // how fast intensity fades after mouse leaves (faster = ends quickly)
+      maxPileRatio: 0.5,        // max pile height (lower = shorter pile)
+      groundY_ratio: 0.93
     };
 
     function preload(){
@@ -243,7 +239,7 @@
 
       var groundY = height * config.groundY_ratio;
       for(var i = 0; i < width; i++) groundMap[i] = groundY;
-      pileHeightLimit = groundY - height * config.pileHeight_ratio;
+      pileHeightLimit = groundY - height * 0.25;
 
       treeImg.loadPixels();
       for(var x = 0; x < treeImg.width; x += 6){
@@ -256,6 +252,9 @@
       textFont('Georgia');
       textSize(config.fontSize);
       textAlign(CENTER, CENTER);
+
+      prevMouseX = mouseX;
+      prevMouseY = mouseY;
     }
 
     class Leaf{
@@ -317,38 +316,50 @@
 
       var canvasElem = document.querySelector('#p5-overlay canvas');
       var eMX = mouseX, eMY = mouseY;
+      var scaleX = 1, scaleY = 1;
       if(canvasElem && canvasElem.offsetWidth > 0){
-        eMX = mouseX * (width / canvasElem.offsetWidth);
-        eMY = mouseY * (height / canvasElem.offsetHeight);
+        scaleX = width / canvasElem.offsetWidth;
+        scaleY = height / canvasElem.offsetHeight;
+        eMX = mouseX * scaleX;
+        eMY = mouseY * scaleY;
       }
 
       var m = width * config.margin;
-      var isMouseHovering = (eMX > m && eMX < width - m && eMY > m && eMY < height - m);
-      if(mobileShakeTimer > 0) mobileShakeTimer--;
-      var isHovering = isMouseHovering || (mobileShakeTimer > 0);
+      var inTree = (eMX > m && eMX < width - m && eMY > m && eMY < height - m);
 
       if(frameCount > 5){
         var st = document.querySelector('.tree');
         if(st) st.style.opacity = '0';
       }
 
-      // ---- Calculate pile ratio (reused by sway and spawning) ----
-      var pileReached = 0, pileSamples = 0;
-      for(var gi = 0; gi < width; gi += 20){
-        pileSamples++;
-        if(groundMap[gi] <= pileHeightLimit + 15) pileReached++;
-      }
-      var pileRatio = pileReached / pileSamples;
+      // Calculate mouse speed (in canvas coordinate space)
+      var dx = (mouseX - prevMouseX) * scaleX;
+      var dy = (mouseY - prevMouseY) * scaleY;
+      var instSpeed = sqrt(dx*dx + dy*dy);
+      mouseSpeed = lerp(mouseSpeed, instSpeed, 0.3);
+      prevMouseX = mouseX;
+      prevMouseY = mouseY;
 
-      // ---- Sway logic ----
-      // Tree ONLY sways during heavy leaf fall (state 1), then returns to still
-      // No sway at rest (state 0), no sway after finish (state 2)
-      var targetSway = 0;
-      if(state === 1){
-        var pileProgress = constrain(pileRatio / pileRatioTarget, 0, 1);
-        var envelope = sin(pileProgress * PI);
-        targetSway = sin(frameCount * config.swayFreq) * config.swayAmplitude * envelope;
+      // Determine target intensity based on mouse state
+      var targetIntensity = 0;
+      if(inTree){
+        // Map speed to intensity: slow pass = low, fast pass = high
+        // mouseSpeed in canvas pixels per frame; typical slow ~1-5, fast ~15+
+        targetIntensity = constrain(map(mouseSpeed, 1, 20, 0.15, 1.0), 0.1, 1.0);
+        // Very slow/hovering mouse: gentle minimum
+        if(mouseSpeed < 1) targetIntensity = 0.08;
       }
+
+      // Smooth intensity: rises quickly when entering, decays when leaving
+      if(inTree){
+        swayIntensity = lerp(swayIntensity, targetIntensity, 0.15);
+      } else {
+        swayIntensity = lerp(swayIntensity, 0, config.intensityDecay);
+      }
+      wasInTree = inTree;
+
+      // ---- Sway ----
+      var targetSway = sin(frameCount * config.swayFreq) * config.swayAmpMax * swayIntensity;
       currentSway = lerp(currentSway, targetSway, config.swayLerp);
 
       push();
@@ -357,32 +368,25 @@
       image(treeImg, -width/2, -height, width, height);
       pop();
 
-      // ---- Spawning logic ----
-      if(state === 0){
-        if(frameCount > ambientDelay && ambientCount < ambientTarget){
-          if(frameCount % 15 === 0){
-            spawnLeaf();
-            ambientCount++;
-          }
-        }
-        if(isHovering){
-          state = 1;
-          heavySpawned = 0;
-        }
+      // ---- Spawn leaves proportional to intensity ----
+      // Check pile height to prevent over-stacking
+      var pileReached = 0, pileSamples = 0;
+      for(var gi = 0; gi < width; gi += 20){
+        pileSamples++;
+        if(groundMap[gi] <= pileHeightLimit + 15) pileReached++;
       }
+      var pileRatio = pileReached / pileSamples;
 
-      if(state === 1){
-        if(pileRatio < pileRatioTarget){
-          for(var i = 0; i < heavySpawnRate; i++){
-            spawnLeaf();
-            heavySpawned++;
-          }
+      if(swayIntensity > 0.05 && pileRatio < config.maxPileRatio){
+        // Leaves per frame proportional to intensity
+        var leavesThisFrame = swayIntensity * 5;
+        var whole = floor(leavesThisFrame);
+        var frac = leavesThisFrame - whole;
+        for(var i = 0; i < whole; i++){
+          spawnLeaf();
         }
-        if(pileRatio >= pileRatioTarget){
-          state = 2;
-        }
+        if(random() < frac) spawnLeaf();
       }
-      // State 2: done forever, tree still, no more leaves
 
       // Update & display
       for(var i = particles.length - 1; i >= 0; i--){
@@ -390,9 +394,7 @@
         particles[i].display();
       }
 
-      // ---- Label sway (matches original exactly) ----
-      // transformOrigin: top center -> top of label stays fixed, bottom swings
-      // Labels follow tree sway + have their own gentle wind noise
+      // ---- Labels: top fixed, bottom swings ----
       if(canvasElem){
         var ch = canvasElem.offsetHeight;
         var labels = [
@@ -404,15 +406,11 @@
           var l = labels[li];
           var el = document.querySelector(l.sel);
           if(el){
-            // Horizontal shift follows tree: higher labels (larger h) move more
             var swayX = -ch * l.h * Math.tan(currentSway);
-            // Wind noise - gentle even when tree is still
             var windNoise = noise(frameCount * 0.01 + l.n);
-            var wind = (windNoise - 0.5) * 0.2;
-            // Rotation: follows tree sway + wind
+            var wind = (windNoise - 0.5) * 0.15 * (0.3 + swayIntensity);
             var baseSway = currentSway * 0.9;
             var rot = baseSway + wind;
-            // Soft skew for curved/dangling feel
             var softSkew = rot * 15;
             el.style.transformOrigin = 'top center';
             el.style.transform = 'translateX('+swayX+'px) rotate('+rot+'rad) skewX('+softSkew+'deg)';
@@ -439,19 +437,6 @@
       ));
       poemIndex++;
     }
-
-    function mousePressed(){
-      var ce = document.querySelector('#p5-overlay canvas');
-      if(!ce) return;
-      if(mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height){
-        mobileShakeTimer = 180;
-        if(state === 0){
-          state = 1;
-          heavySpawned = 0;
-        }
-      }
-    }
-    function touchStarted(){ mousePressed(); }
   </script>
 </body>
 </html>
