@@ -176,459 +176,228 @@
 
     /* ================= 图片展示区域 ================= */
     .gallery-container {
-      position: absolute;
-      top: 130px;
+      position: absolute; /* 从 fixed 改为 absolute，使其随页面滚动 */
+      top: 0;
       left: 0;
-      width: 100%;
-      height: 400px;
-      z-index: 200;
+      width: 100vw;
+      height: 100%; /* 覆盖整个文档高度 */
+      z-index: 5;
       pointer-events: none;
       overflow: hidden;
-      display: none;
-      opacity: 0;
-      transition: opacity 0.4s ease;
     }
 
     .gallery-container.show {
-      opacity: 1;
       pointer-events: auto;
-      display: flex !important;
     }
 
-    /* --- Projects Gallery (graphicDesignGallery) - Accordion Folder --- */
-    #graphicDesignGallery {
-      position: absolute;
-      top: 130px;
+    /* Graphic Design 网格布局 */
+    .gallery-container#graphicDesignGallery {
+      display: flex;
+      flex-wrap: nowrap; /* 不换行 */
+      justify-content: space-between; /* 自动布局图片间距 */
+      align-items: flex-start; /* 顶部对齐 */
+      gap: 10px; /* 最小间距，主要由justify-content控制 */
+      padding-top: 40px; /* 增加顶部内边距，确保图钉完整显示 */
+      padding-left: 80px; /* 增加左侧间距 */
+      padding-right: 80px; /* 增加右侧间距 */
+      padding-bottom: 0;
+      overflow-x: hidden; /* 取消横向滚动 */
+      opacity: 0; /* 默认隐藏，由 JS 控制 display 和 opacity */
+      position: absolute; 
       width: 100%;
-      height: 400px;
-      z-index: 200;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      perspective: 1200px;
-      padding: 0;
+      left: 0;
+      pointer-events: none; /* 默认不响应点击，由 .show 类控制 */
     }
-    #graphicDesignGallery.show {
-      display: flex !important;
+
+    .gallery-container#graphicDesignGallery.show {
       opacity: 1;
       pointer-events: auto;
     }
-
-    /* --- Leadership Gallery (visualDisplayGallery) - Single Card --- */
-    #visualDisplayGallery {
-      position: absolute;
-      top: 130px;
-      width: 100%;
-      height: 400px;
-      z-index: 200;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    #visualDisplayGallery.show {
-      display: flex !important;
-      opacity: 1;
-      pointer-events: auto;
+    
+    /* 定义升起动画 */
+    @keyframes slideUpFadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(100px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .leadership-card {
-      max-width: 420px;
-      width: 90%;
-      background: #f6f3ea;
-      border: 1px solid rgba(0,0,0,0.1);
-      border-radius: 4px;
-      overflow: hidden;
+    /* 当容器被悬停时，所有内部item透明度降低 */
+    .gallery-container#graphicDesignGallery.show:hover .gallery-item.graphic-design {
+      opacity: 0.6 !important; /* 强制覆盖动画结束后的 opacity */
+      transition: opacity 0.3s ease;
+    }
+    
+    /* 当某个特定item被悬停时，恢复其透明度为1 */
+    .gallery-container#graphicDesignGallery.show .gallery-item.graphic-design:hover {
+      opacity: 1 !important;
+    }
+
+    .gallery-item {
       position: relative;
-      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E");
-      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      cursor: pointer;
     }
-    .leadership-card .card-pin {
+
+    /* Graphic Design 图片样式 */
+    .gallery-item.graphic-design {
+      width: 12.5%; /* 7个图片，留出空间自动调整间距 */
+      flex: 0 0 auto; /* 不自动拉伸 */
+      min-width: 0; /* 允许 flex item 缩小 */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative; /* 确保图钉相对于item定位 */
+      height: 100%; /* 占满高度 */
+      opacity: 0; /* 初始隐藏，等待动画 */
+      transform: translateY(100px); /* 初始位置下沉 */
+    }
+
+    /* 当容器显示时，触发动画 */
+    .gallery-container#graphicDesignGallery.show .gallery-item.graphic-design {
+      animation: slideUpFadeIn 0.8s cubic-bezier(0.2, 0.8, 0.8, 1) forwards;
+    }
+
+    .gallery-item.graphic-design .image-wrapper {
+      width: 100%;
+      overflow: hidden; /* 隐藏超出容器高度的内容 */
+      position: relative;
+      height: 100%;
+    }
+    
+    /* 长图底部内阴影 */
+    .gallery-item.graphic-design.long-image .image-wrapper::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 18px; /* 增加高度 */
+      background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4)); /* 加深颜色 */
+      pointer-events: none;
+      z-index: 10; /* 提高层级 */
+    }
+
+    .gallery-item.graphic-design img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      display: block;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.5s ease;
+      object-position: top center; /* 确保从顶部开始显示 */
+    }
+    
+    /* 移除之前的动画相关样式 */
+    /*
+    .gallery-item.graphic-design.long-image:hover img {
+      animation: scrollUp 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes scrollUp {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-10%); } 
+    }
+    */
+
+    /* Graphic Design 图钉样式 */
+    .gallery-item.graphic-design .pin {
+      width: 15%; /* 宽度与图片宽度比例 0.2:1 */
+      height: auto; /* 保持宽高比 */
+      aspect-ratio: 1/1; /* 假设图钉接近正方形，或者自适应 */
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -50%); /* 中心位置在图片上边缘的居中位置 */
+      z-index: 20; /* 确保在图片之上 */
+      box-shadow: none !important;
+    }
+    
+    .gallery-item.graphic-design .pin img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: none;
+      box-shadow: none !important;
+    }
+
+    /* Visual Display 随机分布样式 */
+    .gallery-container#visualDisplayGallery {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .gallery-container#visualDisplayGallery.show {
+      opacity: 1;
+    }
+
+    /* Visual Display 动画相关 CSS */
+    .gallery-item.visual-display {
+      position: absolute;
+      cursor: pointer;
+      /* 初始状态：位置由JS设置 */
+      z-index: 10;
+      /* 默认 transition */
+      transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                  left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                  top 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  opacity 0.5s ease;
+    }
+
+    /* 图钉初始隐藏 */
+    .gallery-item.visual-display .pin {
+      width: 20%;
+      height: auto;
+      aspect-ratio: 1/1;
       position: absolute;
       top: 0;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 12px;
-      height: 12px;
-      background: #999;
-      border-radius: 50%;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.3);
-      z-index: 10;
+      z-index: 20;
+      opacity: 0; /* 初始不可见 */
+      transition: opacity 0.1s ease; /* 加快图钉出现速度 */
     }
-    .leadership-card .card-image {
-      width: 100%;
-      max-height: 160px;
-      object-fit: cover;
-      display: block;
-    }
-    .leadership-card .card-body {
-      padding: 18px 22px;
-    }
-    .leadership-card .card-title {
-      font-family: 'Special Elite', serif;
-      font-size: 15px;
-      color: #222;
-      margin-bottom: 4px;
-    }
-    .leadership-card .card-subtitle {
-      font-family: 'AR One Sans', sans-serif;
-      font-size: 10px;
-      color: #888;
-      margin-bottom: 10px;
-    }
-    .leadership-card .card-desc {
-      font-family: 'Noto Sans SC', sans-serif;
-      font-size: 11px;
-      line-height: 1.6;
-      color: #444;
-    }
-
-    /* --- Content Showcase Gallery (socialMediaGallery) - Left List + Right Phone --- */
-    #socialMediaGallery {
-      display: none;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      gap: 24px;
-      padding: 20px;
-      position: absolute;
-      top: 130px;
-      width: 100%;
-      height: 400px;
-      z-index: 200;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-    #socialMediaGallery.show {
+    
+    /* 图钉钉入状态 */
+    .gallery-item.visual-display .pin.pinned {
       opacity: 1;
-      pointer-events: auto;
-      display: flex !important;
     }
 
-    .article-list {
-      width: 220px;
-      max-height: 380px;
-      overflow-y: auto;
-      flex-shrink: 0;
-    }
-    .article-list-card {
-      background: #fff;
-      border: 1px solid #eee;
-      border-radius: 4px;
-      padding: 10px 12px;
-      margin-bottom: 8px;
-      cursor: pointer;
-      position: relative;
-      transition: all 0.2s ease;
-    }
-    .article-list-card.active {
-      border-left: 3px solid #07c160;
-      background: #f9f9f9;
-    }
-    .article-list-card:hover {
-      border-color: #ccc;
-    }
-    .article-list-card .list-heart {
-      position: absolute;
-      top: 8px;
-      right: 10px;
-      font-size: 14px;
-      color: #ccc;
-      cursor: pointer;
-      user-select: none;
-      transition: color 0.2s;
-    }
-    .article-list-card .list-heart.liked {
-      color: #ff4d4f;
-    }
-    .article-list-card .list-title {
-      font-family: 'Noto Sans SC', sans-serif;
-      font-size: 12px;
-      font-weight: 500;
-      color: #333;
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      padding-right: 18px;
-    }
-    .article-list-card .list-date {
-      font-family: 'AR One Sans', sans-serif;
-      font-size: 9px;
-      color: #999;
-      margin-top: 4px;
-    }
-    .article-hint {
-      font-family: 'AR One Sans', sans-serif;
-      font-size: 10px;
-      color: #999;
-      text-align: center;
-      margin-top: 8px;
-    }
-
-    /* Phone Mockup (new compact version) */
-    .wx-phone-frame {
-      width: 260px;
-      height: 380px;
-      background: #1a1a1a;
-      border-radius: 32px;
-      padding: 8px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-      position: relative;
-      flex-shrink: 0;
-    }
-    .wx-phone-frame::before {
-      content: '';
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 70px;
-      height: 18px;
-      background: #1a1a1a;
-      border-radius: 0 0 14px 14px;
-      z-index: 100;
-    }
-    .wx-phone-frame::after {
-      content: '';
-      position: absolute;
-      bottom: 5px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 3px;
-      background: #333;
-      border-radius: 2px;
-      z-index: 100;
-    }
-    .wx-phone-status-bar {
-      position: absolute;
-      top: 0;
-      left: 8px;
-      right: 8px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 18px;
-      font-family: -apple-system, sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      color: #000;
-      z-index: 50;
-      pointer-events: none;
-    }
-    .wx-phone-screen {
-      width: 100%;
-      height: 100%;
-      background: #fff;
-      border-radius: 24px;
-      overflow: hidden;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-    }
-    .wx-header {
-      background: #ededed;
-      padding: 36px 8px 6px;
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid #e0e0e0;
-      flex-shrink: 0;
-      min-height: 32px;
-    }
-    .wx-header-back {
-      font-size: 16px;
-      color: #333;
-      padding: 2px 6px;
-      cursor: pointer;
-    }
-    .wx-header-title {
-      flex: 1;
-      text-align: center;
-      font-size: 13px;
-      font-weight: 500;
-      color: #333;
-      font-family: -apple-system, "Noto Sans SC", sans-serif;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      padding: 0 6px;
-    }
-    .wx-header-more {
-      font-size: 16px;
-      color: #333;
-      padding: 2px 6px;
-    }
-    .wx-article-scroll {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-      position: relative;
-    }
-    .wx-article-scroll img {
-      width: 100%;
+    .gallery-item.visual-display img {
+      max-width: 150px; /* 图片缩小 */
+      max-height: 180px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       display: block;
+      transition: box-shadow 0.3s ease;
     }
-    .wx-bottom-bar {
-      height: 36px;
-      background: #f7f7f7;
-      border-top: 1px solid #e0e0e0;
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      padding: 0 10px;
-      flex-shrink: 0;
+    
+    .gallery-item.visual-display:hover {
+      z-index: 50 !important; /* 悬停时置顶 */
+      transform: rotate(var(--rotation)) translateY(-15px) scale(1.05); /* 上浮效果 */
     }
-    .wx-action-btn {
-      font-size: 16px;
-      cursor: pointer;
-      color: #666;
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      user-select: none;
+    
+    .gallery-item.visual-display:hover img {
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4); /* 加深阴影 */
     }
-    .wx-action-btn.liked {
-      color: #ff4d4f;
-    }
-    .wx-action-btn span {
-      font-size: 10px;
-      font-family: 'AR One Sans', sans-serif;
-    }
-
-    /* --- Accordion Folder Styles (for Projects gallery) --- */
-    .accordion-stage {
-      position: relative;
-      width: 340px;
-      height: 380px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transform-style: preserve-3d;
-      perspective: 1200px;
-    }
-
-    .folder-page {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      margin-left: -160px;
-      width: 320px;
-      height: 380px;
-      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.6s ease;
-      transform-style: preserve-3d;
-      cursor: pointer;
-      overflow: hidden;
-      user-select: none;
-      -webkit-user-select: none;
-      background-color: #f6f3ea;
-      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.12'/%3E%3C/svg%3E");
-      border: 1px solid rgba(0,0,0,0.1);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      will-change: transform;
-      border-radius: 3px;
-    }
-
-    .folder-page .ripple-layer {
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at center, rgba(64, 158, 255, 0.06) 0%, rgba(64, 158, 255, 0) 50%);
-      opacity: 0.8;
-      pointer-events: none;
-      mix-blend-mode: multiply;
-      animation: rippleFlow 12s infinite ease-in-out alternate;
-      z-index: 5;
-    }
-
-    @keyframes rippleFlow {
-      0% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(10px, 15px) scale(1.05); }
-      100% { transform: translate(-5px, -10px) scale(1); }
-    }
-
-    .folder-page.shadow-light::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(to right, rgba(0,0,0,0.06), rgba(0,0,0,0));
-      pointer-events: none;
-      z-index: 10;
-    }
-    .folder-page.shadow-medium::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(to right, rgba(0,0,0,0.15), rgba(0,0,0,0.05));
-      pointer-events: none;
-      z-index: 10;
-    }
-
-    .folder-page .page-content-wrapper {
-      position: relative;
-      z-index: 6;
+    
+    .gallery-item.visual-display .pin img {
       width: 100%;
       height: 100%;
-      padding: 20px 22px;
-      display: flex;
-      flex-direction: column;
-      background: transparent;
-      backface-visibility: hidden;
-      overflow-y: auto;
-    }
-    .folder-page .proj-title {
-      font-family: 'Special Elite', serif;
-      font-size: 15px;
-      color: #222;
-      margin-bottom: 4px;
-      flex-shrink: 0;
-    }
-    .folder-page .proj-subtitle {
-      font-family: 'AR One Sans', sans-serif;
-      font-size: 10px;
-      color: #888;
-      margin-bottom: 10px;
-      flex-shrink: 0;
-    }
-    .folder-page .proj-image {
-      width: 100%;
-      max-height: 120px;
-      object-fit: cover;
-      border-radius: 3px;
-      margin: 8px 0;
-      flex-shrink: 0;
-    }
-    .folder-page .proj-desc {
-      font-family: 'Noto Sans SC', sans-serif;
-      font-size: 11px;
-      line-height: 1.6;
-      color: #444;
-      flex-shrink: 0;
-    }
-    .folder-page .proj-tags {
-      margin-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      flex-shrink: 0;
-    }
-    .folder-page .proj-tag {
-      border: 1px solid #ccc;
-      border-radius: 50px;
-      padding: 2px 8px;
-      font-size: 9px;
-      color: #888;
-      font-family: 'AR One Sans', sans-serif;
-      display: inline-block;
+      object-fit: contain;
     }
 
-    /* --- 弹出窗口样式 --- */
+    /* 图钉通用样式 - 这里只作为基础，具体样式在各自的类中定义 */
+    .pin {
+      pointer-events: none;
+    }
+
+    /* 弹出窗口样式 */
     .image-modal {
       position: fixed;
       top: 0;
@@ -639,11 +408,13 @@
       display: none;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      overflow: hidden; /* 防止body滚动 */
     }
+
     .image-modal.show {
       display: flex;
     }
+
     .modal-backdrop {
       position: absolute;
       top: 0;
@@ -653,16 +424,18 @@
       background-color: rgba(0, 0, 0, 0.8);
       cursor: pointer;
     }
+
     .modal-content {
       position: relative;
       width: 100%;
       height: 100%;
       z-index: 1001;
-      overflow: auto;
+      overflow: auto; /* 允许内容滚动 */
       display: flex;
       justify-content: center;
       align-items: center;
     }
+
     .modal-content img {
       max-width: 90vw;
       max-height: 90vh;
@@ -670,11 +443,20 @@
       height: auto;
       object-fit: contain;
       box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-      cursor: grab;
+      /* 移除 transition，因为鼠标滚轮缩放需要实时响应 */
+      /* transition: transform 0.3s ease, width 0.3s ease; */
+      cursor: grab; /* 默认手型 */
     }
+    
     .modal-content img:active {
-      cursor: grabbing;
+      cursor: grabbing; /* 拖拽时抓手 */
     }
+    
+    /* 移除之前的 zoomed 类样式，因为现在使用 transform: scale() 控制 */
+    /*
+    .modal-content img.zoomed-1-2x { ... }
+    .modal-content img.zoomed-2x { ... }
+    */
 
     /* ================= 底部 Footer ================= */
     footer{
@@ -688,42 +470,49 @@
       display:grid;
       grid-template-columns:repeat(4,1fr);
       gap:12px;
-      font-size:13px;
-      color: #666666;
-      font-family: "AR One Sans", sans-serif;
+      font-size:13px; /* 12-14px */
+      color: #666666; /* 统一颜色 */
+      font-family: "AR One Sans", sans-serif; /* 统一字体 */
     }
     .footer-item b{
       display:block;
       font-weight:500;
       margin-bottom:6px;
-      color: #666666;
+      color: #666666; /* 统一颜色 */
     }
     .footer-item span {
-      opacity: 1;
+      opacity: 1; /* 统一透明度 */
     }
 
     /* ================= 响应式设计 ================= */
+    /* Tablet Landscape / Small Desktop adjustments */
     @media (min-width: 481px) and (max-width: 1200px) {
       .canvas-container {
-        position: absolute !important;
+        position: absolute !important; /* Changed from fixed to absolute */
         left: 0;
-        z-index: 0;
+        z-index: 0; /* Changed from -1 to 0 to be visible */
         width: 100vw;
       }
+      
+      /* Footer below the screen/waves */
       footer {
-        position: relative;
+        position: relative; 
         margin-top: 0;
         z-index: 10;
         width: 100%;
       }
+      
+      /* Push footer below the fold */
       .container {
-        min-height: 100vh;
+        min-height: 100vh; /* Occupy full viewport height */
         display: flex;
         flex-direction: column;
         position: relative;
       }
+      
+      /* Spacer logic handled by JS or min-height */
       .canvas-spacer {
-        display: none;
+        display: none; 
       }
     }
 
@@ -731,6 +520,7 @@
       .page-title {
         font-size: 36px;
       }
+      
       .canvas-container {
         margin-bottom: 40px;
       }
@@ -741,103 +531,852 @@
         gap: 20px;
         font-size: 12px;
       }
+      
       .page-title {
         font-size: 28px;
       }
+      
       .footer-inner{
         grid-template-columns:1fr 1fr;
         row-gap:16px;
         font-size:12px;
       }
 
+      /* 移动端 Graphic Design 改为三列布局 */
+      .gallery-container#graphicDesignGallery {
+        flex-wrap: wrap;
+        padding-left: 10px; 
+        padding-right: 10px;
+        justify-content: flex-start; /* 改为左对齐，配合gap自动换行 */
+        align-content: flex-start;
+        gap: 6px; /* 控制列间距 */
+        row-gap: 20px; /* 控制行间距，确保不拥挤但也不过远 */
+        overflow-y: auto; 
+        height: auto; 
+        position: absolute; 
+      }
+
+      .gallery-item.graphic-design {
+        /* calc((100% - (2 * gap)) / 3) 计算准确的三列宽度 */
+        width: calc((100% - 12px) / 3); 
+        margin-bottom: 0; /* 移除margin，完全靠 row-gap 控制 */
+        flex: 0 0 auto; /* 禁止伸缩 */
+        display: block; /* 移除flex布局，避免撑大点击区域 */
+        height: auto; /* 高度由内容撑开 */
+      }
+      
+      /* 限制图片高度，防止过长 */
+      .gallery-item.graphic-design .image-wrapper {
+        width: 100%;
+        max-height: 110px; 
+        overflow: hidden;
+        position: relative;
+        /* 确保wrapper紧贴图片 */
+        display: block;
+      }
+      
+      .gallery-item.graphic-design img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        display: block; /* 消除inline-block缝隙 */
+      }
+      
+      /* 调整图钉 */
+      .gallery-item.graphic-design .pin {
+        width: 25%;
+      }
+      
+      .gallery-item.graphic-design img {
+        height: 100%;
+        object-fit: cover;
+      }
+      
+      /* Visual Display 图片缩小 */
+      .gallery-item.visual-display img {
+        max-width: 100px;
+        max-height: 120px;
+      }
+      
+      /* Social Media 调整 */
+      .gallery-container#socialMediaGallery {
+        position: relative;
+        top: auto !important;
+        bottom: auto !important;
+        left: auto !important;
+        right: auto !important;
+        margin-top: 20px;
+        height: auto !important;
+        padding: 20px !important;
+        z-index: 25;
+      }
+      
+      /* 初始状态禁止滚动，等待内容展示 */
       body.locked-scroll {
         overflow: hidden;
       }
-
+      
+      /* Canvas 容器位置调整 - 放在底部 */
       .canvas-container {
         position: fixed;
         top: auto;
-        bottom: 0;
+        bottom: 0; /* 距离底部 0，完全沉底 */
         left: 0;
-        height: 500px !important;
-        z-index: 20;
-        pointer-events: none;
+        height: 500px !important; /* 高度调整为 500px */
+        z-index: 20; 
+        pointer-events: none; /* 让点击穿透，除非是波浪线本身 */
       }
+      
       #p5-canvas {
         height: 100% !important;
         width: 100% !important;
-        object-fit: cover;
-        object-position: center bottom;
-        pointer-events: auto;
+        object-fit: cover; 
+        object-position: center bottom; /* 确保波浪线显示在底部 */
+        pointer-events: auto; /* 确保波浪线可交互 */
       }
-
+      
+      /* Footer 固定在波浪线下方，即页面最底部 */
       footer {
         position: fixed;
-        bottom: 0;
+        bottom: 0; /* 紧贴底部 */
         left: 0;
         width: 100%;
-        z-index: 30;
-        background: transparent;
-        border-top: none;
+        z-index: 30; /* Ensure Footer is clickable (Above Canvas transparent area) */
+        background: transparent; 
+        border-top: none; 
         margin-top: 0;
-        padding-bottom: max(10px, env(safe-area-inset-bottom));
-        height: 60px;
-        overflow-y: auto;
-        overscroll-behavior: contain;
+        /* Adapt to safe area */
+        padding-bottom: max(10px, env(safe-area-inset-bottom)); 
+        
+        /* Scrollable Footer Implementation */
+        height: 60px; /* Show only top part (approx 30%) */
+        overflow-y: auto; /* Allow scrolling to see the rest */
+        overscroll-behavior: contain; /* Prevent scrolling parent */
+        /* Remove transform to allow internal scrolling */
         transform: none !important;
       }
+      
       .footer-inner {
-        padding: 5px 24px 5px;
+        padding: 5px 24px 5px; /* Compact padding */
+      }
+      
+      /* 移动端内容区域需要给底部留出空间，防止被固定的 Footer 和 Canvas 遮挡 */
+      .gallery-container#graphicDesignGallery,
+      .gallery-container#visualDisplayGallery {
+        padding-bottom: 20px !important; /* 底部内边距 */
+        top: 90px !important; /* 上移：从130px改为100px */
+        bottom: 220px !important; /* 底部留白给波浪线 */
+        height: auto !important; /* 高度由 top/bottom 决定 */
+        overflow-y: auto; /* 允许滚动 */
+        z-index: 25; /* 确保在 Canvas (z-index: 20) 之上，但在 Footer (z-index: 30) 之下 */
       }
 
-      /* Mobile gallery positioning */
-      #graphicDesignGallery,
-      #visualDisplayGallery,
-      #socialMediaGallery {
-        top: 90px !important;
-        bottom: 220px !important;
-        height: auto !important;
-        min-height: 200px;
-        overflow-y: auto;
-        z-index: 25;
-        padding: 10px !important;
+      /* Graphic Design 显示修复 */
+      .gallery-container#graphicDesignGallery {
+        display: flex;
+        flex-wrap: wrap;
+        opacity: 1 !important; /* 强制不透明 */
+        visibility: visible !important;
+        pointer-events: auto !important;
+      }
+      
+      /* Removed conflicting .gallery-item.graphic-design block */
+      
+      /* Visual Display 图片容器加高 */
+      .gallery-item.visual-display img {
+        max-width: 85px; /* 缩小宽度 */
+        max-height: 110px; /* 缩小高度 */
+        width: auto;
+        height: auto;
       }
 
-      /* Social media mobile: column layout */
-      #socialMediaGallery {
-        flex-direction: column !important;
-        gap: 12px !important;
+      /* Social Media 显示修复 */
+      .gallery-container#socialMediaGallery {
+        display: none; /* Default hidden */
       }
-      #socialMediaGallery .wx-phone-frame {
-        width: 240px;
-        height: 360px;
+      
+      /* Mobile Font Adjustments */
+      .post-title {
+        font-size: 11px !important; /* Smaller title */
+        margin-right: 4px;
       }
-      #socialMediaGallery .article-list {
-        width: 260px;
-        max-height: 160px;
+      .post-date {
+        font-size: 9px !important;
       }
-
-      /* Hide accordion in social media context only */
-      #socialMediaGallery .accordion-stage {
-        display: none !important;
+      .account-name {
+        font-size: 15px !important;
+        max-width: 180px;
       }
-      #socialMediaGallery .folder-page {
-        display: none !important;
+      .account-platform {
+        font-size: 9px !important;
+        padding: 1px 4px;
       }
-
-      /* Projects folder mobile adjustments */
+      .page-content-wrapper {
+        padding: 30px 15px 15px 15px !important; /* Tighter padding, increased top */
+      }
+      
+      .post-stats {
+        font-size: 8px !important; /* Smaller stats text */
+      }
+      .stat-label {
+        font-size: 7px !important; /* Smaller labels */
+      }
+      
+      .gallery-container#socialMediaGallery.show {
+        display: flex !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        overflow: visible !important;
+        align-items: center;
+        justify-content: center;
+      }
+      
       .accordion-stage {
-        width: 90vw;
-        height: 350px;
+        display: none !important;
       }
       .folder-page {
-        width: 85vw;
-        height: 350px;
+        display: none !important;
+      }
+    }
+    
+    /* 点击交互动画 */
+    @keyframes bounceGraphic {
+      0% { transform: translateY(0); }
+      40% { transform: translateY(-30px); }
+      100% { transform: translateY(0); }
+    }
+
+    /* ================= Social Media Content (Accordion Fold) ================= */
+    .gallery-container#socialMediaGallery {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow: visible;
+      perspective: none;
+      gap: 0;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+      width: 100%;
+      min-height: 0;
+      position: relative;
+      z-index: 200;
+      margin-top: 0;
+    }
+
+    .gallery-container#socialMediaGallery.show {
+      opacity: 1;
+      pointer-events: auto;
+      display: flex !important;
+    }
+
+    /* Sort Bar */
+    .sort-bar {
+        display: flex;
+        gap: 20px;
+        position: absolute;
+        bottom: 100%; /* Position above the gallery */
+        left: 50%;
+        transform: translateX(-50%); /* Center horizontally relative to viewport */
+        width: 100%;
+        max-width: 1200px; /* Match container max-width */
+        padding: 0 24px 8px 24px; /* Restore padding to prevent overlap */
+        justify-content: flex-end; /* Right align */
+        margin-bottom: 0;
+        z-index: 200;
+        font-family: var(--font-code);
+        pointer-events: auto; /* Ensure clickable */
+      }
+      
+      @media (max-width: 480px) {
+        .sort-bar {
+           gap: 8px !important; /* Smaller gap on mobile */
+           margin-bottom: 15px !important; /* Push up to align with title baseline */
+           padding-right: 15px !important;
+        }
+        .sort-btn {
+           padding: 2px 8px !important;
+           font-size: 9px !important;
+        }
       }
 
-      .leadership-card {
-        width: 95%;
+    .sort-btn {
+      background: transparent;
+      border: 1px solid #999;
+      color: #666;
+      padding: 3px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 10px;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .sort-btn:hover {
+      border-color: #333;
+      color: #333;
+    }
+
+    .sort-btn.active {
+      background: #333;
+      color: #fff;
+      border-color: #333;
+    }
+    
+    /* Accordion Stage */
+    .accordion-stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transform-style: preserve-3d;
+      pointer-events: none; /* Stage allows click-through */
+    }
+
+    .folder-page {
+      position: absolute;
+      top: 5px; /* Align to top of container */
+      width: 320px; 
+      height: 100%; /* Full height */
+      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), filter 0.6s ease;
+      transform-style: preserve-3d;
+      cursor: pointer;
+      overflow: hidden;
+      pointer-events: auto; /* Enable interaction for pages */
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: pan-y; /* Allow vertical scroll but capture horizontal swipe */
+    }
+    .folder-page {
+      background-color: #f6f3ea;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.12'/%3E%3C/svg%3E");
+      
+      border: 1px solid rgba(0,0,0,0.1);
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.03); /* Inner shadow for depth */
+      
+      /* Hardware acceleration hint */
+      will-change: transform;
+    }
+
+    /* Dynamic Shadow Overlay for Folds */
+    .folder-page::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      transition: background 0.6s ease;
+      z-index: 10;
+    }
+
+    /* Shadow classes controlled by JS */
+    .folder-page.shadow-light {
+      background: linear-gradient(to right, rgba(0,0,0,0.05), rgba(0,0,0,0));
+    }
+    .folder-page.shadow-medium {
+      background: linear-gradient(to right, rgba(0,0,0,0.15), rgba(0,0,0,0.05));
+    }
+    .folder-page.shadow-heavy {
+      background: linear-gradient(to right, rgba(0,0,0,0.3), rgba(0,0,0,0.1));
+    }
+    
+    /* Water Ripple Effect */
+    .folder-page .ripple-layer {
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(64, 158, 255, 0.08) 0%, rgba(64, 158, 255, 0) 50%);
+      opacity: 0.8;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+      animation: rippleFlow 12s infinite ease-in-out alternate;
+      z-index: 5;
+    }
+    
+    @keyframes rippleFlow {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(10px, 15px) scale(1.05); }
+      100% { transform: translate(-5px, -10px) scale(1); }
+    }
+
+    /* Content Wrapper */
+    .page-content-wrapper {
+      position: relative;
+      z-index: 6; 
+      width: 100%;
+      height: 100%;
+      padding: 20px 25px; /* Reduced padding for more space */
+      display: flex;
+      flex-direction: column;
+      background: transparent;
+      /* Ensure content is visible even when folded, but handled by 3D transform */
+      backface-visibility: hidden; /* Clean up rendering */
+    }
+    
+    /* Hide content logic is removed; we rely on 3D angle and z-index */
+    
+    /* Spine Label removed */
+    .spine-label {
+      display: none;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .folder-page {
+        width: 80vw;
+        height: 60vh;
       }
+      .gallery-container#socialMediaGallery {
+        perspective: 1000px;
+      }
+    }
+    
+    /* 竖排标题 - 折叠状态显示 */
+    .vertical-title {
+      display: none;
+    }
+
+    /* 账号标题 */
+    .account-header {
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    
+    .account-name {
+      font-family: var(--font-main);
+      font-size: 18px;
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 240px;
+      color: #222;
+    }
+    
+    .account-platform {
+      font-family: var(--font-code);
+      font-size: 11px;
+      color: #555;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      background: rgba(0,0,0,0.05);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* 数据列表 */
+    .posts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-grow: 1;
+    }
+
+    .post-item {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    
+    .post-item:last-child {
+      border-bottom: none;
+    }
+    
+    .post-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 5px;
+    }
+    
+    .post-title {
+      font-family: var(--font-chinese);
+      font-size: 13px;
+      font-weight: 500;
+      color: #111;
+      text-decoration: none;
+      transition: color 0.2s;
+      flex: 1;
+      margin-right: 8px;
+      line-height: 1.4;
+      /* Ensure single line */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block; /* Change from flex child behavior if needed */
+    }
+    
+    .post-title:hover {
+      color: #666;
+      text-decoration: underline;
+    }
+    
+    .post-date {
+      font-family: var(--font-code);
+      font-size: 10px;
+      color: #888;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+    
+    .post-stats {
+      display: block; /* Changed to block to handle absolute positioning of groups */
+      position: relative;
+      font-family: var(--font-code);
+      font-size: 10px;
+      color: #555;
+      height: 14px; /* Fixed height for stats line */
+      overflow: hidden;
+    }
+    
+    .stats-group {
+      display: flex;
+      gap: 12px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      background: transparent; /* Changed from #f6f3ea to transparent to blend with page shadows */
+    }
+    
+    .default-group {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    .hover-group {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    
+    /* Trigger hover on post-item */
+    .post-item:hover .has-hover-stats .default-group {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    
+    .post-item:hover .has-hover-stats .hover-group {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      white-space: nowrap;
+    }
+    
+    .stat-label {
+      color: #999;
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+    
+    /* 响应式调整 */
+    @media (max-width: 768px) {
+      /* 移除被覆盖的 socialMediaGallery 样式，避免冲突 */
+      /*
+      .gallery-container#socialMediaGallery {
+        flex-direction: column; 
+        height: auto;
+        overflow-y: auto;
+        padding: 20px;
+      }
+      .folder-page {
+        width: 100%;
+        height: auto;
+        min-height: 100px;
+        margin-bottom: 10px;
+        flex-shrink: 0;
+      }
+      */
+      
+      .folder-page.expanded {
+        min-height: 400px;
+      }
+      .page-content-wrapper {
+        min-width: 0;
+      }
+      .vertical-title {
+        writing-mode: horizontal-tb;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: left;
+      }
+    }
+
+    /* ===== Phone mockup for WeChat Articles ===== */
+    #socialMediaGallery {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      z-index: 200;
+      pointer-events: auto;
+    }
+    #socialMediaGallery.show {
+      display: flex !important;
+    }
+    .phone-frame {
+      width: 320px;
+      height: 580px;
+      background: #1a1a1a;
+      border-radius: 40px;
+      padding: 12px;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.35), inset 0 0 0 2px #333;
+      position: relative;
+      overflow: hidden;
+    }
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90px;
+      height: 26px;
+      background: #1a1a1a;
+      border-radius: 0 0 18px 18px;
+      z-index: 100;
+    }
+    .phone-frame::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 4px;
+      background: #333;
+      border-radius: 2px;
+      z-index: 100;
+    }
+    .phone-status-bar {
+      position: absolute;
+      top: 0;
+      left: 12px;
+      right: 12px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      font-family: -apple-system, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #000;
+      z-index: 50;
+      pointer-events: none;
+    }
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      border-radius: 30px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .wechat-header {
+      background: #ededed;
+      padding: 44px 12px 10px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #e0e0e0;
+      flex-shrink: 0;
+      min-height: 30px;
+    }
+    .wechat-back {
+      font-size: 20px;
+      color: #333;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+    .wechat-header-title {
+      flex: 1;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 500;
+      color: #333;
+      font-family: -apple-system, "Noto Sans SC", sans-serif;
+    }
+    .wechat-more {
+      font-size: 20px;
+      color: #333;
+      padding: 4px 8px;
+    }
+    .article-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+    }
+    .article-page {
+      display: none;
+      padding: 0;
+      background: #fff;
+    }
+    .article-page.active {
+      display: block;
+    }
+    .article-cover {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+    .article-body {
+      padding: 16px 18px 20px;
+    }
+    .article-account {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .article-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #07c160, #10ad54);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      font-family: "Noto Sans SC", sans-serif;
+      flex-shrink: 0;
+    }
+    .article-account-info {
+      flex: 1;
+    }
+    .article-account-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      font-family: "Noto Sans SC", sans-serif;
+    }
+    .article-date {
+      font-size: 11px;
+      color: #999;
+      margin-top: 2px;
+    }
+    .article-follow-btn {
+      background: #07c160;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: "Noto Sans SC", sans-serif;
+      pointer-events: auto;
+    }
+    .article-title {
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 1.4;
+      color: #000;
+      margin-bottom: 14px;
+      font-family: "Noto Sans SC", sans-serif;
+    }
+    .article-excerpt {
+      font-size: 15px;
+      line-height: 1.8;
+      color: #333;
+      font-family: "Noto Sans SC", sans-serif;
+      margin-bottom: 16px;
+    }
+    .article-read-original {
+      display: inline-block;
+      background: #f7f7f7;
+      color: #576b95;
+      text-decoration: none;
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 4px;
+      font-family: "Noto Sans SC", sans-serif;
+      pointer-events: auto;
+      cursor: pointer;
+      border: 1px solid #e5e5e5;
+    }
+    .article-read-original:hover {
+      background: #eee;
+    }
+    .phone-dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      padding: 10px 0 0;
+    }
+    .phone-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ccc;
+      cursor: pointer;
+      transition: all 0.3s;
+      pointer-events: auto;
+    }
+    .phone-dot.active {
+      background: #07c160;
+      width: 20px;
+      border-radius: 4px;
+    }
+    .phone-hint {
+      text-align: center;
+      font-size: 11px;
+      color: #999;
+      font-family: "AR One Sans", sans-serif;
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+    }
+    .sort-bar { display: none !important; }
+    .accordion-stage { display: none !important; }
+    .folder-page { display: none !important; }
+    @media (max-width: 480px) {
+      .phone-frame {
+        width: 280px;
+        height: 520px;
+      }
+      .article-cover {
+        height: 170px;
+      }
+    }
+
+    .gallery-container#visualDisplayGallery.show {
+      display: flex !important;
+      pointer-events: auto !important;
+    }
+
+    .gallery-container#graphicDesignGallery,
+    .gallery-container#visualDisplayGallery {
+      z-index: 200;
     }
   </style>
 </head>
@@ -966,43 +1505,27 @@
     let socialMediaGallery = null;
     let imageModal = null;
     
-    // Projects Data (for accordion folder)
-    const projectPages = [
-      {
-        title: "Fund Flow Forecasting",
-        subtitle: "SARIMA · Python · Financial Time Series · 2026",
-        desc: "Built a daily fund-inflow time series from anonymized user-level subscription/redemption records. Conducted ADF stationarity tests, seasonal differencing, and ACF/PACF analysis to identify SARIMA parameters. Delivered a 7-day rolling forecast with MAE/RMSE evaluation.",
-        tags: ["Time Series", "SARIMA", "pandas", "matplotlib"],
-        image: null
-      },
-      {
-        title: "E-Commerce Review Analytics",
-        subtitle: "NLP · Python · E-Commerce · 2026",
-        desc: "Crawled and cleaned 50,000+ e-commerce user reviews. Performed Chinese word segmentation (jieba), TF-IDF keyword extraction, sentiment classification, and LDA topic modeling to identify consumer pain points. Built an interactive visualization dashboard.",
-        tags: ["NLP", "LDA", "jieba", "Dashboard"],
-        image: "./images/ecommerce-dashboard.png"
-      }
-    ];
-
-    // Social Media / Content Showcase Data
+    // WeChat Articles Data
     const socialMediaData = [
       {
-        title: "用青春温度，暖银发时光",
-        date: "2025年4月7日",
-        account: "青春武工商",
-        cover: "./images/spark-activity.jpg",
-        screenshot: "./images/article1.jpg",
-        excerpt: "三月的风拂过江南，嫩柳新鲜，樱花轻盈。星火学社志愿者们走进江夏天使养老院开展春日志愿服务，为老人们送去温暖与关怀。",
-        link: "https://mp.weixin.qq.com/s/zOJ3kT-4f_0eyjcer2D56w"
-      },
-      {
-        title: "青丝伴白发，代际共温情",
-        date: "2025年5月24日",
-        account: "青春武工商",
-        cover: "./images/spark-activity.jpg",
-        screenshot: "./images/article2.jpg",
-        excerpt: "星火学社的志愿者们再次走进养老院，通过倾听和行动传递美好。用温暖的陪伴抚慰心灵，以勤劳的劳动改善环境。",
-        link: "https://mp.weixin.qq.com/s/Z-_i5gsXK2_nD-f4SSWO5g"
+        account: "星火学社",
+        platform: "WeChat",
+        posts: [
+          {
+            title: "传播公益思想，共筑美好未来——星火学社养老院公益行活动回顾",
+            date: "2025",
+            cover: "./images/spark-activity.jpg",
+            excerpt: "近日，星火学社组织成员前往养老院开展公益探访活动，为老人们送去温暖与关怀，用实际行动传递公益力量。",
+            link: "https://mp.weixin.qq.com/s/zOJ3kT-4f_0eyjcer2D56w"
+          },
+          {
+            title: "星火学社招新 | 加入我们，一起发光发热",
+            date: "2025",
+            cover: "./images/spark-activity.jpg",
+            excerpt: "星火学社是一个致力于公益传播与社会实践的学生社团。我们相信，每一颗星星都能照亮夜空。",
+            link: "https://mp.weixin.qq.com/s/Z-_i5gsXK2_nD-f4SSWO5g"
+          }
+        ]
       }
     ];
 
@@ -1075,7 +1598,7 @@
          scaleFactor = canvasWidth / 1280;
       }
 
-      let labels = ["Projects", "Leadership", "Content Showcase"];
+      let labels = ["Data Projects", "Leadership", "Content Showcase"];
       // 初始位置由 updateTargetPositions 计算，这里先用临时值
       let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
       let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
@@ -1098,10 +1621,11 @@
       socialMediaGallery = document.getElementById('socialMediaGallery');
       imageModal = document.getElementById('imageModal');
       
-      // 初始化各画廊
-      initProjectsFolder();
-      initLeadershipCards();
-      initSocialMediaGallery();
+      // 初始化图片展示
+      initImageGalleries();
+      
+      populateProjectCards();
+      populateLeadership();
       
       console.log('Setup 完成，缩放比例：' + scaleFactor);
     }
@@ -1154,7 +1678,7 @@
       
       // 重新初始化波浪
       waves = [];
-      let labels = ["Projects", "Leadership", "Content Showcase"];
+      let labels = ["Data Projects", "Leadership", "Content Showcase"];
       // 初始位置由 updateTargetPositions 计算
       let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
       let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
@@ -1169,17 +1693,13 @@
         waves.push(new Wave(startY, labels[i], i, tw));
       }
       
-      // 如果当前显示的是Projects，重新初始化folder
-      if (currentDisplayedImageId === 0 && graphicDesignGallery && graphicDesignGallery.classList.contains('show')) {
-        // accordion folder doesn't need re-init on resize
-      }
-      // 如果当前显示的是Leadership，重新布局
+      // 如果当前显示的是Visual Display，重新布局
       if (currentDisplayedImageId === 1 && visualDisplayGallery && visualDisplayGallery.classList.contains('show')) {
-        // single card doesn't need re-init
+        initVisualDisplayGallery();
       }
-      // 如果当前显示的是Content Showcase，重新布局
+      // 如果当前显示的是Social Media，重新布局
       if (currentDisplayedImageId === 2 && socialMediaGallery && socialMediaGallery.classList.contains('show')) {
-        // layout is CSS flex, no JS re-init needed
+        initSocialMediaGallery();
       }
     }
 
@@ -1398,314 +1918,1194 @@
       // 移除 P5.js Canvas 容器里的 "Works." 标题
     }
 
-    // ================= Gallery Init Functions =================
+    // ================= 图片展示功能 =================
+    function initImageGalleries() {
+      // 初始化 Graphic Design 图片网格
+      initGraphicDesignGallery();
+      // 初始化 Visual Display 图片随机分布
+      initVisualDisplayGallery();
+      // 初始化 Social Media
+      initSocialMediaGallery();
+    }
 
-    // --- Projects Folder (Accordion) ---
-    function initProjectsFolder() {
+    function populateProjectCards() {
+      if (!graphicDesignGallery) return;
+      graphicDesignGallery.style.position = 'relative';
+      graphicDesignGallery.style.flexDirection = 'column';
+      graphicDesignGallery.style.alignItems = 'center';
+      graphicDesignGallery.style.padding = '30px 20px';
+      graphicDesignGallery.style.gap = '20px';
+      graphicDesignGallery.style.overflowY = 'auto';
+      graphicDesignGallery.style.top = '';
+      graphicDesignGallery.style.height = '';
+      graphicDesignGallery.style.maxHeight = '';
+      graphicDesignGallery.style.paddingLeft = '20px';
+      graphicDesignGallery.style.paddingRight = '20px';
+      graphicDesignGallery.style.justifyContent = 'flex-start';
+      graphicDesignGallery.style.flexWrap = 'nowrap';
+
+      const cards = [
+        {
+          html: `<div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">Fund Flow Forecasting</div>
+<div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">金融服务机构资金流量预测 · SARIMA · Python · 2026</div>
+<div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
+Built a daily fund-inflow time series from anonymized user-level subscription/redemption records. Conducted stationarity tests (ADF), seasonal differencing, and ACF/PACF analysis to identify SARIMA parameters. Delivered a 7-day rolling forecast with MAE/RMSE evaluation. Visualized trends, seasonality, and residual diagnostics using matplotlib.
+</div>`,
+          rotation: -1.5
+        },
+        {
+          html: `<div style="margin: -4px -4px 12px -4px;"><img src="./images/ecommerce-dashboard.png" style="width:100%;border-radius:3px 3px 0 0;display:block;"></div><div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">E-Commerce Review Analytics</div>
+<div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">电商大数据用户评论分析 · NLP · Python · 2026</div>
+<div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
+Crawled and cleaned 50,000+ e-commerce user reviews. Performed Chinese word segmentation (jieba), stopword removal, and TF-IDF keyword extraction. Conducted sentiment classification and topic modeling (LDA) to identify consumer pain points. Built an interactive visualization dashboard summarizing rating distributions, review volume trends, and high-frequency complaint categories.
+</div>`,
+          rotation: 1
+        }
+      ];
+
+      cards.forEach((card, i) => {
+        const cardEl = document.createElement('div');
+        cardEl.style.maxWidth = '600px';
+        cardEl.style.width = '100%';
+        cardEl.style.background = 'rgba(255,255,255,0.7)';
+        cardEl.style.border = '1px solid #ddd';
+        cardEl.style.borderRadius = '4px';
+        cardEl.style.padding = '18px 22px';
+        cardEl.style.position = 'relative';
+        cardEl.style.transform = `rotate(${card.rotation}deg)`;
+        cardEl.innerHTML = card.html;
+        graphicDesignGallery.appendChild(cardEl);
+      });
+    }
+
+    function populateLeadership() {
+      if (!visualDisplayGallery) return;
+      visualDisplayGallery.style.position = 'relative';
+      visualDisplayGallery.style.flexDirection = 'column';
+      visualDisplayGallery.style.alignItems = 'center';
+      visualDisplayGallery.style.justifyContent = 'center';
+      visualDisplayGallery.style.padding = '40px 20px';
+      visualDisplayGallery.style.overflowY = 'auto';
+      visualDisplayGallery.style.top = '';
+      visualDisplayGallery.style.height = '';
+      visualDisplayGallery.style.maxHeight = '';
+      visualDisplayGallery.style.left = '';
+      visualDisplayGallery.style.right = '';
+      visualDisplayGallery.style.bottom = '';
+      visualDisplayGallery.innerHTML = `<div style="max-width:600px;width:100%;background:rgba(255,255,255,0.7);border:1px solid #ddd;border-radius:4px;padding:22px 26px;transform:rotate(-1deg);">
+  <div style="margin: -4px -4px 14px -4px;"><img src="./images/spark-activity.jpg" style="width:100%;border-radius:3px 3px 0 0;display:block;max-height:280px;object-fit:cover;"></div>
+  <div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">Spark Society · 星火学社</div>
+  <div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">Founder &amp; President · 2023.09 – Present · Wuhan</div>
+  <div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
+    Founded and led a student association of 50+ members. Organized public welfare events including nursing home visits (养老公益行) and community outreach. Managed a cross-functional team across event planning, marketing, design, and communications. Produced WeChat Official Account promotional content, handling copywriting and content strategy.
+  </div>
+  <div style="font-family:'Noto Sans SC',sans-serif;font-size:12px;line-height:1.6;color:#888;margin-top:10px;">
+    · 社团成员50+人<br>
+    · 组织养老院公益探访等活动<br>
+    · 负责公众号宣发文案与内容策划
+  </div>
+</div>`;
+    }
+
+    function initGraphicDesignGallery() {
       if (!graphicDesignGallery) return;
       graphicDesignGallery.innerHTML = '';
+      
+      // 动态计算 Graphic Design 容器的位置和高度
+      const titleElement = document.querySelector('.page-title');
+      let canvasWidth = windowWidth;
+      let canvasHeight = isMobileMode ? 500 : (canvasWidth * (623 / 1280) - 20);
+      let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
+      // 关键修改：使用 compressed 间距来计算波浪线位置，防止图片与压缩后的波浪线重叠
+      let effectiveGap = isMobileMode ? config.lineGapCompressed : config.lineGapInitial;
+      let firstLineY = lastLineY - (2 * effectiveGap * scaleFactor);
+      
+      let galleryHeight = 500;
+      
+      // Add tablet check
+      let isTabletMode = windowWidth > 480 && windowWidth <= 1200;
 
-      const stage = document.createElement('div');
-      stage.className = 'accordion-stage';
-      stage.id = 'projectsAccordionStage';
-
-      const pages = [];
-      let activePageIdx = 0;
-      let isAnimating = false;
-
-      projectPages.forEach((proj, idx) => {
-        const page = document.createElement('div');
-        page.className = 'folder-page';
-        page.dataset.idx = idx;
-
-        const ripple = document.createElement('div');
-        ripple.className = 'ripple-layer';
-        page.appendChild(ripple);
-
-        const contentWrapper = document.createElement('div');
-        contentWrapper.className = 'page-content-wrapper';
-
-        let imgHtml = '';
-        if (proj.image) {
-          imgHtml = `<img class="proj-image" src="${proj.image}" alt="${proj.title}">`;
-        }
-
-        const tagsHtml = proj.tags.map(t => `<span class="proj-tag">${t}</span>`).join('');
-
-        contentWrapper.innerHTML = `
-          <div class="proj-title">${proj.title}</div>
-          <div class="proj-subtitle">${proj.subtitle}</div>
-          ${imgHtml}
-          <div class="proj-desc">${proj.desc}</div>
-          <div class="proj-tags">${tagsHtml}</div>
-        `;
-        page.appendChild(contentWrapper);
-        stage.appendChild(page);
-        pages.push(page);
-      });
-
-      graphicDesignGallery.appendChild(stage);
-
-      function foldPages() {
-        const total = pages.length;
-        if (total === 0) return;
-
-        pages.forEach((page, i) => {
-          const dist = i - activePageIdx;
-          page.classList.remove('shadow-light', 'shadow-medium', 'shadow-heavy');
-
-          if (dist === 0) {
-            page.style.transformOrigin = 'center center';
-            page.style.transform = 'translateX(0) translateZ(40px) rotateY(0deg)';
-            page.style.zIndex = 50;
-            page.style.boxShadow = '0 12px 40px rgba(0,0,0,0.25)';
-          } else if (dist < 0) {
-            const x = -80 + (activePageIdx - i - 1) * 20;
-            const angle = -25 - (activePageIdx - i - 1) * 10;
-            page.style.transformOrigin = 'right center';
-            page.style.transform = `translateX(${x}px) translateZ(${-Math.abs(dist)*10}px) rotateY(${angle}deg)`;
-            page.style.zIndex = 40 + dist;
-            page.classList.add('shadow-medium');
+      if (titleElement) {
+        const titleRect = titleElement.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const topPos = titleRect.bottom + scrollTop + 10; // 标题下方留白，加上滚动偏移
+        
+        if (!isMobileMode) {
+          if (isTabletMode) {
+             // Tablet: Calculate available space above waves
+             const canvasTop = window.innerHeight - canvasHeight - 10;
+             const waveTopY = canvasTop + firstLineY;
+             
+             // Calculate available height: Wave Top - Gallery Top - Padding
+             // We want the image to stop a bit above the wave
+             const availableHeight = waveTopY - topPos - 20;
+             
+             graphicDesignGallery.style.top = topPos + 'px';
+             graphicDesignGallery.style.height = Math.max(100, availableHeight) + 'px'; // Ensure min height
+             graphicDesignGallery.style.maxHeight = Math.max(100, availableHeight) + 'px';
+             graphicDesignGallery.style.paddingBottom = '0'; 
           } else {
-            const x = 80 + (i - activePageIdx - 1) * 20;
-            const angle = 25 + (i - activePageIdx - 1) * 10;
-            page.style.transformOrigin = 'left center';
-            page.style.transform = `translateX(${x}px) translateZ(${-Math.abs(dist)*10}px) rotateY(${angle}deg)`;
-            page.style.zIndex = 40 - dist;
-            page.classList.add('shadow-light');
+             // Desktop: Canvas top is 40px
+             const canvasTop = 40;
+             const waveTopY = canvasTop + firstLineY; // 波浪线相对于文档顶部的Y坐标
+             
+             const availableHeight = waveTopY - topPos - 10 + 50 - 35; 
+             
+             graphicDesignGallery.style.top = topPos + 'px';
+             graphicDesignGallery.style.height = availableHeight + 'px';
+             // 确保图片不覆盖波浪线
+             graphicDesignGallery.style.maxHeight = availableHeight + 'px';
           }
-        });
+        } else {
+          // 移动端：样式由 CSS 控制 (height: calc(100vh - 100px))
+          // 清除 JS 设置的样式，防止干扰
+          graphicDesignGallery.style.top = '';
+          graphicDesignGallery.style.height = '';
+          graphicDesignGallery.style.maxHeight = '';
+        }
       }
 
-      pages.forEach((page, idx) => {
-        page.addEventListener('click', (e) => {
-          if (isAnimating) return;
-          if (idx === activePageIdx) return;
-          isAnimating = true;
-          activePageIdx = idx;
-          foldPages();
-          setTimeout(() => { isAnimating = false; }, 650);
-        });
-      });
-
-      // Touch swipe support
-      let touchStartX = 0;
-      stage.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-      }, { passive: true });
-      stage.addEventListener('touchend', (e) => {
-        const touchEndX = e.changedTouches[0].screenX;
-        const diff = touchStartX - touchEndX;
-        if (Math.abs(diff) < 50) return;
-        if (diff > 0 && activePageIdx < pages.length - 1) {
-          isAnimating = true;
-          activePageIdx++;
-          foldPages();
-          setTimeout(() => { isAnimating = false; }, 650);
-        } else if (diff < 0 && activePageIdx > 0) {
-          isAnimating = true;
-          activePageIdx--;
-          foldPages();
-          setTimeout(() => { isAnimating = false; }, 650);
+        // 随机顺序数组
+        const randomIndices = Array.from({length: workImages.length}, (_, i) => i);
+        // Shuffle
+        for (let i = randomIndices.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [randomIndices[i], randomIndices[j]] = [randomIndices[j], randomIndices[i]];
         }
-      }, { passive: true });
-
-      setTimeout(foldPages, 50);
+        
+        workImages.forEach((imgPath, index) => {
+          const item = document.createElement('div');
+          // ... (省略创建元素代码) ...
+          item.className = 'gallery-item graphic-design';
+          
+          const wrapper = document.createElement('div');
+          wrapper.className = 'image-wrapper';
+          
+          const img = document.createElement('img');
+          img.src = imgPath;
+          img.alt = `Graphic Design ${index + 1}`;
+          // 移除直接打开Modal的事件，改为在 item 上处理
+          // img.onclick = () => openModal(imgPath);
+          
+          img.onload = () => {
+               if (img.offsetHeight > wrapper.offsetHeight * 1.1) {
+                   item.classList.add('long-image');
+               }
+          };
+          
+          const pinPath = seashellPins[Math.floor(Math.random() * seashellPins.length)];
+          const pin = document.createElement('div');
+          pin.className = 'pin';
+          const pinImg = document.createElement('img');
+          pinImg.src = pinPath;
+          pinImg.alt = 'Pin';
+          pin.appendChild(pinImg);
+          
+          wrapper.appendChild(img);
+          item.appendChild(wrapper);
+          item.appendChild(pin);
+          
+          // 设置随机动画延迟
+          // 找到当前 index 在随机数组中的位置（顺序）
+          const delayOrder = randomIndices.indexOf(index);
+          item.style.animationDelay = `${delayOrder * 0.15}s`; // 增加一点间隔 0.1 -> 0.15
+          
+          // 绑定点击交互
+          item.onclick = (e) => handleImageClick(e, item, imgPath, 'graphic');
+          
+          graphicDesignGallery.appendChild(item);
+        });
     }
 
-    // --- Leadership Card ---
-    function initLeadershipCards() {
+    function initVisualDisplayGallery() {
       if (!visualDisplayGallery) return;
       visualDisplayGallery.innerHTML = '';
+      
+      // 延迟执行以确保DOM已渲染
+      setTimeout(() => {
+        // 获取标题和波浪线的位置范围
+        const titleElement = document.querySelector('.page-title');
+        
+        // 重新计算波浪线顶部位置
+        let canvasWidth = windowWidth;
+        let canvasHeight = canvasWidth * (623 / 1280) - 20;
+        let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
+        let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
+        
+        if (!titleElement) return;
+        
+        const titleRect = titleElement.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Default Desktop Boundaries (Document Relative)
+        let topBoundary = titleRect.bottom + scrollTop + 10; 
+        let leftBoundary = 24;
+        let rightBoundary = window.innerWidth - 24;
+        
+        // Canvas top is 40px
+        const canvasTop = 40;
+        let bottomBoundary;
 
-      const card = document.createElement('div');
-      card.className = 'leadership-card';
-      card.innerHTML = `
-        <div class="card-pin"></div>
-        <img class="card-image" src="./images/spark-activity.jpg" alt="Spark Society">
-        <div class="card-body">
-          <div class="card-title">Spark Society · 星火学社</div>
-          <div class="card-subtitle">Founder & President · 2023.09 – Present · Wuhan</div>
-          <div class="card-desc">Founded and led a student association of 50+ members. Organized public welfare events including nursing home visits (养老公益行) and community outreach. Managed a cross-functional team across event planning, marketing, design, and communications. Produced WeChat Official Account promotional content, handling copywriting and content strategy.</div>
-        </div>
-      `;
-      visualDisplayGallery.appendChild(card);
+        let isTabletMode = windowWidth > 480 && windowWidth <= 1200;
+
+        if (isMobileMode) {
+             // Mobile Adjustments
+             // 1. Vertical: Relative to container (top: 90px)
+             topBoundary = 0; // Start from top of container
+             
+             // Container Height calculation: Window - Top(90) - Bottom(220)
+             // We set bottomBoundary as the max Y coordinate available in the container
+             // 增加底部留白，确保图片不会太靠下
+             bottomBoundary = window.innerHeight - 90 - 240;   
+             
+             // 2. Horizontal: Wider spread (Reduce margin)
+             const marginX = 10; // Fixed small margin to reduce whitespace
+             leftBoundary = marginX;
+             rightBoundary = window.innerWidth - marginX;
+             
+        } else if (isTabletMode) {
+             // Tablet: Use viewport height with some padding
+             bottomBoundary = window.innerHeight - 150;
+        } else {
+             // Desktop
+             bottomBoundary = canvasTop + firstLineY - 10 + 30; 
+        }
+        
+        // 存储已放置图片的区域，用于碰撞检测
+        const placedRects = [];
+
+        displayImages.forEach((imgPath, index) => {
+          const item = document.createElement('div');
+          item.className = 'gallery-item visual-display';
+          
+          // 根据移动端调整占位尺寸，与CSS保持一致
+          const imgWidth = isMobileMode ? 85 : 150; 
+          const imgHeight = isMobileMode ? 110 : 180;
+          
+          const minX = leftBoundary;
+          const maxX = Math.max(minX, rightBoundary - imgWidth);
+          const minY = topBoundary;
+          const maxY = Math.max(minY, bottomBoundary - imgHeight);
+          
+          // 尝试多次放置，避免严重重叠
+          let bestX = minX;
+          let bestY = minY;
+          let minOverlap = Infinity;
+          let foundGoodSpot = false;
+
+          for (let attempt = 0; attempt < 100; attempt++) { 
+             const x = Math.random() * (maxX - minX) + minX;
+             const y = Math.random() * (maxY - minY) + minY;
+             
+             // 计算当前尝试位置与所有已放置图片的重叠面积总和
+             let totalOverlapArea = 0;
+             const currentRect = { x: x, y: y, w: imgWidth, h: imgHeight };
+             
+             for (const rect of placedRects) {
+               const overlapW = Math.max(0, Math.min(x + imgWidth, rect.x + rect.w) - Math.max(x, rect.x));
+               const overlapH = Math.max(0, Math.min(y + imgHeight, rect.y + rect.h) - Math.max(y, rect.y));
+               totalOverlapArea += overlapW * overlapH;
+             }
+             
+             const selfArea = imgWidth * imgHeight;
+             const overlapRatio = totalOverlapArea / selfArea;
+             
+             // 记录最佳位置（重叠最小）
+             if (overlapRatio < minOverlap) {
+               minOverlap = overlapRatio;
+               bestX = x;
+               bestY = y;
+             }
+             
+             // 如果重叠少于10%，直接使用
+             if (overlapRatio < 0.1) {
+               foundGoodSpot = true;
+               break;
+             }
+          }
+          
+          placedRects.push({ x: bestX, y: bestY, w: imgWidth, h: imgHeight });
+          
+          const rotation = Math.random() * 30 - 15; // 增加旋转角度 -15 到 +15 度
+          
+          // 设置 CSS 变量用于 hover 动画
+          item.style.setProperty('--rotation', rotation + 'deg');
+          
+          // 保存最终位置到 dataset
+          item.dataset.finalX = bestX;
+          item.dataset.finalY = bestY;
+          item.dataset.finalRot = rotation;
+          
+          // 初始位置：从导航栏下方的一条线散落，且水平位置接近最终落点
+          const startOffset = (Math.random() - 0.5) * 100; // 左右偏移 -50px 到 50px
+          const startX = bestX + startOffset;
+          const startY = isMobileMode ? 0 : 120; // 移动端从容器顶部(0)开始，桌面端从120开始
+
+          item.style.left = startX + 'px';
+          item.style.top = startY + 'px';
+          item.style.transform = 'rotate(0deg)';
+          item.style.opacity = '0'; // 初始透明
+          item.style.transition = 'none'; // 初始禁止 transition
+          
+          const img = document.createElement('img');
+          img.src = imgPath;
+          img.alt = `Visual Display ${index + 1}`;
+          // 移除直接打开Modal的事件
+          // img.onclick = () => openModal(imgPath);
+          
+          // 绑定点击交互
+          item.onclick = (e) => handleImageClick(e, item, imgPath, 'visual');
+          
+          // 随机选择图钉
+          const pinPath = seashellPins[Math.floor(Math.random() * seashellPins.length)];
+          const pin = document.createElement('div');
+          pin.className = 'pin'; // 默认 pin 样式里 opacity: 0
+          const pinImg = document.createElement('img');
+          pinImg.src = pinPath;
+          pinImg.alt = 'Pin';
+          pin.appendChild(pinImg);
+          
+          item.appendChild(img);
+          item.appendChild(pin);
+          visualDisplayGallery.appendChild(item);
+        });
+        
+        // 如果当前应该是显示状态（比如 resize 后），立即触发动画
+        // 或者是第一次加载且已经处于显示状态
+        if (visualDisplayGallery.classList.contains('show') || (currentDisplayedImageId === 1 && !visualDisplayGallery.style.display.includes('none'))) {
+           // 确保 display 是 block
+           visualDisplayGallery.style.display = 'block';
+           visualDisplayGallery.classList.add('show');
+           runVisualDisplayAnimation();
+        }
+
+        populateLeadership();
+        
+      }, 100);
+    }
+    
+    // 运行 Visual Display 的散落动画
+    function runVisualDisplayAnimation() {
+      if (!visualDisplayGallery) return;
+      
+      const items = visualDisplayGallery.querySelectorAll('.gallery-item.visual-display');
+      if (items.length === 0) return; 
+
+      // 1. 重置状态：分布在导航栏下方的一条线上且透明
+      items.forEach((item, index) => {
+        const finalX = parseFloat(item.dataset.finalX);
+        const startOffset = (Math.random() - 0.5) * 100; // 左右偏移 -50px 到 50px
+        const startX = finalX + startOffset;
+        const startY = isMobileMode ? 0 : 120; // 移动端从容器顶部(0)开始
+        
+        item.style.transition = 'none';
+        item.style.left = startX + 'px';
+        item.style.top = startY + 'px';
+        item.style.transform = `rotate(0deg)`;
+        item.style.opacity = '0';
+        item.style.zIndex = index + 1;
+        
+        // 重置图钉
+        const pin = item.querySelector('.pin');
+        if (pin) pin.classList.remove('pinned');
+      });
+      
+      // 强制重绘
+      void visualDisplayGallery.offsetWidth;
+      
+      // 2. 直接开始随机先后落位 (Direct Scatter)
+      setTimeout(() => {
+        // 创建一个随机索引数组
+        const indices = Array.from({ length: items.length }, (_, i) => i);
+        // Shuffle
+        for (let i = indices.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [indices[i], indices[j]] = [indices[j], indices[i]];
+        }
+        
+        indices.forEach((itemIndex, i) => {
+          const item = items[itemIndex];
+          const finalX = parseFloat(item.dataset.finalX);
+          const finalY = parseFloat(item.dataset.finalY);
+          const finalRot = parseFloat(item.dataset.finalRot);
+          
+          // 延迟时间：每张卡片间隔150ms (变慢)
+          const delay = i * 150; 
+          
+          setTimeout(() => {
+            // 恢复 transition
+            // cubic-bezier(0.34, 1.56, 0.64, 1) 是带有回弹的
+            // 改为 cubic-bezier(0.2, 0.8, 0.2, 1) 这种平滑减速的 ease-out 曲线，像羽毛飘落
+            // 增加 duration 到 1.2s
+            item.style.transition = 'transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), left 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), top 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s ease';
+            
+            item.style.transform = `rotate(var(--rotation))`;
+            item.style.opacity = '1'; // 渐显
+            
+            if (!isNaN(finalX) && !isNaN(finalY)) {
+                item.style.left = finalX + 'px';
+                item.style.top = finalY + 'px';
+            }
+            
+            // 3. 落位后图钉渐显
+            // 图片动画时长 1.2s，我们在 0.8s 时就开始显示图钉，让其感觉更紧凑
+            setTimeout(() => {
+               const pin = item.querySelector('.pin');
+               if (pin) pin.classList.add('pinned');
+            }, 800); // 提前到 800ms
+            
+            // 动画完成后，移除 left/top 的 transition
+            setTimeout(() => {
+                item.style.transition = 'transform 0.3s ease, opacity 0.5s ease, box-shadow 0.3s ease';
+            }, 1200);
+            
+          }, delay);
+        });
+        
+      }, 100); // 短暂延迟后直接开始
     }
 
-    // --- Content Showcase (Left list + Right phone) ---
-    let _likedArticles = {};
+    // ================= Social Media Gallery Logic (Accordion 2.0) =================
+    
+    let allSocialPosts = [];
+    let currentSortMode = 'date'; // 'date' or 'popular'
+    const PAGE_WIDTH = 320; // Must match CSS
+    let activePairIndex = 0; // The index of the LEFT page of the active pair (0, 2, 4...)
+
     function initSocialMediaGallery() {
-      if (!socialMediaGallery) return;
-      socialMediaGallery.innerHTML = '';
+      const gallery = document.getElementById('socialMediaGallery');
+      gallery.innerHTML = '';
+      gallery.style.position = 'relative';
+      gallery.style.display = 'none';
 
-      let currentIdx = 0;
-      const articles = socialMediaData;
+      if (socialMediaData.length === 0) return;
 
-      // Left: article list
-      const listWrap = document.createElement('div');
-      listWrap.style.display = 'flex';
-      listWrap.style.flexDirection = 'column';
+      const account = socialMediaData[0];
+      const posts = account.posts;
 
-      const articleList = document.createElement('div');
-      articleList.className = 'article-list';
-
-      function renderList() {
-        articleList.innerHTML = '';
-        articles.forEach((art, idx) => {
-          const card = document.createElement('div');
-          card.className = 'article-list-card' + (idx === currentIdx ? ' active' : '');
-          const liked = _likedArticles[idx];
-          card.innerHTML = `
-            <div class="list-heart ${liked ? 'liked' : ''}">${liked ? '❤' : '♡'}</div>
-            <div class="list-title">${art.title}</div>
-            <div class="list-date">${art.date}</div>
-          `;
-          card.addEventListener('click', (e) => {
-            if (e.target.classList.contains('list-heart')) {
-              e.stopPropagation();
-              _likedArticles[idx] = !_likedArticles[idx];
-              renderList();
-              updatePhoneLike();
-              return;
-            }
-            currentIdx = idx;
-            updatePhoneContent();
-            renderList();
-            articleScroll.scrollTop = 0;
-          });
-          articleList.appendChild(card);
-        });
-      }
-
-      listWrap.appendChild(articleList);
-
-      const hint = document.createElement('div');
-      hint.className = 'article-hint';
-      hint.textContent = '点击文章查看手机预览';
-      listWrap.appendChild(hint);
-
-      // Right: phone frame
       const phoneFrame = document.createElement('div');
-      phoneFrame.className = 'wx-phone-frame';
+      phoneFrame.className = 'phone-frame';
 
       const statusBar = document.createElement('div');
-      statusBar.className = 'wx-phone-status-bar';
+      statusBar.className = 'phone-status-bar';
       statusBar.innerHTML = '<span>9:41</span><span>●●● 📶 🔋</span>';
       phoneFrame.appendChild(statusBar);
 
       const screen = document.createElement('div');
-      screen.className = 'wx-phone-screen';
+      screen.className = 'phone-screen';
 
       const wxHeader = document.createElement('div');
-      wxHeader.className = 'wx-header';
-      const backBtn = document.createElement('div');
-      backBtn.className = 'wx-header-back';
-      backBtn.textContent = '‹';
-      const headerTitle = document.createElement('div');
-      headerTitle.className = 'wx-header-title';
-      const moreBtn = document.createElement('div');
-      moreBtn.className = 'wx-header-more';
-      moreBtn.textContent = '···';
-      wxHeader.appendChild(backBtn);
-      wxHeader.appendChild(headerTitle);
-      wxHeader.appendChild(moreBtn);
+      wxHeader.className = 'wechat-header';
+      wxHeader.innerHTML = `<div class="wechat-back">‹</div><div class="wechat-header-title">${account.account}</div><div class="wechat-more">···</div>`;
       screen.appendChild(wxHeader);
 
       const articleScroll = document.createElement('div');
-      articleScroll.className = 'wx-article-scroll';
+      articleScroll.className = 'article-scroll';
+
+      posts.forEach((post, idx) => {
+        const page = document.createElement('div');
+        page.className = 'article-page' + (idx === 0 ? ' active' : '');
+
+        let coverHtml = '';
+        if (post.cover) {
+          coverHtml = `<img class="article-cover" src="${post.cover}" alt="">`;
+        }
+
+        page.innerHTML = coverHtml + `
+          <div class="article-body">
+            <div class="article-account">
+              <div class="article-avatar">星</div>
+              <div class="article-account-info">
+                <div class="article-account-name">${account.account}</div>
+                <div class="article-date">${post.date}</div>
+              </div>
+              <button class="article-follow-btn">关注</button>
+            </div>
+            <div class="article-title">${post.title}</div>
+            <div class="article-excerpt">${post.excerpt || ''}</div>
+            <a class="article-read-original" href="${post.link}" target="_blank" rel="noopener">阅读原文 Read Original →</a>
+          </div>
+        `;
+        articleScroll.appendChild(page);
+      });
+
       screen.appendChild(articleScroll);
-
-      const bottomBar = document.createElement('div');
-      bottomBar.className = 'wx-bottom-bar';
-      const viewBtn = document.createElement('div');
-      viewBtn.className = 'wx-action-btn';
-      viewBtn.innerHTML = '👁 <span>阅读</span>';
-      const commentBtn = document.createElement('div');
-      commentBtn.className = 'wx-action-btn';
-      commentBtn.innerHTML = '💬 <span>评论</span>';
-      const likeBtn = document.createElement('div');
-      likeBtn.className = 'wx-action-btn';
-      const shareBtn = document.createElement('div');
-      shareBtn.className = 'wx-action-btn';
-      shareBtn.innerHTML = '↗';
-      shareBtn.addEventListener('click', () => {
-        window.open(articles[currentIdx].link, '_blank');
-      });
-      likeBtn.addEventListener('click', () => {
-        _likedArticles[currentIdx] = !_likedArticles[currentIdx];
-        updatePhoneLike();
-        renderList();
-      });
-      bottomBar.appendChild(viewBtn);
-      bottomBar.appendChild(commentBtn);
-      bottomBar.appendChild(likeBtn);
-      bottomBar.appendChild(shareBtn);
-      screen.appendChild(bottomBar);
-
       phoneFrame.appendChild(screen);
+      gallery.appendChild(phoneFrame);
 
-      socialMediaGallery.appendChild(listWrap);
-      socialMediaGallery.appendChild(phoneFrame);
+      const dotsContainer = document.createElement('div');
+      dotsContainer.className = 'phone-dots';
+      posts.forEach((_, idx) => {
+        const dot = document.createElement('div');
+        dot.className = 'phone-dot' + (idx === 0 ? ' active' : '');
+        dot.addEventListener('click', () => showArticle(idx));
+        dotsContainer.appendChild(dot);
+      });
+      gallery.appendChild(dotsContainer);
 
-      function updatePhoneContent() {
-        const art = articles[currentIdx];
-        headerTitle.textContent = art.title;
-        articleScroll.innerHTML = '';
-        const img = document.createElement('img');
-        img.src = art.screenshot;
-        img.alt = art.title;
-        img.onerror = function() {
-          this.style.display = 'none';
-          const fallback = document.createElement('div');
-          fallback.style.cssText = 'padding:16px;font-family:"Noto Sans SC",sans-serif;font-size:13px;color:#333;line-height:1.8;';
-          fallback.innerHTML = `<div style="font-size:18px;font-weight:bold;margin-bottom:12px;">${art.title}</div><div style="color:#999;font-size:11px;margin-bottom:10px;">${art.account} · ${art.date}</div><div>${art.excerpt}</div><a href="${art.link}" target="_blank" style="color:#576b95;text-decoration:underline;">阅读原文 →</a>`;
-          articleScroll.appendChild(fallback);
-        };
-        articleScroll.appendChild(img);
-        updatePhoneLike();
+      const hint = document.createElement('div');
+      hint.className = 'phone-hint';
+      hint.textContent = '←  Swipe to browse articles  →';
+      gallery.appendChild(hint);
+
+      let currentIdx = 0;
+
+      function showArticle(idx) {
+        currentIdx = idx;
+        const pages = articleScroll.querySelectorAll('.article-page');
+        const dots = dotsContainer.querySelectorAll('.phone-dot');
+        pages.forEach((p, i) => p.classList.toggle('active', i === idx));
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        articleScroll.scrollTop = 0;
       }
 
-      function updatePhoneLike() {
-        const liked = _likedArticles[currentIdx];
-        likeBtn.classList.toggle('liked', !!liked);
-        likeBtn.innerHTML = liked ? '❤ <span>赞</span>' : '♡ <span>赞</span>';
-      }
+      let touchStartX = 0;
+      let touchEndX = 0;
+      articleScroll.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+      articleScroll.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      }, {passive: true});
+      let mouseStartX = 0;
+      let isDragging = false;
+      articleScroll.addEventListener('mousedown', e => { mouseStartX = e.screenX; isDragging = true; });
+      articleScroll.addEventListener('mouseup', e => {
+        if (isDragging) { touchEndX = e.screenX; handleSwipe(); isDragging = false; }
+      });
 
-      renderList();
-      updatePhoneContent();
+      function handleSwipe() {
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) < 50) return;
+        if (diff > 0 && currentIdx < posts.length - 1) showArticle(currentIdx + 1);
+        else if (diff < 0 && currentIdx > 0) showArticle(currentIdx - 1);
+      }
     }
 
-    function hideAllGalleries() {
-      [graphicDesignGallery, visualDisplayGallery, socialMediaGallery].forEach(g => {
-        if (g) {
-          g.classList.remove('show');
-          g.style.display = 'none';
+    function handleSortChange(mode, activeBtn, otherBtn) {
+      if (currentSortMode === mode) return;
+      currentSortMode = mode;
+      
+      activeBtn.classList.add('active');
+      otherBtn.classList.remove('active');
+      
+      // Reset to first page
+      activePairIndex = 0;
+      
+      // Re-render with animation
+      const stage = document.getElementById('accordionStage');
+      stage.style.opacity = 0;
+      
+      setTimeout(() => {
+        renderSocialMediaGallery();
+        stage.style.opacity = 1;
+      }, 300);
+    }
+
+    function renderSocialMediaGallery() {
+      const stage = document.getElementById('accordionStage');
+      if (!stage) return;
+      stage.innerHTML = '';
+      
+      // 1. Sort Data
+      const sortedPosts = [...allSocialPosts];
+      
+      // Filter out posts with empty title
+      // But we should keep them if they are valid.
+      
+      if (currentSortMode === 'date') {
+        sortedPosts.sort((a, b) => {
+           const dateA = parseDate(a.date);
+           const dateB = parseDate(b.date);
+           return dateB - dateA; // Newest first
+        });
+      } else {
+        sortedPosts.sort((a, b) => {
+           const scoreA = parseMetric(a.likes) + parseMetric(a.favs) + parseMetric(a.views)/100;
+           const scoreB = parseMetric(b.likes) + parseMetric(b.favs) + parseMetric(b.views)/100;
+           return scoreB - scoreA; // Highest score first
+        });
+      }
+      
+      // 2. Pagination (Create Pages)
+      // Calculate capacity per page
+      // Reset height if not detected correctly (e.g. if hidden)
+      const galleryHeight = socialMediaGallery.clientHeight > 100 ? socialMediaGallery.clientHeight : 500;
+      
+      // 根据移动端调整项目高度和布局
+      let itemHeight = 80;
+      // Add tablet check
+      let isTabletMode = windowWidth > 480 && windowWidth <= 1200;
+
+      if (isMobileMode) {
+          // 移动端可能需要更紧凑或更宽松，视乎宽度
+          // 由于宽度变窄(44vw)，文字可能换行更多，且允许3行标题
+          itemHeight = 100; 
+      }
+      
+      let postsPerPage;
+      if (isTabletMode) {
+          // Tablet: Fixed 4 posts per page
+          postsPerPage = 4;
+      } else {
+          // Use more space (Desktop/Mobile dynamic)
+          postsPerPage = Math.max(2, Math.floor((galleryHeight * 0.85) / itemHeight)); 
+      }
+      
+      const pageCount = Math.ceil(sortedPosts.length / postsPerPage);
+      // Ensure even number of pages for pairing
+      const totalPages = pageCount % 2 === 0 ? pageCount : pageCount + 1;
+      
+      for (let i = 0; i < totalPages; i++) {
+        const page = document.createElement('div');
+        page.className = 'folder-page';
+        page.dataset.index = i;
+        page.onclick = () => handlePageClick(i);
+        
+        // Add Ripple Layer
+        const ripple = document.createElement('div');
+        ripple.className = 'ripple-layer';
+        page.appendChild(ripple);
+        
+        // Add Content
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = 'page-content-wrapper';
+        
+        const postsList = document.createElement('div');
+        postsList.className = 'posts-list';
+        
+        const startIdx = i * postsPerPage;
+        const endIdx = startIdx + postsPerPage;
+        const pagePosts = sortedPosts.slice(startIdx, endIdx);
+        
+        if (pagePosts.length > 0) {
+            pagePosts.forEach(post => {
+                const postItem = createPostItem(post);
+                postsList.appendChild(postItem);
+            });
+        } else {
+            // Empty filler page - No text
         }
-      });
+        
+        contentWrapper.appendChild(postsList);
+        page.appendChild(contentWrapper);
+        stage.appendChild(page);
+      }
+      
+      // 3. Update Layout
+      update3DLayout(totalPages);
+    }
+    
+    function navigateGallery(direction) {
+      const pages = document.querySelectorAll('.folder-page');
+      if (pages.length === 0) return;
+      
+      let newIndex = activePairIndex + (direction * 2);
+      
+      // Boundary checks
+      // If going prev and we are at 0, stay at 0
+      if (newIndex < 0) newIndex = 0;
+      
+      // If going next and we are at the end
+      // activePairIndex can be at most totalPages - 2 (or -1 if odd)
+      // If we are at the last pair, we can't go further
+      if (newIndex >= pages.length) {
+          // If odd number of pages, last index is length-1.
+          // If even, last index is length-1.
+          // activePairIndex logic: even numbers.
+          // Max start index for a pair is length-2 (if even) or length-1 (if odd)
+          newIndex = activePairIndex; 
+      }
+      
+      if (newIndex !== activePairIndex) {
+          activePairIndex = newIndex;
+          update3DLayout(pages.length);
+      }
+    }
+
+    function handlePageClick(index) {
+      // If clicking an active page, do nothing
+      if (index === activePairIndex || index === activePairIndex + 1) return;
+      
+      // Set new active pair
+      // If index is even, it becomes the left page of the pair
+      // If index is odd, it becomes the right page of the pair (so left is index-1)
+      if (index % 2 === 0) {
+        activePairIndex = index;
+      } else {
+        activePairIndex = index - 1;
+      }
+      
+      // Boundary check
+      const pages = document.querySelectorAll('.folder-page');
+      if (activePairIndex >= pages.length) activePairIndex = pages.length - 2;
+      if (activePairIndex < 0) activePairIndex = 0;
+      
+      // Calculate totalPages for update3DLayout
+      const pageCount = pages.length;
+      update3DLayout(pageCount);
+    }
+
+    function update3DLayout(totalPages) {
+      const pages = document.querySelectorAll('.folder-page');
+      if (pages.length === 0) return;
+      
+      if (!totalPages) totalPages = pages.length;
+
+      let W = 320; // Page width
+      let FOLD_ANGLE = 75; // Steeper angle for folded pages
+      const OPEN_ANGLE = 10; // Gentle angle for active pages (V-shape)
+      
+      if (isMobileMode) {
+         // Mobile adjustments
+         if (pages[0]) W = pages[0].offsetWidth; // Use actual width
+         FOLD_ANGLE = 85; // Tighter fold on mobile to save space
+      }
+
+      // Calculate Spine Position based on active pair
+      const maxIndex = Math.max(1, totalPages - 2);
+      const progress = activePairIndex / maxIndex;
+      
+      // Camera movement
+      let spineLeftPercent;
+      if (isMobileMode) {
+         // Mobile: Center the spine to show both pages (Spread View)
+         spineLeftPercent = 50; 
+      } else {
+         // Desktop: Pan from Left to Right
+         spineLeftPercent = 30 + progress * 40; 
+      }
+      
+      const containerWidth = document.getElementById('socialMediaGallery').offsetWidth || window.innerWidth;
+      const spineX = containerWidth * (spineLeftPercent / 100);
+
+      // We calculate positions relative to the Spine.
+      // Left pages (indices 0 to activePairIndex) attach to the left of spine.
+      // Right pages (indices activePairIndex+1 to end) attach to the right of spine.
+
+      // --- Process Left Side (Iterate backwards from active left) ---
+      let currentX = spineX;
+      let currentZ = 0;
+      
+      for (let i = activePairIndex; i >= 0; i--) {
+          const page = pages[i];
+          let angle = 0;
+          
+          if (i === activePairIndex) {
+              // Active Left Page: Slight angle (Left edge comes forward)
+              angle = OPEN_ANGLE; 
+          } else {
+              // Stacked Pages: Zig-zag
+              // Distance from active page
+              const dist = activePairIndex - i;
+              // dist=1 (idx-1): Should fold BACK (-angle)
+              // dist=2 (idx-2): Should fold FORWARD (+angle)
+              angle = (dist % 2 === 1) ? -FOLD_ANGLE : FOLD_ANGLE;
+          }
+          
+          // Origin is Right
+          page.style.transformOrigin = 'right center';
+          // Position the element so its Right Edge is at (currentX, currentZ)
+          // Since element width is W, left is at -W relative to origin.
+          // Translate to move Right Edge (Origin) to currentX
+          page.style.transform = `translate3d(${currentX - W}px, 0px, ${currentZ}px) rotateY(${angle}deg)`;
+          
+          // Reset other positioning properties
+          page.style.left = '0px';
+          page.style.marginLeft = '0px'; 
+          page.style.zIndex = 100 - (activePairIndex - i);
+          page.classList.remove('active');
+          if (i === activePairIndex) page.classList.add('active');
+
+          // Update hinge for NEXT page (to the left)
+          // The Left Edge of CURRENT page becomes the Right Edge of NEXT page.
+          // Calculate Left Edge position relative to Right Edge (Origin):
+          // Delta X = -W * cos(angle)
+          // Delta Z = W * sin(angle) (Positive angle = Left edge comes forward Z+)
+          
+          const rad = angle * Math.PI / 180;
+          currentX -= W * Math.cos(rad);
+          currentZ += W * Math.sin(rad);
+          
+          // Shadows
+          page.classList.remove('shadow-light', 'shadow-medium', 'shadow-heavy');
+          if (Math.abs(angle) > 20) {
+              if (angle < 0) page.classList.add('shadow-medium'); // Folded back
+              else page.classList.add('shadow-light');
+          }
+      }
+
+      // --- Process Right Side (Iterate forwards from active right) ---
+      currentX = spineX;
+      currentZ = 0;
+      
+      for (let i = activePairIndex + 1; i < totalPages; i++) {
+          const page = pages[i];
+          let angle = 0;
+          
+          if (i === activePairIndex + 1) {
+              // Active Right Page: Slight angle (Right edge comes forward)
+              angle = -OPEN_ANGLE; 
+          } else {
+              // Stacked Pages: Zig-zag
+              const dist = i - (activePairIndex + 1);
+              // dist=1 (idx+2): Should fold BACK (+angle for Left Origin means Right Edge goes Back)
+              // Wait: +Angle on Left Origin -> Right Edge goes BACK (-Z).
+              // So we want +FOLD_ANGLE.
+              angle = (dist % 2 === 1) ? FOLD_ANGLE : -FOLD_ANGLE;
+          }
+          
+          // Origin is Left
+          page.style.transformOrigin = 'left center';
+          // Position the element so its Left Edge is at (currentX, currentZ)
+          page.style.transform = `translate3d(${currentX}px, 0px, ${currentZ}px) rotateY(${angle}deg)`;
+          
+          page.style.left = '0px';
+          page.style.marginLeft = '0px';
+          page.style.zIndex = 100 - (i - (activePairIndex + 1));
+          page.classList.remove('active');
+          if (i === activePairIndex + 1) page.classList.add('active');
+          
+          // Update hinge for NEXT page (to the right)
+          // Right Edge of CURRENT page becomes Left Edge of NEXT.
+          // Delta X = W * cos(angle)
+          // Delta Z = -W * sin(angle) (Negative angle = Right edge comes forward Z+)
+          
+          const rad = angle * Math.PI / 180;
+          currentX += W * Math.cos(rad);
+          currentZ -= W * Math.sin(rad); 
+          
+          // Shadows
+          page.classList.remove('shadow-light', 'shadow-medium', 'shadow-heavy');
+          if (Math.abs(angle) > 20) {
+              // For Right side (Left Origin):
+              // +Angle: Right edge goes Back (Shadow)
+              // -Angle: Right edge comes Forward (Light)
+              if (angle > 0) page.classList.add('shadow-medium'); 
+              else page.classList.add('shadow-light');
+          }
+      }
+    }
+
+    // Helper functions
+    function parseDate(dateStr) {
+      // 12/17/24
+      const parts = dateStr.split('/');
+      if (parts.length === 3) {
+        let y = parseInt(parts[2]);
+        if (y < 100) y += 2000;
+        return new Date(y, parseInt(parts[0])-1, parseInt(parts[1]));
+      }
+      return new Date();
+    }
+    
+    function parseMetric(val) {
+      if (!val || val === '-') return 0;
+      let num = parseFloat(val.replace(/,/g, ''));
+      if (val.toLowerCase().includes('k')) num *= 1000;
+      if (val.toLowerCase().includes('w')) num *= 10000;
+      return isNaN(num) ? 0 : num;
+    }
+
+    function createPostItem(post) {
+      const postItem = document.createElement('div');
+      postItem.className = 'post-item';
+      
+      const titleRow = document.createElement('div');
+      titleRow.className = 'post-title-row';
+      
+      const postTitle = document.createElement('a');
+      postTitle.className = 'post-title';
+      postTitle.href = post.link;
+      const cleanAccount = post.account.split(' ')[0]; 
+      
+      // Mobile: 3 lines, Date: YY/M/D
+      // Desktop: 2 lines, Date: YYYY/M/D
+      const lineClamp = isMobileMode ? 3 : 2;
+      
+      postTitle.innerHTML = `
+        <div style="font-size: 11px; color: #888;">@${cleanAccount}</div>
+        <div style="font-family: 'Noto Sans SC', sans-serif; white-space: normal; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: ${lineClamp}; -webkit-box-orient: vertical; overflow: hidden;">${post.title}</div>`;
+      postTitle.target = "_blank";  
+      postTitle.style.pointerEvents = 'auto';
+      
+      const postDate = document.createElement('div');
+      postDate.className = 'post-date';
+      let formattedDate = post.date;
+      
+      const dateParts = post.date.split('/');
+      if (dateParts.length === 3) {
+          if (isMobileMode) {
+              // Format: YY/M/D (e.g. 25/4/3)
+              // dateParts[2] is usually 2 digits in input (e.g. 24)
+              let year = parseInt(dateParts[2]);
+              formattedDate = `${year}/${parseInt(dateParts[0])}/${parseInt(dateParts[1])}`;
+          } else {
+              // Format: YYYY/M/D
+              let year = parseInt(dateParts[2]);
+              if (year < 100) year += 2000;
+              formattedDate = `${year}/${parseInt(dateParts[0])}/${parseInt(dateParts[1])}`;
+          }
+      }
+      postDate.textContent = formattedDate;
+      postDate.style.fontFamily = '"AR One Sans", sans-serif';
+      
+      titleRow.appendChild(postTitle);
+      titleRow.appendChild(postDate);
+      postItem.appendChild(titleRow);
+      
+      const statsRow = document.createElement('div');
+      statsRow.className = 'post-stats';
+      statsRow.style.fontFamily = '"AR One Sans", sans-serif'; 
+      
+      const createStat = (label, value) => {
+        if (value === '-' || !value) return null;
+        const item = document.createElement('div');
+        item.className = 'stat-item';
+        // Check if metric is View or Share for hover effect
+        if (label === 'View' || label === 'Share') {
+           item.classList.add('stat-hover-reveal');
+        }
+        item.innerHTML = `<span class="stat-label">${label}</span><span>${value}</span>`;
+        return item;
+      };
+      
+      // Default visible: Likes, Fav, Comm
+      // Hover visible (replace): View, Share
+      
+      // We will create two groups: default and hover
+      const defaultGroup = document.createElement('div');
+      defaultGroup.className = 'stats-group default-group';
+      
+      const hoverGroup = document.createElement('div');
+      hoverGroup.className = 'stats-group hover-group';
+      
+      // Helper to add to group
+      const addToGroup = (group, label, value) => {
+         const s = createStat(label, value);
+         if (s) group.appendChild(s);
+         return !!s;
+      };
+
+      // 1. Likes
+      addToGroup(defaultGroup, 'Likes', post.likes);
+      // 2. Favs
+      addToGroup(defaultGroup, 'Fav', post.favs);
+      // 3. Comments
+      addToGroup(defaultGroup, 'Comm', post.comments);
+      
+      // 4. Views (Hover)
+      const hasViews = addToGroup(hoverGroup, 'View', post.views);
+      // 5. Shares (Hover)
+      const hasShares = addToGroup(hoverGroup, 'Share', post.shares);
+      
+      // Only append if there are items
+      statsRow.appendChild(defaultGroup);
+      
+      // If we have hover items, append them too
+      if (hasViews || hasShares) {
+          statsRow.classList.add('has-hover-stats');
+          statsRow.appendChild(hoverGroup);
+      }
+      
+      postItem.appendChild(statsRow);
+      return postItem;
+    }
+
+    // Removing old updateFoldedDirections and toggleFolderPage as they are replaced by update3DLayout and handlePageClick
+    // ...
+
+
+    function hideAllGalleries() {
+      if (graphicDesignGallery) {
+        graphicDesignGallery.classList.remove('show');
+        graphicDesignGallery.style.display = 'none';
+      }
+      if (visualDisplayGallery) {
+        visualDisplayGallery.classList.remove('show');
+        visualDisplayGallery.style.display = 'none';
+      }
+      if (socialMediaGallery) {
+        socialMediaGallery.classList.remove('show');
+        socialMediaGallery.style.display = 'none';
+      }
     }
 
     function showGalleryForWave(waveId, opacity = null) {
-      const targets = [graphicDesignGallery, visualDisplayGallery, socialMediaGallery];
-      const target = targets[waveId];
-      
-      // Already showing? Just ensure opacity
-      if (target && target.classList.contains('show') && target.style.display !== 'none') {
-        target.style.opacity = 1;
-        return;
+      // 1. 隐藏 *除了* waveId 对应的 gallery 之外的所有 gallery
+      if (waveId !== 0 && graphicDesignGallery) {
+         graphicDesignGallery.classList.remove('show');
+         graphicDesignGallery.style.display = 'none';
+      }
+      if (waveId !== 1 && visualDisplayGallery) {
+         visualDisplayGallery.classList.remove('show');
+         visualDisplayGallery.style.display = 'none';
+      }
+      if (waveId !== 2 && socialMediaGallery) {
+         socialMediaGallery.classList.remove('show');
+         socialMediaGallery.style.display = 'none';
       }
       
-      hideAllGalleries();
-      
-      if (target) {
-        target.style.display = 'flex';
-        target.style.opacity = 1;
-        target.classList.add('show');
+      // 2. 显示目标 gallery
+      if (waveId === 0) {
+        // Graphic Design
+        if (graphicDesignGallery) {
+          // 只有当它是隐藏状态时，才执行显示初始化逻辑
+          if (graphicDesignGallery.style.display === 'none') {
+              graphicDesignGallery.style.display = 'flex';
+              graphicDesignGallery.style.opacity = 1;
+              graphicDesignGallery.classList.add('show');
+              
+              // 在显示后检查长图
+              setTimeout(() => {
+                const items = graphicDesignGallery.querySelectorAll('.gallery-item.graphic-design');
+                items.forEach(item => {
+                  const img = item.querySelector('img');
+                  const wrapper = item.querySelector('.image-wrapper');
+                  if (img && wrapper) {
+                     if (img.offsetHeight > wrapper.offsetHeight + 1) {
+                       item.classList.add('long-image');
+                     } else {
+                       item.classList.remove('long-image');
+                     }
+                  }
+                });
+              }, 100);
+          } else {
+              // 如果已经是显示的，确保 opacity 正确（虽然通常是1）
+              graphicDesignGallery.style.opacity = 1;
+          }
+        }
+      } else if (waveId === 1) {
+        // Visual Display
+        if (visualDisplayGallery) {
+          // 只有当它是隐藏状态时，才执行动画
+          if (visualDisplayGallery.style.display === 'none' || !visualDisplayGallery.classList.contains('show')) {
+             visualDisplayGallery.style.display = 'block';
+             visualDisplayGallery.style.opacity = 1;
+             visualDisplayGallery.classList.add('show');
+             runVisualDisplayAnimation();
+          }
+          // 如果已经是显示的，什么都不做，保持静止
+        }
+      } else if (waveId === 2) {
+        // Social Media Content
+        if (socialMediaGallery) {
+          if (socialMediaGallery.style.display === 'none') {
+             socialMediaGallery.style.display = 'flex';
+             // 重新计算位置，防止resize后位置不准
+             initSocialMediaGallery(); 
+             
+             // 强制重绘
+             void socialMediaGallery.offsetWidth;
+             
+             socialMediaGallery.style.opacity = 1;
+             socialMediaGallery.classList.add('show');
+          }
+        }
       }
     }
 
-    // 旧的图片点击处理（保留但不再使用，避免报错）
+    // 点击交互处理函数
     function handleImageClick(e, item, imgPath, type) {
-      e.stopPropagation();
+      e.stopPropagation(); // 防止冒泡
+      if (item.classList.contains('is-bouncing')) return;
+      item.classList.add('is-bouncing');
+
+      if (type === 'graphic') {
+         // Graphic Design: 使用 CSS 动画
+         // 这里的动画会覆盖掉 entrance animation 的 transform，但由于 keyframes 中包含了 translateY(0)，所以结束时会回到原位
+         item.style.animation = 'bounceGraphic 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
+         
+         setTimeout(() => {
+           item.style.animation = ''; // 移除动画，回退到 CSS 规则
+           item.classList.remove('is-bouncing');
+           openModal(imgPath);
+         }, 500);
+      } else if (type === 'visual') {
+         // Visual Display: 撕下便利贴并飞向全屏效果 (Clone 模式，解决遮挡问题)
+         
+         // 1. 锁定交互
+         if (item.classList.contains('is-animating')) return;
+         item.classList.add('is-animating');
+         activeFlyingItem = item; // 记录原元素以便恢复
+
+         // 2. 获取位置信息
+         const rect = item.getBoundingClientRect();
+         const currentRot = parseFloat(item.dataset.finalRot) || 0;
+         
+         // 3. 创建克隆并添加到 Body (脱离原容器，避免 overflow 裁剪)
+         const clone = item.cloneNode(true);
+         document.body.appendChild(clone);
+         
+         // 4. 设置克隆初始状态 (Fixed 定位，完全重合)
+         clone.style.position = 'fixed';
+         clone.style.left = rect.left + 'px';
+         clone.style.top = rect.top + 'px';
+         clone.style.width = rect.width + 'px';
+         clone.style.height = rect.height + 'px';
+         clone.style.zIndex = '9999';
+         clone.style.margin = '0';
+         clone.style.transform = `rotate(${currentRot}deg)`; 
+         clone.style.transformOrigin = 'center center';
+         clone.style.transition = 'none'; // 禁止初始过渡
+         clone.style.pointerEvents = 'none'; // 禁止交互
+         
+         // 5. 隐藏原元素
+         item.style.opacity = '0';
+         
+         // 6. 强制重绘，确保初始状态生效
+         void clone.offsetWidth;
+         
+         // 7. 第一阶段：撕下 (Tear Off)
+         clone.style.transition = 'transform 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045)';
+         // 模拟从图钉处撕下：向下移动并增加旋转
+         clone.style.transform = `rotate(${currentRot + 10}deg) translateY(50px)`;
+         
+         // 隐藏图钉
+         const pin = clone.querySelector('.pin');
+         if (pin) {
+             pin.style.transition = 'opacity 0.3s';
+             pin.style.opacity = '0';
+         }
+         
+         setTimeout(() => {
+            // 8. 第二阶段：飞向全屏 (Fly to Center)
+            
+            // 计算屏幕中心位移
+            const startCenterX = rect.left + rect.width / 2;
+            const startCenterY = rect.top + rect.height / 2;
+            const screenCenterX = window.innerWidth / 2;
+            const screenCenterY = window.innerHeight / 2;
+            
+            const deltaX = screenCenterX - startCenterX;
+            const deltaY = screenCenterY - startCenterY;
+            
+            // 计算缩放比例
+            const scaleX = (window.innerWidth * 0.85) / rect.width;
+            const scaleY = (window.innerHeight * 0.85) / rect.height;
+            const targetScale = Math.min(scaleX, scaleY);
+            
+            clone.style.transition = 'transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            // 位移到中心，复位旋转，放大
+            clone.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${targetScale}) rotate(0deg)`;
+            
+            setTimeout(() => {
+                // 9. 打开 Modal
+                openModal(imgPath);
+                
+                // 10. 移除克隆 (Fade out)
+                clone.style.transition = 'opacity 0.1s';
+                clone.style.opacity = '0';
+                
+                setTimeout(() => {
+                    if (clone.parentNode) clone.parentNode.removeChild(clone);
+                }, 100);
+                
+                item.classList.remove('is-animating');
+            }, 600); // 等待飞行结束
+            
+         }, 400); // 等待撕下动画
+      }
     }
 
     // 弹出窗口功能 - 支持滚轮缩放和拖拽
@@ -1881,6 +3281,15 @@
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
           closeModal();
+        }
+        
+        // Social Media Gallery Keyboard Navigation
+        if (socialMediaGallery && socialMediaGallery.classList.contains('show')) {
+          if (e.key === 'ArrowLeft') {
+            navigateGallery(-1); // Left Arrow -> Previous
+          } else if (e.key === 'ArrowRight') {
+            navigateGallery(1);  // Right Arrow -> Next
+          }
         }
       });
     });
