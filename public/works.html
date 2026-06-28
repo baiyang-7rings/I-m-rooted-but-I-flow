@@ -5,16 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jackie's Portfolio</title>
   
+  <!-- 引入字体 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Special Elite 字体 (英文标题) -->
   <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
+  <!-- AR One Sans 字体 (导航栏) -->
   <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <!-- 思源黑体简体 / Noto Sans SC (中文) -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+  <!-- Source Code Pro -->
   <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
   
+  <!-- 引入 P5.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
   
   <style>
+    /* ================= 基础样式 ================= */
     :root {
       --bg-color: #F2F2F1;
       --text-color: #000000;
@@ -50,31 +57,37 @@
       text-decoration: underline;
     }
 
+    /* ================= 布局容器 ================= */
     .container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 24px;
       position: relative;
-      z-index: 20;
-      pointer-events: none;
+      z-index: 20; /* 提高整个容器的层级，确保内容在 Gallery 之上 */
+      pointer-events: none; /* 让容器本身不阻挡点击 */
     }
     
+    /* 恢复导航栏交互 */
     .nav-links {
       pointer-events: auto;
     }
     
+    /* 恢复标题交互（可选中文本） */
     .page-title {
       pointer-events: auto;
     }
     
+    /* 恢复副标题交互 */
     .subtitle {
       pointer-events: auto;
     }
     
+    /* 确保 spacer 不阻挡点击 */
     .canvas-spacer {
       pointer-events: none;
     }
 
+    /* ================= 顶部导航 ================= */
     header {
       display: flex;
       justify-content: flex-end;
@@ -82,6 +95,7 @@
       padding-top: 10px;
       margin-bottom: 20px;
       position: relative;
+      /* z-index: 20;  已在 container 中统一提高层级 */
     }
 
     .nav-links {
@@ -98,17 +112,18 @@
       transition: all 0.2s ease;
       display: inline-block;
       text-decoration: none;
-      transform-origin: bottom center;
+      transform-origin: bottom center; /* 旋转轴在底部 */
     }
     .nav-links a:hover { 
       color: #333; 
     }
     .nav-links a:active {
-      color: #ccc;
+      color: #ccc; /* 颜色变浅 */
       text-shadow: none;
-      transform: perspective(500px) rotateX(60deg) skewX(-15deg);
+      transform: perspective(500px) rotateX(60deg) skewX(-15deg); /* 向斜后方倾倒 */
     }
 
+    /* ================= 页面标题 ================= */
     .page-title {
       font-size: 48px;
       font-weight: bold;
@@ -119,6 +134,7 @@
       z-index: 10;
     }
 
+    /* ================= P5.js Canvas 容器 ================= */
     .canvas-container {
       position: absolute;
       top: 40px;
@@ -134,22 +150,31 @@
       cursor: pointer;
     }
     
+    /* 内容区域 */
     .content-wrapper {
       position: relative;
       z-index: 1;
       pointer-events: none;
     }
     
+    /* 删除暴力的通配符恢复，改为按需恢复 */
+    /* .content-wrapper * {
+      pointer-events: auto;
+    } */
+    
+    /* 确保 spacer 不阻挡点击 */
     .canvas-spacer {
       pointer-events: none;
     }
 
+    /* Canvas 占位空间 */
     .canvas-spacer {
       width: 100%;
-      padding-top: 48.67%;
+      padding-top: 48.67%; /* 623/1280 = 0.4867 保持原始比例 */
       margin-top: 105px;
     }
 
+    /* ================= 图片展示区域 ================= */
     .gallery-container {
       position: absolute;
       top: 130px;
@@ -167,287 +192,32 @@
     .gallery-container.show {
       opacity: 1;
       pointer-events: auto;
+      display: flex !important;
     }
 
-    /* ================= Projects (Folder / Origami Style) ================= */
+    /* --- Projects Gallery (graphicDesignGallery) - Accordion Folder --- */
     #graphicDesignGallery {
       position: absolute;
       top: 130px;
-      left: 0;
       width: 100%;
       height: 400px;
       z-index: 200;
       display: none;
-      overflow: visible;
+      align-items: center;
+      justify-content: center;
       padding: 0;
-      perspective: 1400px;
-      perspective-origin: center center;
+      overflow: visible;
     }
     #graphicDesignGallery.show {
-      display: block !important;
+      display: flex !important;
       opacity: 1;
       pointer-events: auto;
     }
 
-    .accordion-stage {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      overflow: visible;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
-
-    .folder-container {
-      position: relative;
-      width: 340px;
-      height: 400px;
-      perspective: 1400px;
-    }
-
-    .folder-spine {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 8px;
-      height: 100%;
-      background: linear-gradient(to right, #b71c1c, #d32f2f, #c62828);
-      border-radius: 2px 0 0 2px;
-      z-index: 100;
-      box-shadow: 2px 0 6px rgba(183, 28, 28, 0.3);
-    }
-
-    .folder-tab {
-      position: absolute;
-      top: -14px;
-      left: 8px;
-      width: 80px;
-      height: 28px;
-      background: linear-gradient(to bottom, #d32f2f, #b71c1c);
-      border-radius: 6px 6px 0 0;
-      z-index: 101;
-      box-shadow: 0 -2px 4px rgba(0,0,0,0.15);
-    }
-    .folder-tab::before {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: #b71c1c;
-    }
-    .folder-tab-label {
-      position: absolute;
-      top: 4px;
-      left: 0;
-      width: 100%;
-      text-align: center;
-      font-family: 'Special Elite', serif;
-      font-size: 10px;
-      color: #fff;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .pages-stack {
-      position: absolute;
-      top: 0;
-      left: 8px;
-      width: 332px;
-      height: 100%;
-      perspective: 1400px;
-      perspective-origin: left center;
-    }
-
-    .folder-page {
-      position: absolute;
-      top: 10px;
-      left: 6px;
-      width: 320px;
-      height: 380px;
-      background-color: #f6f3ea;
-      background-image:
-        repeating-linear-gradient(
-          to bottom,
-          transparent,
-          transparent 27px,
-          rgba(100, 149, 237, 0.15) 27px,
-          rgba(100, 149, 237, 0.15) 28px
-        ),
-        url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
-      border: 1px solid rgba(0,0,0,0.1);
-      border-radius: 1px 3px 3px 1px;
-      overflow: hidden;
-      cursor: pointer;
-      user-select: none;
-      -webkit-user-select: none;
-      will-change: transform;
-      backface-visibility: hidden;
-      transform-origin: left center;
-      transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.6s ease;
-      box-shadow:
-        2px 2px 6px rgba(0,0,0,0.1),
-        inset 0 0 60px rgba(0,0,0,0.03);
-      z-index: 10;
-    }
-
-    .folder-page::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(0,0,0,0.06) 0%, transparent 40%);
-      pointer-events: none;
-      z-index: 5;
-    }
-
-    .folder-page::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
-      background: linear-gradient(to right, rgba(200,60,60,0.15), transparent);
-      pointer-events: none;
-      z-index: 6;
-    }
-
-    .folder-page .page-content-wrapper {
-      position: relative;
-      z-index: 7;
-      width: 100%;
-      height: 100%;
-      padding: 22px 24px;
-      display: flex;
-      flex-direction: column;
-      background: transparent;
-      overflow-y: auto;
-    }
-    .folder-page .proj-title {
-      font-family: 'Special Elite', serif;
-      font-size: 16px;
-      color: #222;
-      margin-bottom: 4px;
-      flex-shrink: 0;
-      line-height: 1.3;
-    }
-    .folder-page .proj-subtitle {
-      font-family: 'AR One Sans', sans-serif;
-      font-size: 10px;
-      color: #888;
-      margin-bottom: 12px;
-      flex-shrink: 0;
-    }
-    .folder-page .proj-image {
-      width: 100%;
-      max-height: 160px;
-      object-fit: cover;
-      border-radius: 2px;
-      margin: 8px 0;
-      flex-shrink: 0;
-      border: 1px solid rgba(0,0,0,0.06);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-    .folder-page .proj-desc {
-      font-family: 'Noto Sans SC', sans-serif;
-      font-size: 11px;
-      line-height: 1.7;
-      color: #444;
-      flex-shrink: 0;
-    }
-    .folder-page .proj-tags {
-      margin-top: 12px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      flex-shrink: 0;
-    }
-    .folder-page .proj-tag {
-      border: 1px solid #ccc;
-      border-radius: 50px;
-      padding: 2px 9px;
-      font-size: 9px;
-      color: #888;
-      font-family: 'AR One Sans', sans-serif;
-      display: inline-block;
-    }
-
-    .folder-hint {
-      position: absolute;
-      bottom: -30px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-family: 'AR One Sans', sans-serif;
-      font-size: 10px;
-      color: #999;
-      text-align: center;
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0.7;
-    }
-
-    @media (max-width: 480px) {
-      .folder-container {
-        width: 200px;
-        height: 340px;
-      }
-      .folder-spine {
-        width: 6px;
-      }
-      .folder-tab {
-        left: 6px;
-        width: 55px;
-        height: 22px;
-        top: -10px;
-      }
-      .folder-tab-label {
-        font-size: 8px;
-        top: 3px;
-      }
-      .pages-stack {
-        left: 6px;
-        width: 194px;
-      }
-      .folder-page {
-        width: 170px;
-        height: 300px;
-        top: 8px;
-        left: 4px;
-      }
-      .folder-page .page-content-wrapper {
-        padding: 12px 14px;
-      }
-      .folder-page .proj-title {
-        font-size: 12px;
-      }
-      .folder-page .proj-subtitle {
-        font-size: 8px;
-        margin-bottom: 6px;
-      }
-      .folder-page .proj-desc {
-        font-size: 9px;
-        line-height: 1.5;
-      }
-      .folder-page .proj-tag {
-        font-size: 7px;
-        padding: 1px 6px;
-      }
-      .folder-page .proj-image {
-        max-height: 100px;
-        margin: 4px 0;
-      }
-    }
-
-    /* ================= Leadership (Pin Board) ================= */
+    /* --- Leadership Gallery (visualDisplayGallery) - Pin Board --- */
     #visualDisplayGallery {
       position: absolute;
       top: 130px;
-      left: 0;
       width: 100%;
       height: 400px;
       z-index: 200;
@@ -464,144 +234,98 @@
     .pin-board {
       position: relative;
       width: 100%;
-      max-width: 700px;
+      max-width: 600px;
       height: 360px;
       margin: 0 auto;
-      background-color: #c9a87c;
-      background-image:
-        repeating-linear-gradient(
-          45deg,
-          rgba(139, 90, 43, 0.08) 0px,
-          rgba(139, 90, 43, 0.08) 1px,
-          transparent 1px,
-          transparent 4px
-        ),
-        repeating-linear-gradient(
-          -45deg,
-          rgba(101, 67, 33, 0.06) 0px,
-          rgba(101, 67, 33, 0.06) 1px,
-          transparent 1px,
-          transparent 4px
-        ),
-        radial-gradient(ellipse at 30% 40%, rgba(160, 110, 60, 0.3), transparent 50%),
-        radial-gradient(ellipse at 70% 60%, rgba(139, 90, 43, 0.2), transparent 40%);
-      border-radius: 4px;
-      box-shadow:
-        inset 0 2px 8px rgba(0,0,0,0.2),
-        0 4px 16px rgba(0,0,0,0.15);
-      border: 3px solid #8b5a2b;
-      overflow: hidden;
     }
 
-    .gallery-item.visual-display {
+    .pinned-item {
       position: absolute;
+      width: 160px;
       background: #fff;
-      padding: 8px 8px 12px;
-      border-radius: 2px;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 3px;
+      padding: 6px;
+      padding-bottom: 10px;
+      box-shadow: 2px 4px 12px rgba(0,0,0,0.15);
       cursor: pointer;
-      transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      transform: rotate(var(--rotation, 0deg)) translateY(-120vh);
-      opacity: 0;
-      z-index: 1;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    .gallery-item.visual-display.dropped {
-      transform: rotate(var(--rotation, 0deg)) translateY(0);
-      opacity: 1;
+    .pinned-item:hover {
+      transform: scale(1.03) rotate(0deg) !important;
+      box-shadow: 3px 6px 18px rgba(0,0,0,0.2);
+      z-index: 100;
     }
-    .gallery-item.visual-display:hover {
-      transform: rotate(var(--rotation, 0deg)) translateY(-15px) scale(1.05) !important;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4) !important;
-      z-index: 50 !important;
-    }
-
-    .gallery-item.visual-display img {
-      display: block;
-      max-width: 150px;
-      max-height: 180px;
-      width: auto;
-      height: auto;
-      object-fit: cover;
-      border-radius: 1px;
-    }
-
-    .gallery-item.visual-display .pin {
+    .pinned-item .pin-head {
       position: absolute;
-      top: -6px;
+      top: -4px;
       left: 50%;
       transform: translateX(-50%);
-      width: 12px;
-      height: 12px;
+      width: 8px;
+      height: 8px;
+      background: #999;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.4);
       z-index: 10;
-      opacity: 0;
-      transition: opacity 0.3s ease;
     }
-    .gallery-item.visual-display.pinned .pin {
-      opacity: 1;
+    .pinned-item .pin-img {
+      width: 100%;
+      max-height: 120px;
+      object-fit: cover;
+      border-radius: 2px;
+      display: block;
     }
-    .gallery-item.visual-display .pin::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #fff8f0, #f5e6d3 40%, #e8d4be 70%, #c9a87c);
-      box-shadow:
-        0 2px 5px rgba(0,0,0,0.25),
-        inset 0 -1px 2px rgba(160,120,80,0.2),
-        inset 0 1px 3px rgba(255,255,255,0.7),
-        0 0 0 1px rgba(200,170,130,0.3);
-    }
-    .gallery-item.visual-display .pin::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 40% 40%, rgba(255,255,255,0.95), rgba(255,248,240,0.3));
-    }
-
-    .gallery-item.visual-display .item-label {
+    .pinned-item .pin-title {
       font-family: 'Special Elite', serif;
-      font-size: 10px;
-      color: #333;
-      text-align: center;
+      font-size: 12px;
+      color: #222;
       margin-top: 6px;
-      line-height: 1.3;
+      text-align: center;
     }
-
-    .gallery-item.visual-display.coming-soon-card {
-      background: #fafafa;
-      border: 1px dashed #ccc;
+    .pinned-item .pin-subtitle {
+      font-family: 'AR One Sans', sans-serif;
+      font-size: 9px;
+      color: #888;
+      text-align: center;
+      margin-top: 2px;
+    }
+    .pinned-item.coming-soon {
+      cursor: default;
+      background: #f9f9f9;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-width: 120px;
-      min-height: 150px;
+      min-height: 120px;
       padding: 16px;
       text-align: center;
-      cursor: default;
     }
-    .gallery-item.visual-display.coming-soon-card .placeholder-content {
+    .pinned-item.coming-soon .pin-placeholder {
       font-family: 'Special Elite', serif;
-    }
-    .gallery-item.visual-display.coming-soon-card .placeholder-q {
-      font-size: 36px;
-      color: #ccc;
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-    .gallery-item.visual-display.coming-soon-card .placeholder-text {
-      font-size: 10px;
+      font-size: 11px;
       color: #bbb;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
-    /* ================= Content Showcase (Phone + Article List - UNCHANGED) ================= */
+    .leadership-modal-overlay {
+      position: fixed; top:0; left:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.7); z-index: 9999;
+      display: none; align-items: center; justify-content: center;
+    }
+    .leadership-modal-overlay.show { display: flex; }
+    .leadership-modal-content {
+      background: #fff; max-width: 500px; width: 90%; max-height: 80vh;
+      overflow-y: auto; padding: 20px; border-radius: 4px; position: relative;
+    }
+    .leadership-modal-close {
+      position: absolute; top: 10px; right: 14px; font-size: 24px;
+      cursor: pointer; color: #999; background: none; border: none;
+    }
+    .leadership-modal-img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 3px; margin-bottom: 12px; }
+    .leadership-modal-title { font-family: 'Special Elite', serif; font-size: 16px; color: #222; margin-bottom: 4px; }
+    .leadership-modal-subtitle { font-family: 'AR One Sans', sans-serif; font-size: 11px; color: #888; margin-bottom: 10px; }
+    .leadership-modal-desc { font-family: 'Noto Sans SC', sans-serif; font-size: 12px; line-height: 1.7; color: #444; }
+
+    /* --- Content Showcase Gallery (socialMediaGallery) - Left List + Right Phone --- */
     #socialMediaGallery {
       display: none;
       flex-direction: row;
@@ -686,6 +410,7 @@
       margin-top: 8px;
     }
 
+    /* Phone Mockup (new compact version) */
     .wx-phone-frame {
       width: 260px;
       height: 380px;
@@ -817,14 +542,164 @@
       font-family: 'AR One Sans', sans-serif;
     }
 
-    /* ================= Image Modal ================= */
+    /* --- Accordion Folder Styles (for Projects gallery) --- */
+    .accordion-stage {
+      position: relative;
+      width: 340px;
+      height: 380px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: visible;
+    }
+
+    .folder-page {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      margin-left: -160px;
+      width: 320px;
+      height: 380px;
+      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.6s ease, opacity 0.5s ease;
+      cursor: pointer;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      background-color: #f6f3ea;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.12'/%3E%3C/svg%3E");
+      border: 1px solid rgba(0,0,0,0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      will-change: transform;
+      border-radius: 3px;
+      opacity: 1;
+    }
+    .folder-page:not(.active) {
+      opacity: 0.75;
+    }
+    .folder-page:not(.active):hover {
+      opacity: 0.95;
+    }
+
+    .folder-page .proj-image {
+      display: none;
+    }
+    .folder-page.active .proj-image {
+      display: block;
+    }
+    .folder-page .proj-desc {
+      overflow: hidden;
+      transition: max-height 0.4s;
+      max-height: 2.8em;
+    }
+    .folder-page.active .proj-desc {
+      max-height: 200px;
+    }
+
+    .folder-page .ripple-layer {
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(64, 158, 255, 0.06) 0%, rgba(64, 158, 255, 0) 50%);
+      opacity: 0.8;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+      animation: rippleFlow 12s infinite ease-in-out alternate;
+      z-index: 5;
+    }
+
+    @keyframes rippleFlow {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(10px, 15px) scale(1.05); }
+      100% { transform: translate(-5px, -10px) scale(1); }
+    }
+
+    .folder-page.shadow-light::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(to right, rgba(0,0,0,0.06), rgba(0,0,0,0));
+      pointer-events: none;
+      z-index: 10;
+    }
+    .folder-page.shadow-medium::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(to right, rgba(0,0,0,0.15), rgba(0,0,0,0.05));
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .folder-page .page-content-wrapper {
+      position: relative;
+      z-index: 6;
+      width: 100%;
+      height: 100%;
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      background: transparent;
+      overflow-y: auto;
+    }
+    .folder-page .proj-title {
+      font-family: 'Special Elite', serif;
+      font-size: 15px;
+      color: #222;
+      margin-bottom: 4px;
+      flex-shrink: 0;
+    }
+    .folder-page .proj-subtitle {
+      font-family: 'AR One Sans', sans-serif;
+      font-size: 10px;
+      color: #888;
+      margin-bottom: 10px;
+      flex-shrink: 0;
+    }
+    .folder-page .proj-image {
+      width: 100%;
+      max-height: 150px;
+      object-fit: cover;
+      border-radius: 3px;
+      margin: 8px 0;
+      flex-shrink: 0;
+    }
+    .folder-page.active .proj-image {
+      max-height: 180px;
+    }
+    .folder-page .proj-desc {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 11px;
+      line-height: 1.6;
+      color: #444;
+      flex-shrink: 0;
+    }
+    .folder-page .proj-tags {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .folder-page .proj-tag {
+      border: 1px solid #ccc;
+      border-radius: 50px;
+      padding: 2px 8px;
+      font-size: 9px;
+      color: #888;
+      font-family: 'AR One Sans', sans-serif;
+      display: inline-block;
+    }
+
+    /* --- 弹出窗口样式 --- */
     .image-modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 10000;
+      z-index: 1000;
       display: none;
       align-items: center;
       justify-content: center;
@@ -846,7 +721,7 @@
       position: relative;
       width: 100%;
       height: 100%;
-      z-index: 10001;
+      z-index: 1001;
       overflow: auto;
       display: flex;
       justify-content: center;
@@ -865,7 +740,7 @@
       cursor: grabbing;
     }
 
-    /* ================= Footer ================= */
+    /* ================= 底部 Footer ================= */
     footer{
       border-top:1px solid rgba(0,0,0,0.08);
       margin-top:24px;
@@ -891,7 +766,7 @@
       opacity: 1;
     }
 
-    /* ================= Responsive ================= */
+    /* ================= 响应式设计 ================= */
     @media (min-width: 481px) and (max-width: 1200px) {
       .canvas-container {
         position: absolute !important;
@@ -979,6 +854,7 @@
         padding: 5px 24px 5px;
       }
 
+      /* Mobile gallery positioning */
       #graphicDesignGallery,
       #visualDisplayGallery,
       #socialMediaGallery {
@@ -991,6 +867,7 @@
         padding: 10px !important;
       }
 
+      /* Social media mobile: column layout */
       #socialMediaGallery {
         flex-direction: column !important;
         gap: 12px !important;
@@ -1004,19 +881,26 @@
         max-height: 160px;
       }
 
-      .accordion-stage {
-        width: 100%;
-        height: auto;
-        min-height: 340px;
+      /* Hide accordion in social media context only */
+      #socialMediaGallery .accordion-stage {
+        display: none !important;
+      }
+      #socialMediaGallery .folder-page {
+        display: none !important;
       }
 
-      .gallery-item.visual-display img {
-        max-width: 100px;
-        max-height: 110px;
+      /* Projects folder mobile adjustments */
+      .accordion-stage {
+        width: 90vw;
+        height: 350px;
       }
-      .pin-board {
-        height: auto;
-        min-height: 300px;
+      .folder-page {
+        width: 85vw;
+        height: 350px;
+      }
+
+      .pinned-item {
+        width: 140px;
       }
     }
   </style>
@@ -1024,21 +908,46 @@
 <body>
 
   <div class="canvas-container" id="canvas-container">
+    <!-- P5.js 会在这里创建 canvas -->
   </div>
 
-  <div class="gallery-container" id="graphicDesignGallery" style="display: none;"></div>
-  <div class="gallery-container" id="visualDisplayGallery" style="display: none;"></div>
+  <!-- Graphic Design 图片展示区域 -->
+  <div class="gallery-container" id="graphicDesignGallery" style="display: none;">
+    <!-- 图片将通过JavaScript动态添加 -->
+  </div>
 
+  <!-- Visual Display 图片展示区域 -->
+  <div class="gallery-container" id="visualDisplayGallery" style="display: none;">
+    <!-- 图片将通过JavaScript动态添加 -->
+  </div>
+
+
+  <!-- 弹出窗口 -->
   <div class="image-modal" id="imageModal">
     <div class="modal-backdrop"></div>
     <div class="modal-content">
-      <img id="modalImage" src="" alt="Full Image" />
+      <img id="modalImage" src="works.html" alt="Full Image" />
     </div>
   </div>
 
-  <div class="gallery-container" id="socialMediaGallery" style="display: none;"></div>
+  <!-- Leadership Modal -->
+  <div class="leadership-modal-overlay" id="leadershipModal">
+    <div class="leadership-modal-content">
+      <button class="leadership-modal-close" id="leadershipModalClose">&times;</button>
+      <img class="leadership-modal-img" id="leadershipModalImg" src="" alt="">
+      <div class="leadership-modal-title" id="leadershipModalTitle"></div>
+      <div class="leadership-modal-subtitle" id="leadershipModalSubtitle"></div>
+      <div class="leadership-modal-desc" id="leadershipModalDesc"></div>
+    </div>
+  </div>
+
+  <!-- Social Media Content (Folder) 展示区域 -->
+  <div class="gallery-container" id="socialMediaGallery" style="display: none;">
+    <!-- 内容将通过JavaScript动态添加 -->
+  </div>
 
   <div class="container">
+    <!-- 顶部导航 -->
     <header>
       <nav class="nav-links">
         <a href="index.html">Sketchbook</a>
@@ -1049,11 +958,17 @@
     </header>
     
     <div class="content-wrapper">
+      <!-- 页面标题 -->
       <div class="page-title">Works.</div>
+      
+
+      
+      <!-- Canvas 占位空间 -->
       <div class="canvas-spacer"></div>
     </div>
   </div>
 
+  <!-- 底部 Footer -->
   <footer>
     <div class="footer-inner" style="font-family: var(--font-code);">
       <div class="footer-item">
@@ -1082,9 +997,11 @@
     })();
   </script>
 
+  <!-- P5.js Sketch - 集成 Foam_p5js 的交互效果 -->
   <script>
+    // ================= 配置参数 =================
     let config = {
-      topBoundary: 100,
+      topBoundary: 100, // 200 / 1.2 = 166.67，让线条上升距离变为原来的1.2倍
       riseSpeed: 0.1,
       fallSpeed: 4.5,
       lineGapInitial: 70,
@@ -1094,30 +1011,37 @@
       waveCurvature: 2,
       textGapRatio: 1.3, 
       closingSpeed: 0.15,
-      bgColor: 242
+      bgColor: 242 // 网页背景色 #F2F2F1 对应 RGB(242, 242, 241)
     };
 
     let waves = [];
     let activeWaveIdx = -1;
     let hasBeenClicked = false;
-    let scaleFactor = 1;
-    let currentDisplayedImageId = -1;
-    let isMobileMode = false;
-    let activeFlyingItem = null;
+    let scaleFactor = 1; // 缩放比例
+    let currentDisplayedImageId = -1; // 当前显示的图片ID
+    let isMobileMode = false; // 移动端标记
+    let activeFlyingItem = null; // 当前正在飞行的图片（Visual Display）
 
-    const workImages = [];
-    const displayImages = [];
-    const seashellPins = [];
+    // 图片路径数组
+    const workImages = []; // Graphic Design — Jackie 无设计作品，留空
+    const displayImages = []; // Visual Display — 留空
+    const seashellPins = []; // 图钉图片
+
+    // 初始化图片路径（无设计作品，数组保持为空）
+
+    // 图钉图片路径（根据实际文件名）
     const pinFiles = [];
     pinFiles.forEach(file => {
       seashellPins.push(`./images/seashells/${file}`);
     });
 
+    // 图片容器引用
     let graphicDesignGallery = null;
     let visualDisplayGallery = null;
     let socialMediaGallery = null;
     let imageModal = null;
     
+    // Projects Data (for accordion folder)
     const projectPages = [
       {
         title: "Fund Flow Forecasting",
@@ -1135,6 +1059,7 @@
       }
     ];
 
+    // Social Media / Content Showcase Data
     const socialMediaData = [
       {
         title: "用青春温度，暖银发时光",
@@ -1159,29 +1084,35 @@
     function setup() {
       console.log('Setup 开始');
       
+      // 检测移动端
       isMobileMode = windowWidth <= 480;
       let isTabletMode = windowWidth > 480 && windowWidth <= 1200;
 
+      // 移动端初始化滚动锁定
       if (isMobileMode) {
         document.body.classList.add('locked-scroll');
       }
 
+      // 计算画布尺寸
       let canvasWidth = windowWidth;
       let canvasHeight;
       
       if (isMobileMode) {
-        canvasHeight = 500;
-        config.lineGapInitial = 100;
-        config.lineGapCompressed = config.lineGapInitial * 0.7;
-        config.paddingBottom = 120;
+        // 移动端：固定高度，用于显示波浪
+        canvasHeight = 500; // 高度调整为 500
+        config.lineGapInitial = 100; // 增加波浪线间距，防止误触 (原为 50)
+        config.lineGapCompressed = config.lineGapInitial * 0.7; // 压缩后的间距为初始间距的80%
+        config.paddingBottom = 120; // Lower waves to match footer descent (was 250)
         config.textGapRatio = 1.0; 
       } else if (isTabletMode) {
+        // 平板/小桌面：波浪线在底部
         canvasHeight = canvasWidth * (623 / 1280) - 20; 
-        config.paddingBottom = 30;
+        config.paddingBottom = 30; // 紧贴底部 (Align with bottom)
         config.lineGapInitial = 75; 
-        config.lineGapCompressed = 60;
+        config.lineGapCompressed = 60; // Compressed gap increased from 50 to 60
         config.textGapRatio = 1.2;
       } else {
+        // 桌面端：保持原始比例
         canvasHeight = canvasWidth * (623 / 1280) - 20;
         config.paddingBottom = 90;
         config.lineGapInitial = 70;
@@ -1193,12 +1124,14 @@
       canvas.parent('canvas-container');
       canvas.id('p5-canvas');
       
+      // Tablet Mode: Position canvas at the bottom of the first screen
       if (isTabletMode) {
           const canvasContainer = document.getElementById('canvas-container');
           if (canvasContainer) {
               canvasContainer.style.top = (window.innerHeight - canvasHeight - 10) + 'px';
           }
       } else if (!isMobileMode) {
+          // Desktop: Reset top (handled by CSS default or 40px)
           const canvasContainer = document.getElementById('canvas-container');
           if (canvasContainer) {
               canvasContainer.style.top = '40px';
@@ -1207,31 +1140,40 @@
       
       textFont('Special Elite');
 
+      // 根据窗口宽度计算缩放比例
       if (isMobileMode) {
+         // 移动端不按宽度整体缩放，而是保持一定比例以显示中间部分
+         // 如果 canvasWidth = 375, 1280/375 = 3.4
+         // 我们希望波浪看起来大一点，只看中间，所以 scaleFactor 不要太小
          scaleFactor = 0.6; 
       } else {
          scaleFactor = canvasWidth / 1280;
       }
 
       let labels = ["Projects", "Leadership", "Content Showcase"];
+      // 初始位置由 updateTargetPositions 计算，这里先用临时值
       let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
       let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
       
       for (let i = 0; i < labels.length; i++) {
+        // 移动端文字大小调整
         let fontSize = isMobileMode ? 14 : 16 * scaleFactor;
         textSize(fontSize);
         let tw = textWidth(labels[i]) * config.textGapRatio;
+        // 移动端文字更紧凑
         if (isMobileMode) tw *= 0.8; 
         
         let startY = firstLineY + i * config.lineGapInitial * scaleFactor;
         waves.push(new Wave(startY, labels[i], i, tw));
       }
       
+      // 初始化图片容器引用
       graphicDesignGallery = document.getElementById('graphicDesignGallery');
       visualDisplayGallery = document.getElementById('visualDisplayGallery');
       socialMediaGallery = document.getElementById('socialMediaGallery');
       imageModal = document.getElementById('imageModal');
       
+      // 初始化各画廊
       initProjectsFolder();
       initLeadershipCards();
       initSocialMediaGallery();
@@ -1243,19 +1185,20 @@
       isMobileMode = windowWidth <= 480;
       let isTabletMode = windowWidth > 480 && windowWidth <= 1200;
       
+      // 窗口大小改变时重新调整画布
       let canvasWidth = windowWidth;
       let canvasHeight;
       
       if (isMobileMode) {
         canvasHeight = 500;
-        config.lineGapInitial = 100;
+        config.lineGapInitial = 100; // 增加波浪线间距，防止误触 (原为 50)
         config.lineGapCompressed = config.lineGapInitial * 0.8;
         config.paddingBottom = 120;
       } else if (isTabletMode) {
         canvasHeight = canvasWidth * (623 / 1280) - 20;
         config.paddingBottom = 30;
         config.lineGapInitial = 75;
-        config.lineGapCompressed = 60;
+        config.lineGapCompressed = 60; // Sync with setup
       } else {
         canvasHeight = canvasWidth * (623 / 1280) - 20;
         config.lineGapInitial = 70;
@@ -1265,6 +1208,7 @@
 
       resizeCanvas(canvasWidth, canvasHeight);
       
+      // Tablet Mode: Update position on resize
       if (isTabletMode) {
           const canvasContainer = document.getElementById('canvas-container');
           if (canvasContainer) {
@@ -1283,8 +1227,10 @@
          scaleFactor = canvasWidth / 1280;
       }
       
+      // 重新初始化波浪
       waves = [];
       let labels = ["Projects", "Leadership", "Content Showcase"];
+      // 初始位置由 updateTargetPositions 计算
       let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
       let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
       
@@ -1297,20 +1243,26 @@
         let startY = firstLineY + i * config.lineGapInitial * scaleFactor;
         waves.push(new Wave(startY, labels[i], i, tw));
       }
-
+      
+      // 如果当前显示的是Projects，重新初始化folder
       if (currentDisplayedImageId === 0 && graphicDesignGallery && graphicDesignGallery.classList.contains('show')) {
-        setTimeout(() => update3DLayout(), 50);
+        // accordion folder doesn't need re-init on resize
       }
+      // 如果当前显示的是Leadership，重新布局
       if (currentDisplayedImageId === 1 && visualDisplayGallery && visualDisplayGallery.classList.contains('show')) {
-        initLeadershipCards();
-        setTimeout(() => triggerPinBoardAnimation(), 100);
+        // single card doesn't need re-init
+      }
+      // 如果当前显示的是Content Showcase，重新布局
+      if (currentDisplayedImageId === 2 && socialMediaGallery && socialMediaGallery.classList.contains('show')) {
+        // layout is CSS flex, no JS re-init needed
       }
     }
 
 
     function updateTargetPositions() {
       let currentGapY = hasBeenClicked ? config.lineGapCompressed : config.lineGapInitial;
-      let lastLineY = height - config.paddingBottom * scaleFactor;
+      // 固定最底部线条的位置，从底部往上计算
+      let lastLineY = height - config.paddingBottom * scaleFactor; // 这里控制最底部线条的位置
       let firstLineY = lastLineY - (2 * currentGapY * scaleFactor);
 
       for (let i = 0; i < waves.length; i++) {
@@ -1318,6 +1270,7 @@
       }
     }
 
+    // ================= Wave 类 =================
     class Wave {
       constructor(y, txt, id, fullWidth) {
         this.homeY = y;
@@ -1331,8 +1284,8 @@
         this.waterTrails = [];
         this.noiseSeed = random(1000);
         this.centerX = [width * 0.28, width * 0.5, width * 0.72][id];
-        this.imageOpacity = 0;
-        this.imageElement = null;
+        this.imageOpacity = 0; // 图片透明度
+        this.imageElement = null; // 将在setup中初始化
       }
 
       update() {
@@ -1346,6 +1299,7 @@
           this.currentY = lerp(this.currentY, config.topBoundary * scaleFactor, config.riseSpeed);
           this.currentTextScale = lerp(this.currentTextScale, 0, config.closingSpeed);
           this.generateFullWidthTrails();
+          // 隐藏所有图片
           hideAllGalleries();
           currentDisplayedImageId = -1;
           if (this.currentY <= config.topBoundary * scaleFactor + 2) {
@@ -1353,34 +1307,44 @@
           }
         } 
         else if (this.state === 'FALLING') {
+          // 优化：使用 lerp 代替固定速度，使下落更平滑，并确保能够准确到达目标位置
+          // 之前是 += speed，容易产生抖动或过冲
+          // 使用一个稍快的 lerp 因子
           this.currentY = lerp(this.currentY, this.homeY, 0.08); 
           
           if (this.currentY > this.homeY - 150 * scaleFactor) {
             this.currentTextScale = lerp(this.currentTextScale, 1.0, 0.08); 
           }
+          // 计算图片渐显进度
           let fallProgress = (this.currentY - config.topBoundary * scaleFactor) / (this.homeY - config.topBoundary * scaleFactor);
           fallProgress = constrain(fallProgress, 0, 1);
-          if (fallProgress > 0.3) {
+          // 当波浪下降到一定程度后开始显示图片
+          if (fallProgress > 0.3) { // Graphic Design 延后出现，从 0.1 改为 0.3
+             // Graphic Design 使用 CSS 动画
              if (this.id === 0) {
                 showGalleryForWave(this.id);
              } else if (this.id === 1) {
+                // Visual Display 使用 JS 复杂动画，只触发一次
                 if (currentDisplayedImageId !== 1) {
                    showGalleryForWave(this.id);
-                   currentDisplayedImageId = 1;
+                   currentDisplayedImageId = 1; // 标记已触发，防止重复触发
                 }
              } else {
                 showGalleryForWave(this.id);
              }
           }
           
+          // 判断结束条件：非常接近目标位置时停止
           if (abs(this.currentY - this.homeY) < 1.0) {
-            this.currentY = this.homeY;
+            this.currentY = this.homeY; // 强制吸附
             this.state = 'IDLE';
             activeWaveIdx = -1;
+            // 图片保持显示，不隐藏
             this.imageOpacity = 1;
             currentDisplayedImageId = this.id;
             showGalleryForWave(this.id, 1);
             
+            // [New] Unlock scroll on mobile when animation finishes
             if (isMobileMode) {
                document.body.classList.remove('locked-scroll');
             }
@@ -1388,6 +1352,7 @@
         } else {
           this.currentY = lerp(this.currentY, this.homeY, 0.1);
           this.currentTextScale = lerp(this.currentTextScale, 1.0, 0.1);
+          // IDLE状态时，如果这是当前显示的图片，保持显示
           if (this.id === currentDisplayedImageId) {
             this.imageOpacity = 1;
             showGalleryForWave(this.id, 1);
@@ -1406,12 +1371,14 @@
         if (this.displayOpacity < 5) return;
 
         push();
+        // 1. 绘制颗粒
         for (let t of this.waterTrails) {
           stroke(180, 190, 200, t.opacity * (this.displayOpacity / 255));
           strokeWeight(t.thickness * scaleFactor);
           line(t.x, t.y, t.x, t.y + t.len * scaleFactor);
         }
 
+        // 2. 绘制【绝对完整】的波浪线
         for (let i = 0; i < 2; i++) {
           let yOff = i * 4 * scaleFactor;
           let alpha = i === 0 ? 255 : 80;
@@ -1421,19 +1388,23 @@
           this.drawSingleLongWave(yOff);
         }
 
+        // 3. 【核心步骤】遮挡线条 - 使用网页背景色
         let gapWidth = this.textBaseWidth * this.currentTextScale;
         if (gapWidth > 0.5) {
           noStroke();
+          // Tablet mode fix: Ensure background color matches body color #F2F2F1 (242, 242, 241)
           fill(242, 242, 241); 
           rectMode(CENTER);
           rect(this.centerX, this.currentY + 2 * scaleFactor, gapWidth, 20 * scaleFactor); 
         }
 
+        // 4. 绘制文字
         if (this.currentTextScale > 0.02) {
           push();
           translate(this.centerX, this.currentY + 2 * scaleFactor);
           scale(this.currentTextScale, 1.0);
           noStroke();
+          // Tablet mode: Ensure text is visible (black)
           fill(0, this.displayOpacity * Math.pow(this.currentTextScale, 1.5));
           textAlign(CENTER, CENTER);
           textSize(16 * scaleFactor);
@@ -1443,6 +1414,7 @@
         pop();
       }
 
+      // 只画一根线，从头到尾
       drawSingleLongWave(yOffset) {
         beginShape();
         let gapHalf = (this.textBaseWidth * this.currentTextScale) / 2;
@@ -1453,6 +1425,7 @@
           let noiseVal = noise(nx, this.noiseSeed + yOffset);
           let baseMod = map(noiseVal, 0, 1, -25, 25) * config.waveCurvature * scaleFactor;
           
+          // 平滑逻辑：在文字区域把波浪压平
           let distToCenter = abs(x - this.centerX);
           let taper = map(distToCenter, gapHalf * 0.5, gapHalf * 1.5, 0, 1, true);
           if (this.currentTextScale < 0.1) taper = 1;
@@ -1467,6 +1440,7 @@
         for (let i = 0; i < config.trailDensity; i++) {
           let rx = random(0, width);
           let gapHalf = (this.textBaseWidth * this.currentTextScale) / 2;
+          // 颗粒也不要在文字遮挡区产生
           if (rx > this.centerX - gapHalf && rx < this.centerX + gapHalf) continue;
 
           this.waterTrails.push({
@@ -1495,12 +1469,13 @@
       for (let w of waves) w.checkClick(mouseX, mouseY);
     }
 
-    function drawUI() {}
+    function drawUI() {
+      // 移除 P5.js Canvas 容器里的 "Works." 标题
+    }
 
-    // ================= Projects Folder - Origami / Paper Folder Style =================
-    let _folderPages = [];
-    let _folderOpen = false;
+    // ================= Gallery Init Functions =================
 
+    // --- Projects Folder (Accordion) ---
     function initProjectsFolder() {
       if (!graphicDesignGallery) return;
       graphicDesignGallery.innerHTML = '';
@@ -1509,30 +1484,18 @@
       stage.className = 'accordion-stage';
       stage.id = 'projectsAccordionStage';
 
-      const folderContainer = document.createElement('div');
-      folderContainer.className = 'folder-container';
-
-      const spine = document.createElement('div');
-      spine.className = 'folder-spine';
-      folderContainer.appendChild(spine);
-
-      const tab = document.createElement('div');
-      tab.className = 'folder-tab';
-      const tabLabel = document.createElement('div');
-      tabLabel.className = 'folder-tab-label';
-      tabLabel.textContent = 'Projects';
-      tab.appendChild(tabLabel);
-      folderContainer.appendChild(tab);
-
-      const pagesStack = document.createElement('div');
-      pagesStack.className = 'pages-stack';
-
-      _folderPages = [];
+      const pages = [];
+      let activePageIdx = 0;
+      let isAnimating = false;
 
       projectPages.forEach((proj, idx) => {
         const page = document.createElement('div');
         page.className = 'folder-page';
         page.dataset.idx = idx;
+
+        const ripple = document.createElement('div');
+        ripple.className = 'ripple-layer';
+        page.appendChild(ripple);
 
         const contentWrapper = document.createElement('div');
         contentWrapper.className = 'page-content-wrapper';
@@ -1552,261 +1515,199 @@
           <div class="proj-tags">${tagsHtml}</div>
         `;
         page.appendChild(contentWrapper);
-
-        page.addEventListener('click', (e) => {
-          e.stopPropagation();
-          _folderOpen = !_folderOpen;
-          update3DLayout();
-        });
-
-        pagesStack.appendChild(page);
-        _folderPages.push(page);
+        stage.appendChild(page);
+        pages.push(page);
       });
 
-      folderContainer.appendChild(pagesStack);
-
-      const hint = document.createElement('div');
-      hint.className = 'folder-hint';
-      hint.textContent = 'Click to open/close · 点击开合文件夹';
-      folderContainer.appendChild(hint);
-
-      stage.appendChild(folderContainer);
       graphicDesignGallery.appendChild(stage);
 
-      setTimeout(() => {
-        update3DLayout();
-      }, 50);
-    }
+      function foldPages() {
+        const total = pages.length;
+        if (total === 0) return;
 
-    function update3DLayout() {
-      const total = _folderPages.length;
-      if (total === 0) return;
+        pages.forEach((page, i) => {
+          const dist = i - activePageIdx;
+          page.classList.remove('shadow-light', 'shadow-medium', 'shadow-heavy');
+          page.classList.remove('active');
 
-      const gallery = graphicDesignGallery;
-      if (!gallery) return;
-      const stage = document.getElementById('projectsAccordionStage');
-      if (!stage) return;
-      const folderContainer = stage.querySelector('.folder-container');
-      const pagesStack = stage.querySelector('.pages-stack');
-      if (!folderContainer || !pagesStack) return;
-
-      const containerWidth = gallery.clientWidth || window.innerWidth;
-      const containerHeight = gallery.clientHeight || 400;
-      const isMobile = window.innerWidth <= 480;
-      const isSmall = containerWidth < 700;
-
-      let pageWidth = 320;
-      let pageHeight = 380;
-      let folderWidth = 340;
-      let folderHeight = 400;
-
-      if (isMobile) {
-        pageWidth = Math.min(170, containerWidth * 0.48);
-        pageHeight = Math.min(300, containerHeight - 40);
-        folderWidth = pageWidth + 24;
-        folderHeight = pageHeight + 30;
-      } else if (isSmall) {
-        pageWidth = Math.min(260, containerWidth * 0.38);
-        pageHeight = Math.min(340, containerHeight - 20);
-        folderWidth = pageWidth + 20;
-        folderHeight = pageHeight + 20;
+          if (dist === 0) {
+            page.style.transformOrigin = 'center center';
+            page.style.transform = 'translateX(0) rotate(0deg) scale(1)';
+            page.style.zIndex = 50;
+            page.style.boxShadow = '0 12px 40px rgba(0,0,0,0.25)';
+            page.classList.add('active');
+          } else if (dist < 0) {
+            const peek = 80;
+            const rot = -6;
+            const sc = 0.88;
+            page.style.transformOrigin = 'center center';
+            page.style.transform = `translateX(${-peek}px) rotate(${rot}deg) scale(${sc})`;
+            page.style.zIndex = 40 + dist;
+            page.style.boxShadow = '0 4px 12px rgba(0,0,0,0.12)';
+            page.classList.add('shadow-medium');
+          } else {
+            const peek = 80;
+            const rot = 6;
+            const sc = 0.88;
+            page.style.transformOrigin = 'center center';
+            page.style.transform = `translateX(${peek}px) rotate(${rot}deg) scale(${sc})`;
+            page.style.zIndex = 40 - dist;
+            page.style.boxShadow = '0 4px 12px rgba(0,0,0,0.12)';
+            page.classList.add('shadow-light');
+          }
+        });
       }
 
-      folderContainer.style.width = folderWidth + 'px';
-      folderContainer.style.height = folderHeight + 'px';
-
-      const pagesEl = pagesStack;
-      pagesEl.style.width = (folderWidth - 8) + 'px';
-      pagesEl.style.height = '100%';
-
-      _folderPages.forEach((page, i) => {
-        page.style.width = pageWidth + 'px';
-        page.style.height = pageHeight + 'px';
-        page.style.transformOrigin = 'left center';
-        page.style.top = (isMobile ? 8 : 10) + 'px';
-
-        if (_folderOpen) {
-          if (i === 0) {
-            page.style.left = '6px';
-            page.style.zIndex = (30 + i);
-            page.style.transform = `rotateY(-35deg) translateZ(${(total - 1 - i) * 2}px)`;
-            page.style.boxShadow = '6px 4px 20px rgba(0,0,0,0.2), inset 0 0 60px rgba(0,0,0,0.02)';
-          } else {
-            page.style.left = '6px';
-            page.style.zIndex = (30 - i);
-            page.style.transform = `rotateY(35deg) translateZ(${(total - 1 - i) * 2}px)`;
-            page.style.boxShadow = '-6px 4px 20px rgba(0,0,0,0.2), inset 0 0 60px rgba(0,0,0,0.02)';
-          }
-        } else {
-          const offsetPer = isMobile ? 10 : 15;
-          const offsetX = i * offsetPer;
-          const offsetY = i * offsetPer;
-          page.style.left = (6 + offsetX) + 'px';
-          page.style.top = ((isMobile ? 8 : 10) + offsetY) + 'px';
-          page.style.zIndex = (20 + (total - i));
-          page.style.transform = 'rotateY(0deg) translateZ(' + ((total - 1 - i) * 1) + 'px)';
-          page.style.boxShadow = (2 + i * 1.5) + 'px ' + (2 + i * 1.5) + 'px ' + (6 + i * 3) + 'px rgba(0,0,0,' + (0.08 + i * 0.04) + '), inset 0 0 60px rgba(0,0,0,0.03)';
-        }
+      pages.forEach((page, idx) => {
+        page.addEventListener('click', (e) => {
+          if (isAnimating) return;
+          if (idx === activePageIdx) return;
+          isAnimating = true;
+          activePageIdx = idx;
+          foldPages();
+          setTimeout(() => { isAnimating = false; }, 650);
+        });
       });
+
+      // Touch swipe support
+      let touchStartX = 0;
+      stage.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+      stage.addEventListener('touchend', (e) => {
+        const touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) < 50) return;
+        if (diff > 0 && activePageIdx < pages.length - 1) {
+          isAnimating = true;
+          activePageIdx++;
+          foldPages();
+          setTimeout(() => { isAnimating = false; }, 650);
+        } else if (diff < 0 && activePageIdx > 0) {
+          isAnimating = true;
+          activePageIdx--;
+          foldPages();
+          setTimeout(() => { isAnimating = false; }, 650);
+        }
+      }, { passive: true });
+
+      setTimeout(foldPages, 50);
     }
 
-    // ================= Leadership Cards - Pin Board =================
-    let _pinBoardItems = [];
-
+    // --- Leadership Cards (Pin Board) ---
     function initLeadershipCards() {
       if (!visualDisplayGallery) return;
       visualDisplayGallery.innerHTML = '';
-      _pinBoardItems = [];
 
       const board = document.createElement('div');
       board.className = 'pin-board';
-      board.id = 'leadershipPinBoard';
 
       const leadershipData = [
         {
           title: "Spark Society · 星火学社",
+          subtitle: "Founder & President · 2023–Present",
           image: "./images/spark-activity.jpg",
-          comingSoon: false
+          desc: "Founded and led a student association of 50+ members. Organized public welfare events including nursing home visits (养老公益行) and community outreach. Managed a cross-functional team across event planning, marketing, design, and communications. Produced WeChat Official Account promotional content, handling copywriting and content strategy.",
+          comingSoon: false,
+          top: "20px",
+          left: "40px",
+          rotate: -2
         },
         {
-          title: null,
+          title: "Coming Soon",
+          subtitle: "",
           image: null,
-          comingSoon: true
-        },
-        {
-          title: null,
-          image: null,
-          comingSoon: true
+          desc: "",
+          comingSoon: true,
+          top: "180px",
+          left: "340px",
+          rotate: 2
         }
       ];
 
-      const isMobileView = window.innerWidth <= 480;
-      const boardMaxWidth = Math.min(700, window.innerWidth - 80);
-      const boardHeight = isMobileView ? 300 : 360;
-      const cardW = isMobileView ? 120 : 150;
-      const cardH = isMobileView ? 160 : 200;
-      const margin = isMobileView ? 20 : 25;
-
-      board.style.maxWidth = boardMaxWidth + 'px';
-      board.style.width = '100%';
-      board.style.height = boardHeight + 'px';
-
-      const placedRects = [];
-
       leadershipData.forEach((item, idx) => {
-        const el = document.createElement('div');
-        el.className = 'gallery-item visual-display' + (item.comingSoon ? ' coming-soon-card' : '');
-
-        let attempts = 0;
-        let posX, posY, rotation;
-        let placed = false;
-        const maxX = boardMaxWidth - cardW - margin;
-        const maxY = boardHeight - cardH - margin;
-
-        while (!placed && attempts < 300) {
-          posX = margin + Math.random() * Math.max(10, maxX - margin);
-          posY = margin + Math.random() * Math.max(10, maxY - margin);
-          rotation = (Math.random() * 16 - 8);
-
-          let collision = false;
-          const pad = 12;
-          for (let r of placedRects) {
-            if (!(posX + cardW + pad < r.x || posX - pad > r.x + r.w ||
-                  posY + cardH + pad < r.y || posY - pad > r.y + r.h)) {
-              collision = true;
-              break;
-            }
-          }
-
-          if (!collision) {
-            placed = true;
-            placedRects.push({ x: posX, y: posY, w: cardW, h: cardH });
-          }
-          attempts++;
-        }
-
-        if (!placed) {
-          const cols = Math.floor(boardMaxWidth / (cardW + 30));
-          posX = margin + (idx % Math.max(1, cols)) * (cardW + 25) + Math.random() * 10;
-          posY = margin + Math.floor(idx / Math.max(1, cols)) * (cardH + 20) + Math.random() * 8;
-          rotation = (Math.random() * 16 - 8);
-        }
-
-        el.style.left = posX + 'px';
-        el.style.top = posY + 'px';
-        el.style.setProperty('--rotation', rotation + 'deg');
-        el.style.width = cardW + 'px';
-
         const pin = document.createElement('div');
-        pin.className = 'pin';
-        el.appendChild(pin);
+        pin.className = 'pinned-item' + (item.comingSoon ? ' coming-soon' : '');
+        pin.style.top = item.top;
+        pin.style.left = item.left;
+        pin.style.transform = `rotate(${item.rotate}deg)`;
+
+        const pinHead = document.createElement('div');
+        pinHead.className = 'pin-head';
+        pin.appendChild(pinHead);
 
         if (item.comingSoon) {
-          const ph = document.createElement('div');
-          ph.className = 'placeholder-content';
-          ph.innerHTML = '<div class="placeholder-q">?</div><div class="placeholder-text">More coming soon<br>更多经历即将到来</div>';
-          el.appendChild(ph);
+          const placeholder = document.createElement('div');
+          placeholder.className = 'pin-placeholder';
+          placeholder.innerHTML = 'More leadership<br>experiences<br>coming soon...<br><span style="font-size:9px;color:#ccc;">更多经历正在来的路上</span>';
+          pin.appendChild(placeholder);
         } else {
           if (item.image) {
             const img = document.createElement('img');
+            img.className = 'pin-img';
             img.src = item.image;
-            img.alt = item.title || '';
-            img.draggable = false;
-            el.appendChild(img);
-
-            img.addEventListener('click', (e) => {
-              e.stopPropagation();
-              openImageModal(item.image);
-            });
+            img.alt = item.title;
+            pin.appendChild(img);
           }
-          if (item.title) {
-            const label = document.createElement('div');
-            label.className = 'item-label';
-            label.textContent = item.title;
-            el.appendChild(label);
+          const title = document.createElement('div');
+          title.className = 'pin-title';
+          title.textContent = item.title;
+          pin.appendChild(title);
+          if (item.subtitle) {
+            const sub = document.createElement('div');
+            sub.className = 'pin-subtitle';
+            sub.textContent = item.subtitle;
+            pin.appendChild(sub);
           }
 
-          el.addEventListener('click', (e) => {
-            if (item.image) openImageModal(item.image);
+          pin.addEventListener('click', () => {
+            openLeadershipModal(item);
           });
         }
 
-        board.appendChild(el);
-        _pinBoardItems.push(el);
+        board.appendChild(pin);
       });
 
       visualDisplayGallery.appendChild(board);
-    }
 
-    function triggerPinBoardAnimation() {
-      _pinBoardItems.forEach((item, idx) => {
-        item.classList.remove('dropped', 'pinned');
-        item.style.transitionDelay = '';
-        void item.offsetWidth;
-
-        setTimeout(() => {
-          item.style.transition = `transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) ${idx * 0.15}s, box-shadow 0.35s ease, opacity 0.5s ease ${idx * 0.15}s`;
-          item.classList.add('dropped');
-          
-          setTimeout(() => {
-            item.classList.add('pinned');
-          }, 700 + idx * 150 + 200);
-        }, 50);
-      });
-    }
-
-    function openImageModal(imgSrc) {
-      if (!imageModal) return;
-      const modalImg = document.getElementById('modalImage');
-      if (modalImg) {
-        modalImg.src = imgSrc;
-        resetImageState(modalImg);
-        setupModalEvents(modalImg);
+      const modalOverlay = document.getElementById('leadershipModal');
+      const modalClose = document.getElementById('leadershipModalClose');
+      if (modalClose) {
+        modalClose.addEventListener('click', closeLeadershipModal);
       }
-      imageModal.classList.add('show');
+      if (modalOverlay) {
+        modalOverlay.addEventListener('click', (e) => {
+          if (e.target === modalOverlay) closeLeadershipModal();
+        });
+      }
     }
 
-    // ================= Content Showcase (Phone + Article List) =================
+    function openLeadershipModal(item) {
+      const modalOverlay = document.getElementById('leadershipModal');
+      const modalImg = document.getElementById('leadershipModalImg');
+      const modalTitle = document.getElementById('leadershipModalTitle');
+      const modalSubtitle = document.getElementById('leadershipModalSubtitle');
+      const modalDesc = document.getElementById('leadershipModalDesc');
+      if (!modalOverlay) return;
+
+      if (item.image) {
+        modalImg.src = item.image;
+        modalImg.style.display = 'block';
+      } else {
+        modalImg.style.display = 'none';
+      }
+      modalTitle.textContent = item.title;
+      modalSubtitle.textContent = item.subtitle;
+      modalDesc.textContent = item.desc;
+      modalOverlay.classList.add('show');
+    }
+
+    function closeLeadershipModal() {
+      const modalOverlay = document.getElementById('leadershipModal');
+      if (modalOverlay) modalOverlay.classList.remove('show');
+    }
+
+    // --- Content Showcase (Left list + Right phone) ---
     let _likedArticles = {};
     function initSocialMediaGallery() {
       if (!socialMediaGallery) return;
@@ -1815,6 +1716,7 @@
       let currentIdx = 0;
       const articles = socialMediaData;
 
+      // Left: article list
       const listWrap = document.createElement('div');
       listWrap.style.display = 'flex';
       listWrap.style.flexDirection = 'column';
@@ -1857,6 +1759,7 @@
       hint.textContent = '点击文章查看手机预览';
       listWrap.appendChild(hint);
 
+      // Right: phone frame
       const phoneFrame = document.createElement('div');
       phoneFrame.className = 'wx-phone-frame';
 
@@ -1956,57 +1859,55 @@
       });
     }
 
-    let _pinAnimationTriggered = false;
-
     function showGalleryForWave(waveId, opacity = null) {
       const targets = [graphicDesignGallery, visualDisplayGallery, socialMediaGallery];
       const target = targets[waveId];
       
+      // Already showing? Just ensure opacity
       if (target && target.classList.contains('show') && target.style.display !== 'none') {
         target.style.opacity = 1;
-        if (waveId === 0) {
-          update3DLayout();
-        }
         return;
       }
       
       hideAllGalleries();
-      _pinAnimationTriggered = false;
       
       if (target) {
-        if (waveId === 0) {
-          target.style.display = 'block';
-        } else if (waveId === 1) {
-          target.style.display = 'block';
-        } else {
-          target.style.display = 'flex';
-        }
+        target.style.display = 'flex';
         target.style.opacity = 1;
         target.classList.add('show');
-
-        if (waveId === 0) {
-          setTimeout(() => update3DLayout(), 60);
-        }
-        if (waveId === 1) {
-          setTimeout(() => {
-            triggerPinBoardAnimation();
-          }, 200);
-        }
       }
     }
 
+    // 旧的图片点击处理（保留但不再使用，避免报错）
     function handleImageClick(e, item, imgPath, type) {
       e.stopPropagation();
     }
 
+    // 弹出窗口功能 - 支持滚轮缩放和拖拽
     let currentScale = 1;
     let isDragging = false;
     let startX, startY, initialLeft, initialTop;
     let translateX = 0, translateY = 0;
     
+    // 移动端双指缩放相关变量
     let initialPinchDistance = 0;
     let initialScale = 1;
 
+    function openModal(imgPath) {
+      if (!imageModal) return;
+      const modalImage = document.getElementById('modalImage');
+      if (modalImage) {
+        modalImage.src = imgPath;
+        imageModal.classList.add('show');
+        
+        // 重置状态
+        resetImageState(modalImage);
+        
+        // 绑定事件
+        setupModalEvents(modalImage);
+      }
+    }
+    
     function resetImageState(img) {
       currentScale = 1;
       translateX = 0;
@@ -2020,16 +1921,18 @@
     }
     
     function setupModalEvents(img) {
+      // 1. 鼠标滚轮缩放
       img.onwheel = (e) => {
         e.preventDefault();
-        const delta = e.deltaY * -0.001;
-        const newScale = Math.min(Math.max(0.5, currentScale + delta), 5);
+        const delta = e.deltaY * -0.001; // 滚轮灵敏度
+        const newScale = Math.min(Math.max(0.5, currentScale + delta), 5); // 限制缩放范围 0.5x - 5x
         currentScale = newScale;
         updateImageTransform(img);
       };
       
+      // 2. 鼠标拖拽
       img.onmousedown = (e) => {
-        e.preventDefault();
+        e.preventDefault(); // 防止默认拖拽图片行为
         isDragging = true;
         startX = e.clientX;
         startY = e.clientY;
@@ -2053,12 +1956,15 @@
         img.style.cursor = 'grab';
       };
       
+      // 3. 移动端双指缩放 & 单指拖拽
       img.ontouchstart = (e) => {
         if (e.touches.length === 2) {
-          e.preventDefault();
+          // 双指缩放开始
+          e.preventDefault(); // 防止页面滚动
           initialPinchDistance = getDistance(e.touches[0], e.touches[1]);
           initialScale = currentScale;
         } else if (e.touches.length === 1) {
+          // 单指拖拽开始
           isDragging = true;
           startX = e.touches[0].clientX;
           startY = e.touches[0].clientY;
@@ -2066,8 +1972,9 @@
       };
       
       img.ontouchmove = (e) => {
-        e.preventDefault();
+        e.preventDefault(); // 防止页面滚动
         if (e.touches.length === 2) {
+          // 双指缩放中
           const currentDistance = getDistance(e.touches[0], e.touches[1]);
           if (initialPinchDistance > 0) {
             const scaleDiff = currentDistance / initialPinchDistance;
@@ -2075,6 +1982,7 @@
             updateImageTransform(img);
           }
         } else if (e.touches.length === 1 && isDragging) {
+          // 单指拖拽中
           const dx = e.touches[0].clientX - startX;
           const dy = e.touches[0].clientY - startY;
           translateX += dx;
@@ -2094,15 +2002,18 @@
         }
       };
       
+      // 点击 modalContent (背景区域) 关闭
       const modalContent = document.querySelector('.modal-content');
       if (modalContent) {
          modalContent.onclick = (e) => {
+           // 如果点击的是 modal-content 本身（即图片外围），而不是图片
            if (e.target === modalContent) {
              closeModal();
            }
          };
       }
       
+      // 移除旧的点击事件，防止冲突
       img.onclick = (e) => {
         e.stopPropagation();
       };
@@ -2117,33 +2028,42 @@
     function closeModal() {
       if (imageModal) {
         imageModal.classList.remove('show');
+        // 解除全局事件绑定，防止内存泄漏或干扰
         window.onmousemove = null;
         window.onmouseup = null;
         
+        // 恢复飞行的图片
         if (activeFlyingItem) {
+            // 简单淡入恢复
+            // 原元素一直在原地，只是隐藏了，所以直接淡入即可
             activeFlyingItem.style.transition = 'opacity 0.5s ease';
             activeFlyingItem.style.opacity = '1';
             activeFlyingItem.style.zIndex = ''; 
+            
             activeFlyingItem = null;
         }
       }
     }
 
+    // 点击背景关闭弹出窗口
     document.addEventListener('DOMContentLoaded', () => {
       const modalBackdrop = document.querySelector('.modal-backdrop');
       if (modalBackdrop) {
         modalBackdrop.addEventListener('click', closeModal);
       }
       
+      // ESC键关闭
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
           closeModal();
+          closeLeadershipModal();
         }
       });
     });
 
+    // 在draw循环中更新图片位置
     function draw() {
-      clear();
+      clear(); // 使用 clear() 实现透明背景
       drawUI();
       updateTargetPositions();
 

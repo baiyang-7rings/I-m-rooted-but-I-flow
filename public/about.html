@@ -3,18 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About.</title>
+  <title>About Jackie</title>
   
+  <!-- 引入字体 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Special Elite 字体 (英文标题) -->
   <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
+  <!-- AR One Sans 字体 (导航栏) -->
   <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <!-- 思源黑体简体 / Noto Sans SC (中文) -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+  <!-- Source Code Pro -->
   <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
   
+  <!-- 引入 P5.js -->
   <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.js"></script>
   
   <style>
+    /* ================= 基础样式 ================= */
     :root {
       --bg-color: #F2F2F1;
       --text-color: #000000;
@@ -50,6 +57,26 @@
       text-decoration: underline;
     }
 
+    /* ================= 背景图片 ================= */
+    /* Removed per user request
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('./images/about-tree-bg.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      opacity: 0.25;
+      z-index: -1;
+      pointer-events: none;
+    }
+    */
+
+    /* ================= 布局容器 ================= */
     .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -58,19 +85,21 @@
       z-index: 1;
     }
     
+    /* 为 canvas 预留空间 */
     .canvas-spacer {
       width: 100%;
-      padding-top: 48.67%;
-      margin-top: 105px;
-      pointer-events: none;
+      padding-top: 48.67%; /* 623/1280 = 0.4867 保持原始比例 */
+      margin-top: 105px; /* 增加一些上边距 */
+      pointer-events: none; /* 防止遮挡 Canvas 点击事件 */
     }
 
+    /* ================= 顶部导航 ================= */
     header {
       display: flex;
       justify-content: flex-end;
       align-items: center;
       padding-top: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 20px; /* 从 60px 缩小到 20px */
     }
 
     .nav-links {
@@ -87,27 +116,29 @@
       transition: all 0.2s ease;
       display: inline-block;
       text-decoration: none;
-      transform-origin: bottom center;
+      transform-origin: bottom center; /* 旋转轴在底部 */
     }
     .nav-links a:hover { 
       color: #333; 
     }
     .nav-links a:active {
-      color: #ccc;
+      color: #ccc; /* 颜色变浅 */
       text-shadow: none;
-      transform: perspective(500px) rotateX(60deg) skewX(-15deg);
+      transform: perspective(500px) rotateX(60deg) skewX(-15deg); /* 向斜后方倾倒 */
     }
 
+    /* ================= 页面标题 ================= */
     .page-title {
       font-size: 48px;
       font-weight: bold;
       letter-spacing: -1px;
-      margin-bottom: 0px;
+      margin-bottom: 0px; /* 从 20px 缩小到 10px */
       font-family: var(--font-main);
       position: relative;
       z-index: 10;
     }
 
+    /* ================= 副标题文字 ================= */
     .subtitle {
       font-size: 14px;
       line-height: 1.8;
@@ -118,9 +149,10 @@
       max-width: 600px;
     }
 
+    /* ================= P5.js Canvas 容器 ================= */
     .canvas-container {
       position: absolute;
-      top: 40px;
+      top: 40px; /* 从 150px 调整到 110px，跟随标题上移 */
       left: 0;
       width: 100vw;
       z-index: 0;
@@ -133,6 +165,7 @@
       cursor: pointer;
     }
     
+    /* 内容区域 */
     .content-wrapper {
       position: relative;
       z-index: 1;
@@ -143,6 +176,7 @@
       pointer-events: auto;
     }
 
+    /* ================= 底部 Footer ================= */
     footer{
       border-top:1px solid rgba(0,0,0,0.08);
       margin-top:0px;
@@ -154,22 +188,25 @@
       display:grid;
       grid-template-columns:repeat(4,1fr);
       gap:12px;
-      font-size:13px;
-      color: #666666;
-      font-family: "AR One Sans", sans-serif;
+      font-size:13px; /* 12-14px */
+      color: #666666; /* 统一颜色 */
+      font-family: "AR One Sans", sans-serif; /* 统一字体 */
     }
     .footer-item b{
       display:block;
       font-weight:500;
       margin-bottom:6px;
-      color: #666666;
+      color: #666666; /* 统一颜色 */
     }
     .footer-item span {
-      opacity: 1;
+      opacity: 1; /* 统一透明度 */
     }
 
+    /* ================= 响应式设计 ================= */
+    /* Tablet Landscape adjustments */
     @media (min-width: 481px) and (max-width: 1200px) {
       .canvas-spacer {
+        /* Reduce spacing to pull footer up to the bottom of the canvas/image */
         margin-top: 0px; 
         margin-bottom: -60px;
       }
@@ -202,7 +239,7 @@
       
       .page-title {
         font-size: 28px;
-        margin-left: 0;
+        margin-left: 0; /* 保持一致 */
       }
       
       .footer-inner{
@@ -211,9 +248,10 @@
         font-size:12px;
       }
       
+      /* 移动端 Canvas 容器调整 */
       .canvas-container {
-        height: 400px !important;
-        top: 100px;
+        height: 400px !important; /* 增加高度 */
+        top: 100px; /* 调整位置 */
       }
       
       #p5-canvas {
@@ -225,6 +263,7 @@
       footer {
         position: relative;
         z-index: 10;
+        /* margin-top: 50px; Handled by JS */
       }
     }
   </style>
@@ -232,9 +271,11 @@
 <body>
 
   <div class="canvas-container" id="canvas-container">
+    <!-- P5.js 会在这里创建 canvas -->
   </div>
 
   <div class="container">
+    <!-- 顶部导航 -->
     <header>
       <nav class="nav-links">
         <a href="index.html">Sketchbook</a>
@@ -245,16 +286,20 @@
     </header>
     
     <div class="content-wrapper">
+      <!-- 页面标题 -->
       <div class="page-title">About.</div>
 
+      <!-- 副标题文字 -->
       <div class="subtitle">
         用数据讲故事，在细节里寻光。<br>像风穿过树梢，像叶落向大地。
       </div>
       
+      <!-- Canvas 占位空间 -->
       <div class="canvas-spacer"></div>
     </div>
   </div>
 
+  <!-- 底部 Footer -->
   <footer>
     <div class="footer-inner" style="font-family: var(--font-code);">
       <div class="footer-item">
@@ -283,46 +328,49 @@
     })();
   </script>
 
+  <!-- P5.js Sketch -->
   <script>
-    let bgImg, sakuraImg, profileImg;
+    let bgImg, img5;
     let isExtracted = false; 
-    let currentImg1X = 105;
+    let currentImg1X = 105; // 从 110 改为 105，向左移动5px    
     let img3Pos; 
     let img3Vel; 
     
-    let img1PopState = "IDLE";
+    // img1 破土而出动画变量
+    let img1PopState = "IDLE"; // IDLE, POP1, PAUSE, POP2, RETURN
     let img1PopTimer = 0;
     let img1PopOffset = 0;
     let img1PopTargetOffset = 0; 
     let img3State = "HIDDEN"; 
     let dropStartTime = 0; 
     let imagesLoaded = 0;
-    let totalImages = 3;
-    let scaleFactor = 1;
+    let totalImages = 2;
+    let scaleFactor = 1; // 缩放比例
     let isMobileMode = false;
 
-    let sakuraState = "IDLE";
-    let sakuraX = 0;
-    let sakuraY = -200;
-    let sakuraTargetY = 0;
-    let sakuraScale = 0.35;
-    let sakuraHoldTimer = 0;
-    let sakuraRotation = 0;
-
+    // --- 调节参数 ---
     const driftConfig = {
-      speedY: 0.03,
+      speedY: 0.03,         // 垂直下落速度
       finalX: 220,          
       finalY: 100,          
-      swingRange: 3,
-      swingSpeed: 2.5,
-      driftAmplitude: 15
+      swingRange: 3,        // 摆动幅度
+      swingSpeed: 2.5,      // 摆动频率
+      driftAmplitude: 15    // 纸片左右晃动的物理宽度
     };
 
+    // --- img4 位置控制参数 ---
     let img4Config = {
-      x: 850,
-      y: 420,
-      w: 260,
-      h: 134
+      x: 850,               // 画布水平位置
+      y: 420,               // 画布垂直位置
+      w: 260,               // 宽度
+      h: 134                // 高度
+    };
+
+    let img5Config = {
+      x: 200,
+      y: 460,
+      w: 130,
+      h: 160
     };
 
     let config = {
@@ -334,6 +382,7 @@
       img1Size: { w: 117, h: 145 }, 
       img3Size: { w: 135, h: 32 },  
       img4Size: { w: 260, h: 134 }, 
+      img5Size: { w: 130, h: 160 },
       extractDist: 200,              
       triggerThreshold: 186, 
       img3InitialX: 70,      
@@ -341,30 +390,28 @@
     };
 
     function preload() {
+      console.log('开始加载图片...');
+      
       bgImg = loadImage('./images/about-tree-bg.png', 
-        () => { imagesLoaded++; },
-        () => { console.error('bg load failed'); }
+        () => { console.log('背景图加载成功'); imagesLoaded++; },
+        () => { console.error('背景图加载失败'); }
       ); 
       
-      sakuraImg = loadImage('./images/屏幕截图 2026-06-28 000819.png', 
-        () => { imagesLoaded++; },
-        () => { console.error('sakura load failed'); }
-      );
-
-      profileImg = loadImage('./images/profile.jpg', 
-        () => { imagesLoaded++; },
-        () => { console.error('profile load failed'); }
-      );
+      img5 = loadImage('./images/profile.jpg', () => { imagesLoaded++; }, () => { console.error('profile.jpg load failed'); });
     }
 
     function setup() {
+      console.log('Setup 开始，已加载图片数量：' + imagesLoaded + '/' + totalImages);
+      
+      // 检测移动端
       isMobileMode = windowWidth <= 480;
 
+      // 计算画布尺寸，保持原始比例
       let canvasWidth = windowWidth;
       let canvasHeight;
       
       if (isMobileMode) {
-        canvasHeight = 400;
+        canvasHeight = 400; // 移动端固定高度
       } else {
         canvasHeight = canvasWidth * (config.canvasH / config.canvasW); 
       }
@@ -372,41 +419,52 @@
       let canvas = createCanvas(canvasWidth, canvasHeight);
       canvas.parent('canvas-container');
       canvas.id('p5-canvas');
-      clear();
+      clear(); // 设置透明背景
       imageMode(CENTER);
       angleMode(DEGREES);
       
+      // 根据窗口宽度计算缩放比例
       if (isMobileMode) {
-         scaleFactor = 0.6;
+         scaleFactor = 0.6; // 移动端固定缩放，保证卡片够大
+         
+         // 调整位置配置，使卡片居中
+         // 屏幕中心 X
          let cx = canvasWidth / 2 / scaleFactor;
          let cy = canvasHeight / 2 / scaleFactor;
+         
+         // 垂直排列，互不遮挡
+         // 信封在上
          config.baseX = cx - 70; 
          config.baseY = cy - 80; 
+         
+         // 卡片在下
          img4Config.x = cx;
          img4Config.y = cy + 100;
+         
+         img5Config = { x: cx, y: cy + 220, w: 100, h: 124 };
+         
       } else {
          scaleFactor = canvasWidth / config.canvasW;
+         // 恢复默认配置
          config.baseX = 1280 * 0.35;
          config.baseY = 623 * 0.40;
          img4Config.x = 850;
          img4Config.y = 420;
+         img5Config = { x: 200, y: 460, w: 130, h: 160 };
       }
       
+      // Auto-align footer to the bottom of the canvas
       adjustFooterPosition();
       
       img3Pos = createVector(config.img3InitialX * scaleFactor, config.img3InitialY * scaleFactor);
       img3Vel = createVector(0, 0);
-
-      sakuraX = width * 0.75;
-      sakuraY = -200 * scaleFactor;
-      sakuraTargetY = height * 0.35;
-      sakuraScale = 0.35 * scaleFactor;
-      sakuraRotation = -5;
+      console.log('Setup 完成，缩放比例：' + scaleFactor);
     }
     
     function windowResized() {
       isMobileMode = windowWidth <= 480;
       
+      // 窗口大小改变时重新调整画布
       let canvasWidth = windowWidth;
       let canvasHeight;
       
@@ -426,19 +484,18 @@
          config.baseY = cy - 80;
          img4Config.x = cx;
          img4Config.y = cy + 100;
+         img5Config = { x: cx, y: cy + 220, w: 100, h: 124 };
       } else {
          scaleFactor = canvasWidth / config.canvasW;
          config.baseX = 1280 * 0.35;
          config.baseY = 623 * 0.40;
          img4Config.x = 850;
          img4Config.y = 420;
+         img5Config = { x: 200, y: 460, w: 130, h: 160 };
       }
       
+      // Re-align footer on resize
       adjustFooterPosition();
-
-      sakuraX = width * 0.75;
-      sakuraTargetY = height * 0.35;
-      sakuraScale = 0.35 * scaleFactor;
     }
     
     function adjustFooterPosition() {
@@ -446,30 +503,63 @@
         const footer = document.querySelector('footer');
         
         if (canvasContainer && footer) {
+            // Get Canvas bottom position relative to document
+            const canvasRect = canvasContainer.getBoundingClientRect();
+            // Since canvasContainer is absolute, we need to consider scrollY for absolute position if needed,
+            // but margin-top is relative to the element flow.
+            // Actually, footer is in normal flow.
+            // We want Footer Top (border) to be at Canvas Bottom.
+            
+            // Canvas Top is relative to viewport + scrollY
+            // Actually canvasContainer.offsetTop is relative to offsetParent (body).
             const canvasBottom = canvasContainer.offsetTop + canvasContainer.offsetHeight;
+            
+            // Footer's natural position is determined by content above it (.container).
+            // We can set margin-top to push it down or pull it up.
+            
+            // Let's find where the content ends
             const container = document.querySelector('.container');
             const contentBottom = container.offsetTop + container.offsetHeight;
+            
+            // We want footer to start at canvasBottom.
+            // The gap currently is (contentBottom) -> Footer.
+            // So we need margin-top = canvasBottom - contentBottom.
+            
             const requiredMargin = canvasBottom - contentBottom;
+            
+            // Apply margin. Note: this might be negative if content is taller than canvas.
+            // If content is taller, maybe we should respect content? 
+            // User said "align with background bottom", assuming background is the canvas.
+            // Usually background should cover content. If content is taller, footer inside content flow is fine?
+            // But user specifically asked to align with background bottom.
+            // Let's strictly follow "align with background bottom".
+            
             footer.style.marginTop = requiredMargin + 'px';
         }
     }
 
     function draw() {
-      clear();
+      clear(); // 使用 clear() 代替 background() 来保持透明
       
+      // 计算背景图移动偏移量 (仅桌面端)
       let bgOffsetX = 0;
       let bgOffsetY = 0;
       if (!isMobileMode) {
+        // 限制最大移动范围，防止过度移动
         bgOffsetX = constrain((mouseX - width / 2) * 0.015, -20, 20);
         bgOffsetY = constrain((mouseY - height / 2) * 0.015, -20, 20);
       }
       
+      // 绘制背景图 (截取中间部分适配移动端)
       if (isMobileMode && bgImg) {
+        // 计算截取区域：保持高度充满，截取水平中心
+        // 假设背景图宽高比大于画布宽高比
         let sH = bgImg.height;
         let sW = sH * (width / height);
         let sX = (bgImg.width - sW) / 2;
         let sY = 0;
         
+        // 如果计算出的宽度比原图还宽，则以宽度为基准
         if (sW > bgImg.width) {
            sW = bgImg.width;
            sH = sW * (height / width);
@@ -479,31 +569,77 @@
         
         image(bgImg, width/2, height/2, width, height, sX, sY, sW, sH);
       } else if (bgImg) {
+        // 桌面端：背景图稍微放大一点，并随鼠标移动
+        // 放大 1.05 倍以确保移动时边缘不会露白
         let bgScale = 1.05;
         image(bgImg, width/2 + bgOffsetX, height/2 + bgOffsetY, width * bgScale, height * bgScale);
       }
 
-      // --- img4 (cat placeholder) ---
+      // --- 绘制 img4 (绝对位置，不随信封旋转，顺时针倾斜3度) - Contact/Skills card ---
       push();
       translate(img4Config.x * scaleFactor, img4Config.y * scaleFactor);
       rotate(3);
+      // Shadow
       fill(0,0,0,15); noStroke();
-      ellipse(0, img4Config.h*scaleFactor/2+4*scaleFactor, img4Config.w*scaleFactor*0.85, 8*scaleFactor);
-      fill(242,242,241);
-      stroke(0,0,0,40); strokeWeight(1.5*scaleFactor);
+      ellipse(0, img4Config.h*scaleFactor/2+3*scaleFactor, img4Config.w*scaleFactor*0.85, 7*scaleFactor);
+      // Card
+      fill(255); stroke(0,0,0,25); strokeWeight(1*scaleFactor);
       rectMode(CENTER);
-      rect(0, 0, img4Config.w*scaleFactor, img4Config.h*scaleFactor, 7*scaleFactor);
+      rect(0, 0, img4Config.w*scaleFactor, img4Config.h*scaleFactor, 3*scaleFactor);
+      // Pin
       drawPin(0, -img4Config.h*scaleFactor/2+10*scaleFactor);
+      // Text
+      fill(0); noStroke();
+      textAlign(LEFT, TOP);
+      textFont('Special Elite, serif'); textSize(11*scaleFactor);
+      let cx = -img4Config.w*scaleFactor/2+14*scaleFactor;
+      let cy = -img4Config.h*scaleFactor/2+20*scaleFactor;
+      text("CONTACT", cx, cy);
+      stroke(0,40); strokeWeight(0.5*scaleFactor);
+      line(cx, cy+16*scaleFactor, cx+80*scaleFactor, cy+16*scaleFactor);
+      noStroke(); fill(60); textFont('AR One Sans, monospace'); textSize(8*scaleFactor);
+      cy += 24*scaleFactor;
+      text("Email", cx, cy); cy += 13*scaleFactor;
+      textSize(7*scaleFactor); fill(100);
+      text("l118183365@gmail.com", cx, cy); cy += 15*scaleFactor;
+      textSize(8*scaleFactor); fill(60);
+      text("LinkedIn", cx, cy); cy += 13*scaleFactor;
+      textSize(7*scaleFactor); fill(100);
+      text("linkedin.com/in/", cx, cy); cy += 11*scaleFactor;
+      text("jackie-li6699", cx, cy); cy += 15*scaleFactor;
+      textSize(8*scaleFactor); fill(60);
+      text("Tel", cx, cy); cy += 13*scaleFactor;
+      textSize(7*scaleFactor); fill(100);
+      text("+86 19153294495", cx, cy);
+      // Skill tags at bottom
+      cy += 16*scaleFactor;
+      let tagX = cx;
+      let tags = ["Python", "SQL", "Excel"];
+      textFont('AR One Sans, monospace'); textSize(7*scaleFactor);
+      for (let t = 0; t < tags.length; t++) {
+        let tw = textWidth(tags[t]) + 8*scaleFactor;
+        fill(245,245,245); stroke(0,0,0,20); strokeWeight(0.5*scaleFactor);
+        rect(tagX + tw/2, cy+5*scaleFactor, tw, 12*scaleFactor, 6*scaleFactor);
+        noStroke(); fill(100);
+        textAlign(CENTER, CENTER);
+        text(tags[t], tagX + tw/2, cy+5*scaleFactor);
+        tagX += tw + 4*scaleFactor;
+      }
+      rectMode(CORNER);
+      pop();
+
+      // --- Draw img5 (profile photo - polaroid style) ---
+      push();
+      translate(img5Config.x * scaleFactor, img5Config.y * scaleFactor);
+      rotate(-3);
+      fill(255, 255, 255, 240);
       noStroke();
-      fill(50,50,50);
-      textAlign(CENTER, CENTER);
-      textFont('Special Elite, serif');
-      textSize(72*scaleFactor);
-      text("?", 0, -5*scaleFactor);
-      fill(130,130,130);
-      textFont('serif');
-      textSize(9*scaleFactor);
-      text("Coming soon", 0, 42*scaleFactor);
+      rectMode(CENTER);
+      let pad = 8 * scaleFactor;
+      let bottomPad = 24 * scaleFactor;
+      rect(0, 0, img5Config.w * scaleFactor + pad*2, img5Config.h * scaleFactor + pad + bottomPad, 3 * scaleFactor);
+      image(img5, 0, -(bottomPad-pad)/2 * scaleFactor, img5Config.w * scaleFactor, img5Config.h * scaleFactor);
+      drawPin(0, -(img5Config.h * scaleFactor + pad + bottomPad)/2 + 10 * scaleFactor);
       rectMode(CORNER);
       pop();
 
@@ -511,10 +647,11 @@
       translate(config.baseX * scaleFactor, config.baseY * scaleFactor);
       rotate(-2); 
 
-      // --- img1 (profile photo polaroid) ---
+      // 1. 图1 逻辑 (Education card)
       let targetX = isExtracted ? config.extractDist : 105;
       currentImg1X = lerp(currentImg1X, targetX, 0.1);
       
+      // 处理破土而出动画
       if (!isExtracted) {
         handleImg1PopAnimation();
       } else {
@@ -529,64 +666,48 @@
       // Shadow
       fill(0,0,0,12); noStroke();
       ellipse(0, config.img1Size.h*scaleFactor/2+3*scaleFactor, config.img1Size.w*scaleFactor*0.85, 6*scaleFactor);
-      // Polaroid card body
-      fill(242,242,241);
-      stroke(0,0,0,40); strokeWeight(1.5*scaleFactor);
+      // Card
+      fill(255);
+      stroke(0,0,0,25); strokeWeight(1*scaleFactor);
       rectMode(CENTER);
-      rect(0, 0, config.img1Size.w*scaleFactor, config.img1Size.h*scaleFactor, 7*scaleFactor);
-      // Photo area dimensions
-      let padSide = 8;
-      let padTop = 8;
-      let padBottom = 15;
-      let photoW = (config.img1Size.w - padSide*2) * scaleFactor;
-      let photoH = (config.img1Size.h - padTop - padBottom) * scaleFactor;
-      let photoTop = -config.img1Size.h*scaleFactor/2 + padTop*scaleFactor;
-      let photoCenterY = photoTop + photoH/2;
-      // Draw profile photo maintaining aspect ratio
-      if (profileImg) {
-        let imgRatio = profileImg.width / profileImg.height;
-        let drawW, drawH;
-        if (photoW / photoH > imgRatio) {
-          drawH = photoH;
-          drawW = photoH * imgRatio;
-        } else {
-          drawW = photoW;
-          drawH = photoW / imgRatio;
-        }
-        let imgDrawY = photoTop + drawH/2;
-        image(profileImg, 0, imgDrawY, drawW, drawH);
-      } else {
-        fill(230); noStroke();
-        rectMode(CENTER);
-        rect(0, photoCenterY, photoW, photoH);
-      }
-      // Small pin dot at top
-      noStroke();
-      fill(140,140,140);
+      rect(0, 0, config.img1Size.w*scaleFactor, config.img1Size.h*scaleFactor, 3*scaleFactor);
+      // Pin at top
+      push();
+      fill(150,150,150); noStroke();
       circle(0, -config.img1Size.h*scaleFactor/2+8*scaleFactor, 6*scaleFactor);
-      fill(200,200,200,120);
-      ellipse(-0.8*scaleFactor, -config.img1Size.h*scaleFactor/2+7*scaleFactor, 2*scaleFactor, 1.5*scaleFactor);
-      // Small caption
-      fill(150);
-      textAlign(CENTER, CENTER);
-      textFont('Special Elite, serif');
-      textSize(7*scaleFactor);
-      let captionY = config.img1Size.h*scaleFactor/2 - padBottom*scaleFactor/2;
-      text("Me", 0, captionY);
+      pop();
+      // Text
+      fill(0); noStroke();
+      textAlign(CENTER, TOP);
+      textFont('Special Elite, serif'); textSize(12*scaleFactor);
+      text("EDUCATION", 0, -config.img1Size.h*scaleFactor/2+18*scaleFactor);
+      stroke(0,40); strokeWeight(0.5*scaleFactor);
+      line(-30*scaleFactor, -config.img1Size.h*scaleFactor/2+35*scaleFactor, 30*scaleFactor, -config.img1Size.h*scaleFactor/2+35*scaleFactor);
+      noStroke(); fill(50);
+      textFont('serif'); textSize(9*scaleFactor); textAlign(LEFT, TOP);
+      let tx = -config.img1Size.w*scaleFactor/2+12*scaleFactor;
+      let ty = -config.img1Size.h*scaleFactor/2+42*scaleFactor;
+      text("WTBU", tx, ty); ty += 14*scaleFactor;
+      text("Data Science", tx, ty); ty += 14*scaleFactor;
+      text("GPA: 3.7/5.0", tx, ty); ty += 14*scaleFactor;
+      text("Rank: 3/87", tx, ty); ty += 14*scaleFactor;
+      text("2023 - 2027", tx, ty);
       rectMode(CORNER);
       pop();
 
-      // --- img3 (WeChat stamp) ---
+      // 2. 图3 逻辑 (WeChat stamp)
       handleImg3Physics();
       
       push();
       translate(img3Pos.x, img3Pos.y);
       let rotSway = (img3State === "DROPPING") ? sin(frameCount * driftConfig.swingSpeed) * driftConfig.swingRange : 0;
       rotate(rotSway + (isExtracted ? 2 : 0));
+      // WeChat green chip
       fill(7, 193, 96);
       noStroke();
       rectMode(CENTER);
       rect(0, 0, config.img3Size.w*scaleFactor, config.img3Size.h*scaleFactor, 16*scaleFactor);
+      // WeChat W icon + text
       fill(255);
       textAlign(CENTER, CENTER);
       textFont('sans-serif'); textSize(12*scaleFactor); text("W", -45*scaleFactor, 0);
@@ -595,95 +716,49 @@
       rectMode(CORNER);
       pop();
 
-      // --- img2 (main envelope/postcard) ---
+      // 3. 图2 - Name/Intro card
       push();
       // Shadow
       fill(0,0,0,15); noStroke();
       ellipse(0, config.img2Size.h*scaleFactor/2+4*scaleFactor, config.img2Size.w*scaleFactor*0.9, 8*scaleFactor);
       // Card
-      fill(242,242,241);
-      stroke(0,0,0,40); strokeWeight(1.5*scaleFactor);
+      fill(255,255,255);
+      stroke(0,0,0,30); strokeWeight(1*scaleFactor);
       rectMode(CENTER);
-      rect(0, 0, config.img2Size.w*scaleFactor, config.img2Size.h*scaleFactor, 7*scaleFactor);
+      rect(0, 0, config.img2Size.w*scaleFactor, config.img2Size.h*scaleFactor, 3*scaleFactor);
       // Pin
       drawPin(0, -config.img2Size.h*scaleFactor/2 + 10*scaleFactor);
-      // Decorative line
-      stroke(0,60); strokeWeight(0.8*scaleFactor);
-      line(-60*scaleFactor, -10*scaleFactor, 60*scaleFactor, -10*scaleFactor);
       // Text
-      noStroke();
-      fill(0);
+      fill(0); noStroke();
       textAlign(CENTER, CENTER);
       textFont('Special Elite, serif');
       textSize(22*scaleFactor);
-      text("Jackie Li", 0, -28*scaleFactor);
-      fill(80);
-      textFont('serif');
+      text("Jackie Li", 0, -25*scaleFactor);
       textSize(10*scaleFactor);
-      text("Data Science & Big Data Technology", 0, 4*scaleFactor);
-      fill(130);
-      textSize(9*scaleFactor);
-      text("Wuhan \u00B7 Shanghai", 0, 26*scaleFactor);
+      fill(100);
+      textFont('serif');
+      text("Data Science & Big Data Technology", 0, 5*scaleFactor);
+      textSize(9*scaleFactor); fill(140);
+      text("Wuhan · Shanghai", 0, 25*scaleFactor);
+      // Decorative line
+      stroke(0,60); strokeWeight(0.5*scaleFactor);
+      line(-60*scaleFactor, -10*scaleFactor, 60*scaleFactor, -10*scaleFactor);
       rectMode(CORNER);
       pop();
       
       pop();
-
-      // --- Sakura periodic popup (natural size, not compressed) ---
-      drawSakuraPopup();
     }
     
-    function drawSakuraPopup() {
-      if (!sakuraImg) return;
-
-      if (sakuraState === "IDLE") {
-        if (frameCount % 300 === 0) {
-          sakuraState = "POP";
-          sakuraX = random(width * 0.5, width * 0.85);
-          sakuraRotation = random(-12, 5);
-        }
-      }
-
-      if (sakuraState === "POP") {
-        sakuraY = lerp(sakuraY, sakuraTargetY, 0.08);
-        sakuraRotation = lerp(sakuraRotation, -5, 0.05);
-        if (abs(sakuraY - sakuraTargetY) < 5) {
-          sakuraState = "HOLD";
-          sakuraHoldTimer = 0;
-        }
-      } else if (sakuraState === "HOLD") {
-        sakuraHoldTimer++;
-        sakuraY = sakuraTargetY + sin(frameCount * 0.05) * 3;
-        if (sakuraHoldTimer > 180) {
-          sakuraState = "DROP";
-        }
-      } else if (sakuraState === "DROP") {
-        sakuraY = lerp(sakuraY, height + 300 * scaleFactor, 0.04);
-        sakuraRotation += 0.3;
-        if (sakuraY > height + 200) {
-          sakuraState = "IDLE";
-          sakuraY = -300 * scaleFactor;
-        }
-      }
-
-      push();
-      translate(sakuraX, sakuraY);
-      rotate(sakuraRotation);
-      imageMode(CENTER);
-      let sw = sakuraImg.width * sakuraScale;
-      let sh = sakuraImg.height * sakuraScale;
-      image(sakuraImg, 0, 0, sw, sh);
-      imageMode(CORNER);
-      pop();
-    }
-    
+    // 绘制钉子函数 - 手绘风格
     function drawPin(x, y) {
       push();
       translate(x, y);
       
-      fill(145, 145, 145);
+      // 钉子主体 - 不规则圆形（手绘感）- 浅灰色
+      fill(150, 150, 150);
       noStroke();
       
+      // 使用多个小圆形叠加，创造手绘不规则效果
       for (let i = 0; i < 8; i++) {
         let angle = (360 / 8) * i;
         let offsetX = cos(angle) * 0.5 * scaleFactor;
@@ -691,13 +766,16 @@
         circle(offsetX, offsetY, 7 * scaleFactor);
       }
       
-      fill(130, 130, 130);
+      // 中心圆
+      fill(140, 140, 140);
       circle(0, 0, 6 * scaleFactor);
       
+      // 手绘描边效果
       noFill();
-      stroke(90, 90, 90);
+      stroke(100, 100, 100);
       strokeWeight(0.8 * scaleFactor);
       
+      // 绘制不规则的圆形轮廓（模拟手绘线条）
       beginShape();
       for (let a = 0; a < 360; a += 30) {
         let r = 3.5 * scaleFactor + random(-0.3, 0.3) * scaleFactor;
@@ -707,24 +785,28 @@
       }
       endShape(CLOSE);
       
+      // 高光 - 手绘风格
       noStroke();
-      fill(210, 210, 210, 160);
+      fill(200, 200, 200, 150);
       ellipse(-1 * scaleFactor, -1 * scaleFactor, 2.5 * scaleFactor, 2 * scaleFactor);
       
-      fill(80, 80, 80, 50);
+      // 钉子阴影 - 柔和的手绘阴影
+      fill(80, 80, 80, 60);
       ellipse(0.5 * scaleFactor, 1.5 * scaleFactor, 7 * scaleFactor, 2 * scaleFactor);
       
       pop();
     }
     
+    // img1 破土而出动画处理函数
     function handleImg1PopAnimation() {
-      const popDistance = 10;
-      const popSpeed = 0.3;
-      const pauseDuration = 8;
-      const cycleDuration = 120;
+      const popDistance = 10; // 突出距离
+      const popSpeed = 0.3; // 突出速度
+      const pauseDuration = 8; // 两次突出之间的暂停帧数
+      const cycleDuration = 120; // 3秒 = 180帧 (60fps)
       
       img1PopTimer++;
       
+      // 每3秒重置一次循环
       if (img1PopTimer >= cycleDuration) {
         img1PopTimer = 0;
         img1PopState = "POP1";
@@ -732,11 +814,13 @@
       
       switch(img1PopState) {
         case "IDLE":
+          // 等待下一个循环
           img1PopTargetOffset = 0;
           img1PopOffset = lerp(img1PopOffset, img1PopTargetOffset, 0.2);
           break;
           
         case "POP1":
+          // 第一次突出
           img1PopTargetOffset = popDistance;
           img1PopOffset = lerp(img1PopOffset, img1PopTargetOffset, popSpeed);
           if (abs(img1PopOffset - img1PopTargetOffset) < 0.5) {
@@ -745,15 +829,17 @@
           break;
           
         case "RETURN1":
+          // 第一次回缩
           img1PopTargetOffset = 0;
           img1PopOffset = lerp(img1PopOffset, img1PopTargetOffset, popSpeed);
           if (abs(img1PopOffset - img1PopTargetOffset) < 0.5) {
             img1PopState = "PAUSE";
-            img1PopTimer = 0;
+            img1PopTimer = 0; // 重置计时器用于暂停
           }
           break;
           
         case "PAUSE":
+          // 暂停
           img1PopOffset = 0;
           if (img1PopTimer >= pauseDuration) {
             img1PopState = "POP2";
@@ -761,6 +847,7 @@
           break;
           
         case "POP2":
+          // 第二次突出
           img1PopTargetOffset = popDistance;
           img1PopOffset = lerp(img1PopOffset, img1PopTargetOffset, popSpeed);
           if (abs(img1PopOffset - img1PopTargetOffset) < 0.5) {
@@ -769,11 +856,12 @@
           break;
           
         case "RETURN2":
+          // 第二次回缩
           img1PopTargetOffset = 0;
           img1PopOffset = lerp(img1PopOffset, img1PopTargetOffset, popSpeed);
           if (abs(img1PopOffset - img1PopTargetOffset) < 0.5) {
             img1PopState = "IDLE";
-            img1PopTimer = 0;
+            img1PopTimer = 0; // 重置计时器，等待下一个3秒循环
           }
           break;
       }
@@ -781,6 +869,7 @@
 
     function handleImg3Physics() {
       if (!isExtracted) {
+        // 复位
         img3State = "HIDDEN";
         img3Pos.x = lerp(img3Pos.x, config.img3InitialX * scaleFactor, 0.1);
         img3Pos.y = lerp(img3Pos.y, config.img3InitialY * scaleFactor, 0.1);
@@ -820,44 +909,56 @@
     
     function touchStarted() {
       handleInput();
+      // 不阻止默认行为，允许滚动
     }
 
     function handleInput() {
+      // 如果已经抽出，点击任意位置复位
       if (isExtracted) {
         isExtracted = false;
         return;
       }
       
+      // 计算各个图片的点击区域（在画布坐标系中）
       let baseX = config.baseX * scaleFactor;
       let baseY = config.baseY * scaleFactor;
       
+      // 将鼠标坐标转换为相对于 baseX, baseY 的坐标
+      // 需要考虑 rotate(-2) 的旋转，但为了简化，我们使用近似矩形区域
+      
+      // img2 的点击区域（中心位置，最底层）
       let img2X = baseX;
       let img2Y = baseY;
       let img2W = config.img2Size.w * scaleFactor;
       let img2H = config.img2Size.h * scaleFactor;
       
+      // img1 的点击区域（右侧）
       let img1X = baseX + currentImg1X * scaleFactor;
-      let img1Y = baseY + 0 * scaleFactor;
+      let img1Y = baseY + 0 * scaleFactor; // 从 -5 改为 0
       let img1W = config.img1Size.w * scaleFactor;
       let img1H = config.img1Size.h * scaleFactor;
       
+      // img3 的点击区域（左上角）
       let img3X = baseX + img3Pos.x;
       let img3Y = baseY + img3Pos.y;
       let img3W = config.img3Size.w * scaleFactor;
       let img3H = config.img3Size.h * scaleFactor;
       
+      // 检查是否点击了 img1
       if (mouseX > img1X - img1W/2 && mouseX < img1X + img1W/2 &&
           mouseY > img1Y - img1H/2 && mouseY < img1Y + img1H/2) {
         isExtracted = true;
         return;
       }
       
+      // 检查是否点击了 img2
       if (mouseX > img2X - img2W/2 && mouseX < img2X + img2W/2 &&
           mouseY > img2Y - img2H/2 && mouseY < img2Y + img2H/2) {
         isExtracted = true;
         return;
       }
       
+      // 检查是否点击了 img3
       if (mouseX > img3X - img3W/2 && mouseX < img3X + img3W/2 &&
           mouseY > img3Y - img3H/2 && mouseY < img3Y + img3H/2) {
         isExtracted = true;
