@@ -330,7 +330,7 @@
 
   <!-- P5.js Sketch -->
   <script>
-    let bgImg, img1, img2, img3, img4, img5;
+    let bgImg, img5;
     let isExtracted = false; 
     let currentImg1X = 105; // 从 110 改为 105，向左移动5px    
     let img3Pos; 
@@ -344,7 +344,7 @@
     let img3State = "HIDDEN"; 
     let dropStartTime = 0; 
     let imagesLoaded = 0;
-    let totalImages = 6;
+    let totalImages = 2;
     let scaleFactor = 1; // 缩放比例
     let isMobileMode = false;
 
@@ -396,26 +396,6 @@
         () => { console.log('背景图加载成功'); imagesLoaded++; },
         () => { console.error('背景图加载失败'); }
       ); 
-      
-      img1 = loadImage('./images/image_1.svg',
-        () => { console.log('image_1 加载成功'); imagesLoaded++; },
-        () => { console.error('image_1 加载失败'); }
-      );   
-      
-      img2 = loadImage('./images/image_2.svg',
-        () => { console.log('image_2 加载成功'); imagesLoaded++; },
-        () => { console.error('image_2 加载失败'); }
-      );   
-      
-      img3 = loadImage('./images/image_3.svg',
-        () => { console.log('image_3 加载成功'); imagesLoaded++; },
-        () => { console.error('image_3 加载失败'); }
-      );   
-      
-      img4 = loadImage('./images/image_4.svg',
-        () => { console.log('image_4 加载成功'); imagesLoaded++; },
-        () => { console.error('image_4 加载失败'); }
-      );   
       
       img5 = loadImage('./images/profile.jpg', () => { imagesLoaded++; }, () => { console.error('profile.jpg load failed'); });
     }
@@ -595,16 +575,57 @@
         image(bgImg, width/2 + bgOffsetX, height/2 + bgOffsetY, width * bgScale, height * bgScale);
       }
 
-      // --- 绘制 img4 (绝对位置，不随信封旋转，顺时针倾斜3度) ---
+      // --- 绘制 img4 (绝对位置，不随信封旋转，顺时针倾斜3度) - Contact/Skills card ---
       push();
       translate(img4Config.x * scaleFactor, img4Config.y * scaleFactor);
-      rotate(3); // 顺时针旋转 3 度
-      
-      image(img4, 0, 0, img4Config.w * scaleFactor, img4Config.h * scaleFactor);
-      
-      // 绘制钉子（在卡片内部顶部中间）
-      drawPin(0, -img4Config.h * scaleFactor / 2 + 10 * scaleFactor);
-      
+      rotate(3);
+      // Shadow
+      fill(0,0,0,15); noStroke();
+      ellipse(0, img4Config.h*scaleFactor/2+3*scaleFactor, img4Config.w*scaleFactor*0.85, 7*scaleFactor);
+      // Card
+      fill(255); stroke(0,0,0,25); strokeWeight(1*scaleFactor);
+      rectMode(CENTER);
+      rect(0, 0, img4Config.w*scaleFactor, img4Config.h*scaleFactor, 3*scaleFactor);
+      // Pin
+      drawPin(0, -img4Config.h*scaleFactor/2+10*scaleFactor);
+      // Text
+      fill(0); noStroke();
+      textAlign(LEFT, TOP);
+      textFont('Special Elite, serif'); textSize(11*scaleFactor);
+      let cx = -img4Config.w*scaleFactor/2+14*scaleFactor;
+      let cy = -img4Config.h*scaleFactor/2+20*scaleFactor;
+      text("CONTACT", cx, cy);
+      stroke(0,40); strokeWeight(0.5*scaleFactor);
+      line(cx, cy+16*scaleFactor, cx+80*scaleFactor, cy+16*scaleFactor);
+      noStroke(); fill(60); textFont('AR One Sans, monospace'); textSize(8*scaleFactor);
+      cy += 24*scaleFactor;
+      text("Email", cx, cy); cy += 13*scaleFactor;
+      textSize(7*scaleFactor); fill(100);
+      text("l118183365@gmail.com", cx, cy); cy += 15*scaleFactor;
+      textSize(8*scaleFactor); fill(60);
+      text("LinkedIn", cx, cy); cy += 13*scaleFactor;
+      textSize(7*scaleFactor); fill(100);
+      text("linkedin.com/in/", cx, cy); cy += 11*scaleFactor;
+      text("jackie-li6699", cx, cy); cy += 15*scaleFactor;
+      textSize(8*scaleFactor); fill(60);
+      text("Tel", cx, cy); cy += 13*scaleFactor;
+      textSize(7*scaleFactor); fill(100);
+      text("+86 19153294495", cx, cy);
+      // Skill tags at bottom
+      cy += 16*scaleFactor;
+      let tagX = cx;
+      let tags = ["Python", "SQL", "Excel"];
+      textFont('AR One Sans, monospace'); textSize(7*scaleFactor);
+      for (let t = 0; t < tags.length; t++) {
+        let tw = textWidth(tags[t]) + 8*scaleFactor;
+        fill(245,245,245); stroke(0,0,0,20); strokeWeight(0.5*scaleFactor);
+        rect(tagX + tw/2, cy+5*scaleFactor, tw, 12*scaleFactor, 6*scaleFactor);
+        noStroke(); fill(100);
+        textAlign(CENTER, CENTER);
+        text(tags[t], tagX + tw/2, cy+5*scaleFactor);
+        tagX += tw + 4*scaleFactor;
+      }
+      rectMode(CORNER);
       pop();
 
       // --- Draw img5 (profile photo - polaroid style) ---
@@ -626,8 +647,8 @@
       translate(config.baseX * scaleFactor, config.baseY * scaleFactor);
       rotate(-2); 
 
-      // 1. 图1 逻辑
-      let targetX = isExtracted ? config.extractDist : 105; // 从 110 改为 105
+      // 1. 图1 逻辑 (Education card)
+      let targetX = isExtracted ? config.extractDist : 105;
       currentImg1X = lerp(currentImg1X, targetX, 0.1);
       
       // 处理破土而出动画
@@ -640,26 +661,89 @@
       }
       
       push();
-      translate((currentImg1X + img1PopOffset) * scaleFactor, 0 * scaleFactor); // 从 -5 改为 0，向下移动5px
-      rotate(isExtracted ? 5 : 0); // 移除晃动，只在抽出时旋转
-      image(img1, 0, 0, config.img1Size.w * scaleFactor, config.img1Size.h * scaleFactor);
+      translate((currentImg1X + img1PopOffset) * scaleFactor, 0 * scaleFactor);
+      rotate(isExtracted ? 5 : 0);
+      // Shadow
+      fill(0,0,0,12); noStroke();
+      ellipse(0, config.img1Size.h*scaleFactor/2+3*scaleFactor, config.img1Size.w*scaleFactor*0.85, 6*scaleFactor);
+      // Card
+      fill(255);
+      stroke(0,0,0,25); strokeWeight(1*scaleFactor);
+      rectMode(CENTER);
+      rect(0, 0, config.img1Size.w*scaleFactor, config.img1Size.h*scaleFactor, 3*scaleFactor);
+      // Pin at top
+      push();
+      fill(150,150,150); noStroke();
+      circle(0, -config.img1Size.h*scaleFactor/2+8*scaleFactor, 6*scaleFactor);
+      pop();
+      // Text
+      fill(0); noStroke();
+      textAlign(CENTER, TOP);
+      textFont('Special Elite, serif'); textSize(12*scaleFactor);
+      text("EDUCATION", 0, -config.img1Size.h*scaleFactor/2+18*scaleFactor);
+      stroke(0,40); strokeWeight(0.5*scaleFactor);
+      line(-30*scaleFactor, -config.img1Size.h*scaleFactor/2+35*scaleFactor, 30*scaleFactor, -config.img1Size.h*scaleFactor/2+35*scaleFactor);
+      noStroke(); fill(50);
+      textFont('serif'); textSize(9*scaleFactor); textAlign(LEFT, TOP);
+      let tx = -config.img1Size.w*scaleFactor/2+12*scaleFactor;
+      let ty = -config.img1Size.h*scaleFactor/2+42*scaleFactor;
+      text("WTBU", tx, ty); ty += 14*scaleFactor;
+      text("Data Science", tx, ty); ty += 14*scaleFactor;
+      text("GPA: 3.7/5.0", tx, ty); ty += 14*scaleFactor;
+      text("Rank: 3/87", tx, ty); ty += 14*scaleFactor;
+      text("2023 - 2027", tx, ty);
+      rectMode(CORNER);
       pop();
 
-      // 2. 图3 逻辑
+      // 2. 图3 逻辑 (WeChat stamp)
       handleImg3Physics();
       
       push();
       translate(img3Pos.x, img3Pos.y);
       let rotSway = (img3State === "DROPPING") ? sin(frameCount * driftConfig.swingSpeed) * driftConfig.swingRange : 0;
       rotate(rotSway + (isExtracted ? 2 : 0));
-      image(img3, 0, 0, config.img3Size.w * scaleFactor, config.img3Size.h * scaleFactor);
+      // WeChat green chip
+      fill(7, 193, 96);
+      noStroke();
+      rectMode(CENTER);
+      rect(0, 0, config.img3Size.w*scaleFactor, config.img3Size.h*scaleFactor, 16*scaleFactor);
+      // WeChat W icon + text
+      fill(255);
+      textAlign(CENTER, CENTER);
+      textFont('sans-serif'); textSize(12*scaleFactor); text("W", -45*scaleFactor, 0);
+      textAlign(LEFT, CENTER); textSize(9*scaleFactor);
+      text("JaQby8888", -30*scaleFactor, 0);
+      rectMode(CORNER);
       pop();
 
-      // 3. 图2 - 先绘制卡片，再绘制钉子在上面
+      // 3. 图2 - Name/Intro card
       push();
-      image(img2, 0, 0, config.img2Size.w * scaleFactor, config.img2Size.h * scaleFactor);
-      // 绘制钉子（在卡片内部顶部中间）
-      drawPin(0, -config.img2Size.h * scaleFactor / 2 + 10 * scaleFactor);
+      // Shadow
+      fill(0,0,0,15); noStroke();
+      ellipse(0, config.img2Size.h*scaleFactor/2+4*scaleFactor, config.img2Size.w*scaleFactor*0.9, 8*scaleFactor);
+      // Card
+      fill(255,255,255);
+      stroke(0,0,0,30); strokeWeight(1*scaleFactor);
+      rectMode(CENTER);
+      rect(0, 0, config.img2Size.w*scaleFactor, config.img2Size.h*scaleFactor, 3*scaleFactor);
+      // Pin
+      drawPin(0, -config.img2Size.h*scaleFactor/2 + 10*scaleFactor);
+      // Text
+      fill(0); noStroke();
+      textAlign(CENTER, CENTER);
+      textFont('Special Elite, serif');
+      textSize(22*scaleFactor);
+      text("Jackie Li", 0, -25*scaleFactor);
+      textSize(10*scaleFactor);
+      fill(100);
+      textFont('serif');
+      text("Data Science & Big Data Technology", 0, 5*scaleFactor);
+      textSize(9*scaleFactor); fill(140);
+      text("Wuhan · Shanghai", 0, 25*scaleFactor);
+      // Decorative line
+      stroke(0,60); strokeWeight(0.5*scaleFactor);
+      line(-60*scaleFactor, -10*scaleFactor, 60*scaleFactor, -10*scaleFactor);
+      rectMode(CORNER);
       pop();
       
       pop();
