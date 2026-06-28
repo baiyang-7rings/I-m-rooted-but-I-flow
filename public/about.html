@@ -1,869 +1,324 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About.</title>
-  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About - Jackie's Sketchbook</title>
+  <meta name="description" content="About Jackie">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400;500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400;500&family=Special+Elite&family=Noto+Sans+HK:wght@400;500&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.js"></script>
-  
   <style>
-    :root {
-      --bg-color: #F2F2F1;
-      --text-color: #000000;
-      --muted-color: #666666;
-      --border-color: #DDDDDD;
-      --font-main: "Special Elite", "Noto Sans SC", "Source Han Sans SC", sans-serif;
-      --font-code: "AR One Sans", sans-serif;
-      --font-chinese: "Noto Sans SC", sans-serif;
+    :root{--bg:#F2F2F1;--text:#666666;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;}
+    body{
+      background:var(--bg);color:var(--text);line-height:1.7;
+      -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
     }
-
-    * {
-      box-sizing: border-box;
+    .en-special{font-family:"Special Elite",serif;}
+    .code{font-family:"AR One Sans",sans-serif;}
+    .cn-serif{font-family:"Source Han Sans SC","Noto Sans HK","Noto Sans SC",sans-serif;}
+    header{position:relative;background:transparent;z-index:100;}
+    .nav{
+      max-width:1200px;margin:10px auto 0;padding:0 24px;
+      display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center;font-size:14px;
     }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      font-family: var(--font-main);
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-      overflow-y: auto;
+    .nav a{
+      color:var(--text);text-decoration:none;opacity:.7;
+      transition:all 0.2s ease;display:inline-block;transform-origin:bottom center;
     }
-
-    a {
-      color: var(--text-color);
-      text-decoration: none;
-      position: relative;
+    .nav a:hover{opacity:1;}
+    .nav a:active{color:#ccc;transform:perspective(500px) rotateX(60deg) skewX(-15deg);}
+    .nav-left{justify-self:start;font-weight:500;opacity:.9;}
+    .nav-center{justify-self:center;}
+    .nav-right{justify-self:end;opacity:1;}
+    .container{
+      max-width:1200px;margin:-90px auto 0;padding:0 24px 80px;
+      display:flex;justify-content:center;align-items:flex-start;
+      min-height:calc(100vh - 180px);padding-top:120px;
     }
-    
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .canvas-spacer {
-      width: 100%;
-      padding-top: 48.67%;
-      margin-top: 105px;
-      pointer-events: none;
-    }
-
-    header {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      padding-top: 10px;
-      margin-bottom: 20px;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 30px;
-      font-size: 14px;
-      color: #999;
-      margin: 0;
-      font-family: var(--font-code);
-    }
-    
-    .nav-links a { 
-      color: #999; 
-      transition: all 0.2s ease;
-      display: inline-block;
-      text-decoration: none;
-      transform-origin: bottom center;
-    }
-    .nav-links a:hover { 
-      color: #333; 
-    }
-    .nav-links a:active {
-      color: #ccc;
-      text-shadow: none;
-      transform: perspective(500px) rotateX(60deg) skewX(-15deg);
-    }
-
-    .page-title {
-      font-size: 48px;
-      font-weight: bold;
-      letter-spacing: -1px;
-      margin-bottom: 0px;
-      font-family: var(--font-main);
-      position: relative;
-      z-index: 10;
-    }
-
-    .subtitle {
-      font-size: 14px;
-      line-height: 1.8;
-      color: var(--text-color);
-      margin-bottom: 0;
-      font-family: var(--font-chinese);
-      font-weight: 400;
-      max-width: 600px;
-    }
-
-    .canvas-container {
-      position: absolute;
-      top: 40px;
-      left: 0;
-      width: 100vw;
-      z-index: 0;
-    }
-
-    #p5-canvas {
-      width: 100% !important;
-      height: auto !important;
-      display: block;
-      cursor: pointer;
-    }
-    
-    .content-wrapper {
-      position: relative;
-      z-index: 1;
-      pointer-events: none;
-    }
-    
-    .content-wrapper * {
-      pointer-events: auto;
-    }
-
-    footer{
-      border-top:1px solid rgba(0,0,0,0.08);
-      margin-top:0px;
-    }
+    #p5-container{position:relative;width:100%;max-width:900px;height:700px;}
+    footer{border-top:1px solid rgba(0,0,0,0.08);margin-top:24px;}
     .footer-inner{
-      max-width:1200px;
-      margin:0 auto;
-      padding:18px 24px 28px;
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:12px;
-      font-size:13px;
-      color: #666666;
-      font-family: "AR One Sans", sans-serif;
+      max-width:1200px;margin:0 auto;padding:18px 24px 28px;
+      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:13px;
     }
-    .footer-item b{
-      display:block;
-      font-weight:500;
-      margin-bottom:6px;
-      color: #666666;
+    .footer-item b{display:block;font-weight:500;margin-bottom:6px;}
+    .footer-item a{color:inherit;text-decoration:none;}
+    @media (max-width:1024px){
+      .container{padding-top:60px;}
+      #p5-container{height:600px;}
     }
-    .footer-item span {
-      opacity: 1;
-    }
-
-    @media (min-width: 481px) and (max-width: 1200px) {
-      .canvas-spacer {
-        margin-top: 0px; 
-        margin-bottom: -60px;
-      }
-      
-      footer {
-        position: relative;
-        z-index: 10;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .page-title {
-        font-size: 36px;
-      }
-      
-      .subtitle {
-        font-size: 14px;
-      }
-      
-      .canvas-container {
-        margin-bottom: 40px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .nav-links {
-        gap: 20px;
-        font-size: 12px;
-      }
-      
-      .page-title {
-        font-size: 28px;
-        margin-left: 0;
-      }
-      
-      .footer-inner{
-        grid-template-columns:1fr 1fr;
-        row-gap:16px;
-        font-size:12px;
-      }
-      
-      .canvas-container {
-        height: 400px !important;
-        top: 100px;
-      }
-      
-      #p5-canvas {
-        height: 100% !important;
-        width: 100% !important;
-        object-fit: cover;
-      }
-
-      footer {
-        position: relative;
-        z-index: 10;
-      }
+    @media (max-width:480px){
+      .nav{padding:0 16px;font-size:12px;}
+      .container{padding:40px 16px 64px;margin-top:50px;}
+      #p5-container{height:500px;}
+      .footer-inner{grid-template-columns:1fr 1fr;row-gap:16px;font-size:12px;}
     }
   </style>
 </head>
 <body>
+  <header>
+    <nav class="nav code">
+      <a class="nav-left" href="/works.html">Works</a>
+      <a class="nav-center" href="/experience.html">Experience</a>
+      <a class="nav-right" href="/about.html">About</a>
+    </nav>
+  </header>
 
-  <div class="canvas-container" id="canvas-container">
-  </div>
-
-  <div class="container">
-    <header>
-      <nav class="nav-links">
-        <a href="index.html">Sketchbook</a>
-        <a href="works.html">Works</a>
-        <a href="experience.html">Experience</a>
-        <a href="about.html">About</a>
-      </nav>
-    </header>
-    
-    <div class="content-wrapper">
-      <div class="page-title">About.</div>
-
-      <div class="subtitle">
-        用数据讲故事，在细节里寻光。<br>像风穿过树梢，像叶落向大地。
-      </div>
-      
-      <div class="canvas-spacer"></div>
-    </div>
-  </div>
+  <main class="container">
+    <div id="p5-container"></div>
+  </main>
 
   <footer>
-    <div class="footer-inner" style="font-family: var(--font-code);">
+    <div class="footer-inner code">
       <div class="footer-item">
         <b>Email</b>
-        <span id="footer-email"></span>
+        <a id="email-link" href="" style="color:inherit;text-decoration:none;"></a>
       </div>
       <div class="footer-item">
         <b>LinkedIn</b>
-        <span><a href="https://www.linkedin.com/in/jackie-li6699" target="_blank" style="color:inherit;text-decoration:none;">linkedin.com/in/jackie-li6699</a></span>
+        <a href="https://www.linkedin.com/in/jackie-li6699" target="_blank" rel="noopener noreferrer">linkedin.com/in/jackie-li6699</a>
       </div>
       <div class="footer-item">
-        <b>Tel</b>
-        <span>+86 19153294495</span>
-      </div>
-      <div class="footer-item">
-        <b>Based</b>
-        <span>Wuhan / Shanghai</span>
+        <b>More</b>
+        <span>Coming soon...</span>
       </div>
     </div>
   </footer>
+
   <script>
-    (function(){
-      var u='l118183365',d='gm'+'ail.c'+'om';
-      var el=document.getElementById('footer-email');
-      if(el) el.textContent=u+'@'+d;
-    })();
+    var polaroidImgs = [];
+    var sakuraImg;
+    var cards = [];
+    var isExtracted = false;
+    var extractedCard = null;
+    var sakuraY = -200;
+    var sakuraTargetY = 0;
+    var sakuraPopupState = "IDLE";
+
+    function preload(){
+      polaroidImgs[0] = loadImage('/images/image_1.svg');
+      polaroidImgs[1] = loadImage('/images/image_3.svg');
+      polaroidImgs[2] = loadImage('/images/image_4.svg');
+      sakuraImg = loadImage('/images/607B97BBAD6B53FF8C5D48388347E988.jpg');
+    }
+
+    function setup(){
+      pixelDensity(1);
+      var container = document.getElementById('p5-container');
+      var c = createCanvas(container.offsetWidth, container.offsetHeight);
+      c.parent('p5-container');
+
+      textFont('Special Elite');
+
+      var cardW = 280;
+      var cardH = 350;
+      var centerX = width / 2;
+      var centerY = height / 2;
+
+      cards = [
+        {
+          x: centerX - 190,
+          y: centerY - 20,
+          w: cardW,
+          h: cardH,
+          rotation: -0.08,
+          img: polaroidImgs[0],
+          type: 'photo'
+        },
+        {
+          x: centerX,
+          y: centerY - 40,
+          w: cardW + 20,
+          h: cardH + 30,
+          rotation: 0.03,
+          type: 'info',
+          scale: 1
+        },
+        {
+          x: centerX + 180,
+          y: centerY - 10,
+          w: cardW,
+          h: cardH,
+          rotation: 0.1,
+          img: polaroidImgs[2],
+          type: 'wechat'
+        }
+      ];
+
+      sakuraTargetY = centerY - 80;
+    }
+
+    function windowResized(){
+      var container = document.getElementById('p5-container');
+      resizeCanvas(container.offsetWidth, container.offsetHeight);
+      var centerX = width / 2;
+      var centerY = height / 2;
+      cards[0].x = centerX - 190;
+      cards[0].y = centerY - 20;
+      cards[1].x = centerX;
+      cards[1].y = centerY - 40;
+      cards[2].x = centerX + 180;
+      cards[2].y = centerY - 10;
+      sakuraTargetY = centerY - 80;
+    }
+
+    function draw(){
+      background(242, 242, 241);
+
+      handleSakuraPopup();
+
+      for(var i = 0; i < cards.length; i++){
+        var card = cards[i];
+        if(isExtracted && extractedCard !== i) continue;
+        drawCard(card, i);
+      }
+
+      if(sakuraPopupState !== "IDLE" || sakuraY < height + 100){
+        drawSakura();
+      }
+    }
+
+    function handleSakuraPopup(){
+      if(frameCount % 180 === 0 && !isExtracted && sakuraPopupState === "IDLE"){
+        sakuraPopupState = "POP";
+      }
+      if(sakuraPopupState === "POP"){
+        sakuraY = lerp(sakuraY, sakuraTargetY, 0.08);
+        if(abs(sakuraY - sakuraTargetY) < 5){
+          sakuraPopupState = "HOLD";
+          setTimeout(function(){
+            sakuraPopupState = "DROP";
+          }, 4000);
+        }
+      } else if(sakuraPopupState === "HOLD"){
+        sakuraY = sakuraTargetY + sin(frameCount * 0.05) * 3;
+      } else if(sakuraPopupState === "DROP"){
+        sakuraY = lerp(sakuraY, height + 200, 0.08);
+        if(sakuraY > height + 100){
+          sakuraPopupState = "IDLE";
+          sakuraY = -200;
+        }
+      }
+    }
+
+    function drawSakura(){
+      push();
+      imageMode(CENTER);
+      var sakuraW = 200;
+      var sakuraH = sakuraImg.height * (sakuraW / sakuraImg.width);
+      translate(width / 2 - 250, sakuraY);
+      rotate(-0.15);
+      drawingContext.shadowColor = 'rgba(0,0,0,0.2)';
+      drawingContext.shadowBlur = 15;
+      drawingContext.shadowOffsetX = 3;
+      drawingContext.shadowOffsetY = 5;
+      image(sakuraImg, 0, 0, sakuraW, sakuraH);
+      pop();
+    }
+
+    function drawCard(card, idx){
+      push();
+      translate(card.x, card.y);
+      rotate(card.rotation);
+
+      if(isExtracted && extractedCard === idx){
+        scale(1.3);
+      }
+
+      fill(255);
+      noStroke();
+      drawingContext.shadowColor = 'rgba(0,0,0,0.15)';
+      drawingContext.shadowBlur = 20;
+      drawingContext.shadowOffsetX = 0;
+      drawingContext.shadowOffsetY = 4;
+
+      rect(-card.w/2, -card.h/2, card.w, card.h, 6);
+
+      drawingContext.shadowColor = 'transparent';
+      drawingContext.shadowBlur = 0;
+      drawingContext.shadowOffsetX = 0;
+      drawingContext.shadowOffsetY = 0;
+
+      if(card.type === 'photo'){
+        var photoW = card.w - 24;
+        var photoH = photoW;
+        imageMode(CENTER);
+        image(card.img, 0, -card.h/2 + 20 + photoH/2, photoW, photoH);
+        fill(102);
+        textSize(11);
+        textAlign(CENTER, CENTER);
+        text("Jackie Li", 0, card.h/2 - 35);
+      } else if(card.type === 'info'){
+        var padX = 28;
+        var startY = -card.h/2 + 45;
+        var lineH = 26;
+
+        fill(102);
+        textSize(14);
+        textAlign(LEFT, CENTER);
+
+        text("Name: Jackie Li", -card.w/2 + padX, startY);
+        text("Birthday: 2003.02.02", -card.w/2 + padX, startY + lineH);
+        text("Education:", -card.w/2 + padX, startY + lineH * 2);
+        textSize(12);
+        text("CUC - Communication University", -card.w/2 + padX, startY + lineH * 3);
+        text("of China (2021-2025)", -card.w/2 + padX, startY + lineH * 4);
+        textSize(14);
+        text("School: Curtin University (2025)", -card.w/2 + padX, startY + lineH * 5);
+        text("Major: IMC", -card.w/2 + padX, startY + lineH * 6);
+        text("Contact: l118183365@gmail.com", -card.w/2 + padX, startY + lineH * 7);
+
+        fill(80);
+        textSize(40);
+        textAlign(CENTER, CENTER);
+        text("?", -card.w/2 + 60, card.h/2 - 55);
+      } else if(card.type === 'wechat'){
+        var qrW = card.w - 50;
+        var qrH = qrW;
+        imageMode(CENTER);
+        image(card.img, 0, -card.h/2 + 30 + qrH/2, qrW, qrH);
+        fill(102);
+        textSize(12);
+        textAlign(CENTER, CENTER);
+        text("WeChat: l118183365", 0, card.h/2 - 30);
+      }
+
+      pop();
+    }
+
+    function mousePressed(){
+      if(isExtracted){
+        isExtracted = false;
+        extractedCard = null;
+        return;
+      }
+      for(var i = 0; i < cards.length; i++){
+        var card = cards[i];
+        if(mouseX > card.x - card.w/2 && mouseX < card.x + card.w/2 &&
+           mouseY > card.y - card.h/2 && mouseY < card.y + card.h/2){
+          isExtracted = true;
+          extractedCard = i;
+          break;
+        }
+      }
+    }
   </script>
 
   <script>
-    let bgImg, sakuraImg, profileImg;
-    let isExtracted = false; 
-    let currentImg1X = 105;
-    let img3Pos; 
-    let img3Vel; 
-    
-    let img1PopState = "IDLE";
-    let img1PopTimer = 0;
-    let img1PopOffset = 0;
-    let img1PopTargetOffset = 0; 
-    let img3State = "HIDDEN"; 
-    let dropStartTime = 0; 
-    let imagesLoaded = 0;
-    let totalImages = 3;
-    let scaleFactor = 1;
-    let isMobileMode = false;
-
-    let sakuraState = "IDLE";
-    let sakuraX = 0;
-    let sakuraY = -200;
-    let sakuraTargetY = 0;
-    let sakuraScale = 0.35;
-    let sakuraHoldTimer = 0;
-    let sakuraRotation = 0;
-
-    const driftConfig = {
-      speedY: 0.03,
-      finalX: 220,          
-      finalY: 100,          
-      swingRange: 3,
-      swingSpeed: 2.5,
-      driftAmplitude: 15
-    };
-
-    let img4Config = {
-      x: 850,
-      y: 420,
-      w: 260,
-      h: 134
-    };
-
-    let config = {
-      canvasW: 1280,
-      canvasH: 623,
-      baseX: 1280 * 0.35, 
-      baseY: 623 * 0.40, 
-      img2Size: { w: 308, h: 159 }, 
-      img1Size: { w: 117, h: 145 }, 
-      img3Size: { w: 135, h: 32 },  
-      img4Size: { w: 260, h: 134 }, 
-      extractDist: 200,              
-      triggerThreshold: 186, 
-      img3InitialX: 70,      
-      img3InitialY: 65,       
-    };
-
-    function preload() {
-      bgImg = loadImage('./images/about-tree-bg.png', 
-        () => { imagesLoaded++; },
-        () => { console.error('bg load failed'); }
-      ); 
-      
-      sakuraImg = loadImage('./images/屏幕截图 2026-06-28 000819.png', 
-        () => { imagesLoaded++; },
-        () => { console.error('sakura load failed'); }
-      );
-
-      profileImg = loadImage('./images/profile.jpg', 
-        () => { imagesLoaded++; },
-        () => { console.error('profile load failed'); }
-      );
-    }
-
-    function setup() {
-      isMobileMode = windowWidth <= 480;
-
-      let canvasWidth = windowWidth;
-      let canvasHeight;
-      
-      if (isMobileMode) {
-        canvasHeight = 400;
-      } else {
-        canvasHeight = canvasWidth * (config.canvasH / config.canvasW); 
+    (function(){
+      var user = 'l118183365';
+      var dom = 'gm' + 'ail.c' + 'om';
+      var addr = user + '@' + dom;
+      var el = document.getElementById('email-link');
+      if(el){
+        el.href = 'mailto:' + addr;
+        el.textContent = addr;
       }
-      
-      let canvas = createCanvas(canvasWidth, canvasHeight);
-      canvas.parent('canvas-container');
-      canvas.id('p5-canvas');
-      clear();
-      imageMode(CENTER);
-      angleMode(DEGREES);
-      
-      if (isMobileMode) {
-         scaleFactor = 0.6;
-         let cx = canvasWidth / 2 / scaleFactor;
-         let cy = canvasHeight / 2 / scaleFactor;
-         config.baseX = cx - 70; 
-         config.baseY = cy - 80; 
-         img4Config.x = cx;
-         img4Config.y = cy + 100;
-      } else {
-         scaleFactor = canvasWidth / config.canvasW;
-         config.baseX = 1280 * 0.35;
-         config.baseY = 623 * 0.40;
-         img4Config.x = 850;
-         img4Config.y = 420;
-      }
-      
-      adjustFooterPosition();
-      
-      img3Pos = createVector(config.img3InitialX * scaleFactor, config.img3InitialY * scaleFactor);
-      img3Vel = createVector(0, 0);
-
-      sakuraX = width * 0.75;
-      sakuraY = -200 * scaleFactor;
-      sakuraTargetY = height * 0.35;
-      sakuraScale = 0.35 * scaleFactor;
-      sakuraRotation = -5;
-    }
-    
-    function windowResized() {
-      isMobileMode = windowWidth <= 480;
-      
-      let canvasWidth = windowWidth;
-      let canvasHeight;
-      
-      if (isMobileMode) {
-        canvasHeight = 400;
-      } else {
-        canvasHeight = canvasWidth * (config.canvasH / config.canvasW);
-      }
-      
-      resizeCanvas(canvasWidth, canvasHeight);
-      
-      if (isMobileMode) {
-         scaleFactor = 0.6;
-         let cx = canvasWidth / 2 / scaleFactor;
-         let cy = canvasHeight / 2 / scaleFactor;
-         config.baseX = cx; 
-         config.baseY = cy - 80;
-         img4Config.x = cx;
-         img4Config.y = cy + 100;
-      } else {
-         scaleFactor = canvasWidth / config.canvasW;
-         config.baseX = 1280 * 0.35;
-         config.baseY = 623 * 0.40;
-         img4Config.x = 850;
-         img4Config.y = 420;
-      }
-      
-      adjustFooterPosition();
-
-      sakuraX = width * 0.75;
-      sakuraTargetY = height * 0.35;
-      sakuraScale = 0.35 * scaleFactor;
-    }
-    
-    function adjustFooterPosition() {
-        const canvasContainer = document.getElementById('canvas-container');
-        const footer = document.querySelector('footer');
-        
-        if (canvasContainer && footer) {
-            const canvasBottom = canvasContainer.offsetTop + canvasContainer.offsetHeight;
-            const container = document.querySelector('.container');
-            const contentBottom = container.offsetTop + container.offsetHeight;
-            const requiredMargin = canvasBottom - contentBottom;
-            footer.style.marginTop = requiredMargin + 'px';
-        }
-    }
-
-    function draw() {
-      clear();
-      
-      let bgOffsetX = 0;
-      let bgOffsetY = 0;
-      if (!isMobileMode) {
-        bgOffsetX = constrain((mouseX - width / 2) * 0.015, -20, 20);
-        bgOffsetY = constrain((mouseY - height / 2) * 0.015, -20, 20);
-      }
-      
-      if (isMobileMode && bgImg) {
-        let sH = bgImg.height;
-        let sW = sH * (width / height);
-        let sX = (bgImg.width - sW) / 2;
-        let sY = 0;
-        
-        if (sW > bgImg.width) {
-           sW = bgImg.width;
-           sH = sW * (height / width);
-           sX = 0;
-           sY = (bgImg.height - sH) / 2;
-        }
-        
-        image(bgImg, width/2, height/2, width, height, sX, sY, sW, sH);
-      } else if (bgImg) {
-        let bgScale = 1.05;
-        image(bgImg, width/2 + bgOffsetX, height/2 + bgOffsetY, width * bgScale, height * bgScale);
-      }
-
-      // --- img4 (cat placeholder) ---
-      push();
-      translate(img4Config.x * scaleFactor, img4Config.y * scaleFactor);
-      rotate(3);
-      fill(0,0,0,15); noStroke();
-      ellipse(0, img4Config.h*scaleFactor/2+4*scaleFactor, img4Config.w*scaleFactor*0.85, 8*scaleFactor);
-      fill(242,242,241);
-      stroke(0,0,0,40); strokeWeight(1.5*scaleFactor);
-      rectMode(CENTER);
-      rect(0, 0, img4Config.w*scaleFactor, img4Config.h*scaleFactor, 7*scaleFactor);
-      drawPin(0, -img4Config.h*scaleFactor/2+10*scaleFactor);
-      noStroke();
-      fill(50,50,50);
-      textAlign(CENTER, CENTER);
-      textFont('Special Elite, serif');
-      textSize(72*scaleFactor);
-      text("?", 0, -5*scaleFactor);
-      fill(130,130,130);
-      textFont('serif');
-      textSize(9*scaleFactor);
-      text("Coming soon", 0, 42*scaleFactor);
-      rectMode(CORNER);
-      pop();
-
-      push();
-      translate(config.baseX * scaleFactor, config.baseY * scaleFactor);
-      rotate(-2); 
-
-      // --- img1 (profile photo polaroid) ---
-      let targetX = isExtracted ? config.extractDist : 105;
-      currentImg1X = lerp(currentImg1X, targetX, 0.1);
-      
-      if (!isExtracted) {
-        handleImg1PopAnimation();
-      } else {
-        img1PopState = "IDLE";
-        img1PopTimer = 0;
-        img1PopOffset = 0;
-      }
-      
-      push();
-      translate((currentImg1X + img1PopOffset) * scaleFactor, 0 * scaleFactor);
-      rotate(isExtracted ? 5 : 0);
-      // Shadow
-      fill(0,0,0,12); noStroke();
-      ellipse(0, config.img1Size.h*scaleFactor/2+3*scaleFactor, config.img1Size.w*scaleFactor*0.85, 6*scaleFactor);
-      // Polaroid card body
-      fill(242,242,241);
-      stroke(0,0,0,40); strokeWeight(1.5*scaleFactor);
-      rectMode(CENTER);
-      rect(0, 0, config.img1Size.w*scaleFactor, config.img1Size.h*scaleFactor, 7*scaleFactor);
-      // Photo area dimensions
-      let padSide = 8;
-      let padTop = 8;
-      let padBottom = 15;
-      let photoW = (config.img1Size.w - padSide*2) * scaleFactor;
-      let photoH = (config.img1Size.h - padTop - padBottom) * scaleFactor;
-      let photoTop = -config.img1Size.h*scaleFactor/2 + padTop*scaleFactor;
-      let photoCenterY = photoTop + photoH/2;
-      // Draw profile photo maintaining aspect ratio
-      if (profileImg) {
-        let imgRatio = profileImg.width / profileImg.height;
-        let drawW, drawH;
-        if (photoW / photoH > imgRatio) {
-          drawH = photoH;
-          drawW = photoH * imgRatio;
-        } else {
-          drawW = photoW;
-          drawH = photoW / imgRatio;
-        }
-        let imgDrawY = photoTop + drawH/2;
-        image(profileImg, 0, imgDrawY, drawW, drawH);
-      } else {
-        fill(230); noStroke();
-        rectMode(CENTER);
-        rect(0, photoCenterY, photoW, photoH);
-      }
-      // Small pin dot at top
-      noStroke();
-      fill(140,140,140);
-      circle(0, -config.img1Size.h*scaleFactor/2+8*scaleFactor, 6*scaleFactor);
-      fill(200,200,200,120);
-      ellipse(-0.8*scaleFactor, -config.img1Size.h*scaleFactor/2+7*scaleFactor, 2*scaleFactor, 1.5*scaleFactor);
-      // Small caption
-      fill(150);
-      textAlign(CENTER, CENTER);
-      textFont('Special Elite, serif');
-      textSize(7*scaleFactor);
-      let captionY = config.img1Size.h*scaleFactor/2 - padBottom*scaleFactor/2;
-      text("Me", 0, captionY);
-      rectMode(CORNER);
-      pop();
-
-      // --- img3 (WeChat stamp) ---
-      handleImg3Physics();
-      
-      push();
-      translate(img3Pos.x, img3Pos.y);
-      let rotSway = (img3State === "DROPPING") ? sin(frameCount * driftConfig.swingSpeed) * driftConfig.swingRange : 0;
-      rotate(rotSway + (isExtracted ? 2 : 0));
-      fill(7, 193, 96);
-      noStroke();
-      rectMode(CENTER);
-      rect(0, 0, config.img3Size.w*scaleFactor, config.img3Size.h*scaleFactor, 16*scaleFactor);
-      fill(255);
-      textAlign(CENTER, CENTER);
-      textFont('sans-serif'); textSize(12*scaleFactor); text("W", -45*scaleFactor, 0);
-      textAlign(LEFT, CENTER); textSize(9*scaleFactor);
-      text("JaQby8888", -30*scaleFactor, 0);
-      rectMode(CORNER);
-      pop();
-
-      // --- img2 (main envelope/postcard) ---
-      push();
-      // Shadow
-      fill(0,0,0,15); noStroke();
-      ellipse(0, config.img2Size.h*scaleFactor/2+4*scaleFactor, config.img2Size.w*scaleFactor*0.9, 8*scaleFactor);
-      // Card
-      fill(242,242,241);
-      stroke(0,0,0,40); strokeWeight(1.5*scaleFactor);
-      rectMode(CENTER);
-      rect(0, 0, config.img2Size.w*scaleFactor, config.img2Size.h*scaleFactor, 7*scaleFactor);
-      // Pin
-      drawPin(0, -config.img2Size.h*scaleFactor/2 + 10*scaleFactor);
-      // Decorative line
-      stroke(0,60); strokeWeight(0.8*scaleFactor);
-      line(-60*scaleFactor, -10*scaleFactor, 60*scaleFactor, -10*scaleFactor);
-      // Text
-      noStroke();
-      fill(0);
-      textAlign(CENTER, CENTER);
-      textFont('Special Elite, serif');
-      textSize(22*scaleFactor);
-      text("Jackie Li", 0, -28*scaleFactor);
-      fill(80);
-      textFont('serif');
-      textSize(10*scaleFactor);
-      text("Data Science & Big Data Technology", 0, 4*scaleFactor);
-      fill(130);
-      textSize(9*scaleFactor);
-      text("Wuhan \u00B7 Shanghai", 0, 26*scaleFactor);
-      rectMode(CORNER);
-      pop();
-      
-      pop();
-
-      // --- Sakura periodic popup (natural size, not compressed) ---
-      drawSakuraPopup();
-    }
-    
-    function drawSakuraPopup() {
-      if (!sakuraImg) return;
-
-      if (sakuraState === "IDLE") {
-        if (frameCount % 300 === 0) {
-          sakuraState = "POP";
-          sakuraX = random(width * 0.5, width * 0.85);
-          sakuraRotation = random(-12, 5);
-        }
-      }
-
-      if (sakuraState === "POP") {
-        sakuraY = lerp(sakuraY, sakuraTargetY, 0.08);
-        sakuraRotation = lerp(sakuraRotation, -5, 0.05);
-        if (abs(sakuraY - sakuraTargetY) < 5) {
-          sakuraState = "HOLD";
-          sakuraHoldTimer = 0;
-        }
-      } else if (sakuraState === "HOLD") {
-        sakuraHoldTimer++;
-        sakuraY = sakuraTargetY + sin(frameCount * 0.05) * 3;
-        if (sakuraHoldTimer > 180) {
-          sakuraState = "DROP";
-        }
-      } else if (sakuraState === "DROP") {
-        sakuraY = lerp(sakuraY, height + 300 * scaleFactor, 0.04);
-        sakuraRotation += 0.3;
-        if (sakuraY > height + 200) {
-          sakuraState = "IDLE";
-          sakuraY = -300 * scaleFactor;
-        }
-      }
-
-      push();
-      translate(sakuraX, sakuraY);
-      rotate(sakuraRotation);
-      imageMode(CENTER);
-      let sw = sakuraImg.width * sakuraScale;
-      let sh = sakuraImg.height * sakuraScale;
-      image(sakuraImg, 0, 0, sw, sh);
-      imageMode(CORNER);
-      pop();
-    }
-    
-    function drawPin(x, y) {
-      push();
-      translate(x, y);
-      
-      fill(145, 145, 145);
-      noStroke();
-      
-      for (let i = 0; i < 8; i++) {
-        let angle = (360 / 8) * i;
-        let offsetX = cos(angle) * 0.5 * scaleFactor;
-        let offsetY = sin(angle) * 0.5 * scaleFactor;
-        circle(offsetX, offsetY, 7 * scaleFactor);
-      }
-      
-      fill(130, 130, 130);
-      circle(0, 0, 6 * scaleFactor);
-      
-      noFill();
-      stroke(90, 90, 90);
-      strokeWeight(0.8 * scaleFactor);
-      
-      beginShape();
-      for (let a = 0; a < 360; a += 30) {
-        let r = 3.5 * scaleFactor + random(-0.3, 0.3) * scaleFactor;
-        let px = cos(a) * r;
-        let py = sin(a) * r;
-        vertex(px, py);
-      }
-      endShape(CLOSE);
-      
-      noStroke();
-      fill(210, 210, 210, 160);
-      ellipse(-1 * scaleFactor, -1 * scaleFactor, 2.5 * scaleFactor, 2 * scaleFactor);
-      
-      fill(80, 80, 80, 50);
-      ellipse(0.5 * scaleFactor, 1.5 * scaleFactor, 7 * scaleFactor, 2 * scaleFactor);
-      
-      pop();
-    }
-    
-    function handleImg1PopAnimation() {
-      const popDistance = 10;
-      const popSpeed = 0.3;
-      const pauseDuration = 8;
-      const cycleDuration = 120;
-      
-      img1PopTimer++;
-      
-      if (img1PopTimer >= cycleDuration) {
-        img1PopTimer = 0;
-        img1PopState = "POP1";
-      }
-      
-      switch(img1PopState) {
-        case "IDLE":
-          img1PopTargetOffset = 0;
-          img1PopOffset = lerp(img1PopOffset, img1PopTargetOffset, 0.2);
-          break;
-          
-        case "POP1":
-          img1PopTargetOffset = popDistance;
-          img1PopOffset = lerp(img1PopOffset, img1PopTargetOffset, popSpeed);
-          if (abs(img1PopOffset - img1PopTargetOffset) < 0.5) {
-            img1PopState = "RETURN1";
-          }
-          break;
-          
-        case "RETURN1":
-          img1PopTargetOffset = 0;
-          img1PopOffset = lerp(img1PopOffset, img1PopTargetOffset, popSpeed);
-          if (abs(img1PopOffset - img1PopTargetOffset) < 0.5) {
-            img1PopState = "PAUSE";
-            img1PopTimer = 0;
-          }
-          break;
-          
-        case "PAUSE":
-          img1PopOffset = 0;
-          if (img1PopTimer >= pauseDuration) {
-            img1PopState = "POP2";
-          }
-          break;
-          
-        case "POP2":
-          img1PopTargetOffset = popDistance;
-          img1PopOffset = lerp(img1PopOffset, img1PopTargetOffset, popSpeed);
-          if (abs(img1PopOffset - img1PopTargetOffset) < 0.5) {
-            img1PopState = "RETURN2";
-          }
-          break;
-          
-        case "RETURN2":
-          img1PopTargetOffset = 0;
-          img1PopOffset = lerp(img1PopOffset, img1PopTargetOffset, popSpeed);
-          if (abs(img1PopOffset - img1PopTargetOffset) < 0.5) {
-            img1PopState = "IDLE";
-            img1PopTimer = 0;
-          }
-          break;
-      }
-    }
-
-    function handleImg3Physics() {
-      if (!isExtracted) {
-        img3State = "HIDDEN";
-        img3Pos.x = lerp(img3Pos.x, config.img3InitialX * scaleFactor, 0.1);
-        img3Pos.y = lerp(img3Pos.y, config.img3InitialY * scaleFactor, 0.1);
-        img3Vel.set(0, 0);
-      } else {
-        if (img3State === "HIDDEN" || img3State === "SLIDING") {
-          if (currentImg1X < config.triggerThreshold) {
-            img3Pos.x = lerp(img3Pos.x, config.img3InitialX * scaleFactor, 0.1);
-            img3Pos.y = config.img3InitialY * scaleFactor;
-          } else {
-            img3State = "DROPPING";
-            dropStartTime = frameCount; 
-          }
-        } 
-        
-        if (img3State === "DROPPING") {
-          let targetPos = createVector(driftConfig.finalX * scaleFactor, driftConfig.finalY * scaleFactor);
-          img3Pos.y = lerp(img3Pos.y, driftConfig.finalY * scaleFactor, driftConfig.speedY);
-          
-          let time = (frameCount - dropStartTime) * driftConfig.swingSpeed;
-          let wave = sin(time) * driftConfig.driftAmplitude * scaleFactor * (1 - img3Pos.y/(driftConfig.finalY * scaleFactor));
-          
-          let baseX = lerp(img3Pos.x, driftConfig.finalX * scaleFactor, 0.03);
-          img3Pos.x = baseX + wave;
-
-          if (dist(img3Pos.x, img3Pos.y, targetPos.x, targetPos.y) < 0.01) {
-            img3Pos.set(targetPos);
-            img3State = "STILL";
-          }
-        }
-      }
-    }
-
-    function mousePressed() {
-      handleInput();
-    }
-    
-    function touchStarted() {
-      handleInput();
-    }
-
-    function handleInput() {
-      if (isExtracted) {
-        isExtracted = false;
-        return;
-      }
-      
-      let baseX = config.baseX * scaleFactor;
-      let baseY = config.baseY * scaleFactor;
-      
-      let img2X = baseX;
-      let img2Y = baseY;
-      let img2W = config.img2Size.w * scaleFactor;
-      let img2H = config.img2Size.h * scaleFactor;
-      
-      let img1X = baseX + currentImg1X * scaleFactor;
-      let img1Y = baseY + 0 * scaleFactor;
-      let img1W = config.img1Size.w * scaleFactor;
-      let img1H = config.img1Size.h * scaleFactor;
-      
-      let img3X = baseX + img3Pos.x;
-      let img3Y = baseY + img3Pos.y;
-      let img3W = config.img3Size.w * scaleFactor;
-      let img3H = config.img3Size.h * scaleFactor;
-      
-      if (mouseX > img1X - img1W/2 && mouseX < img1X + img1W/2 &&
-          mouseY > img1Y - img1H/2 && mouseY < img1Y + img1H/2) {
-        isExtracted = true;
-        return;
-      }
-      
-      if (mouseX > img2X - img2W/2 && mouseX < img2X + img2W/2 &&
-          mouseY > img2Y - img2H/2 && mouseY < img2Y + img2H/2) {
-        isExtracted = true;
-        return;
-      }
-      
-      if (mouseX > img3X - img3W/2 && mouseX < img3X + img3W/2 &&
-          mouseY > img3Y - img3H/2 && mouseY < img3Y + img3H/2) {
-        isExtracted = true;
-        return;
-      }
-    }
+    })();
   </script>
 </body>
 </html>

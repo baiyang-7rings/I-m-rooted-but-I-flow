@@ -1,989 +1,176 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jackie's Experience</title>
-  <!-- 引入 Special Elite 字体 (英文字体) -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experience - Jackie's Sketchbook</title>
+  <meta name="description" content="Jackie's experience">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
-  <!-- 引入 AR One Sans -->
-  <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400;500&display=swap" rel="stylesheet">
-  <!-- 引入 Source Code Pro -->
-  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
-  <!-- 引入 Noto Sans SC (思源黑体简体) -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400;500&family=Special+Elite&family=Noto+Sans+HK:wght@400;500&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    /* ================= 基础样式 ================= */
-    :root {
-      --bg-color: #F2F2F1;
-      --text-color: #000000;
-      --muted-color: #666666;
-      --border-color: #DDDDDD;
-      --font-main: "Special Elite", "Noto Sans SC", "Source Han Sans SC", sans-serif;
-      --font-code: "AR One Sans", sans-serif;
+    :root{--bg:#F2F2F1;--text:#666666;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;}
+    body{
+      background:var(--bg);color:var(--text);line-height:1.7;
+      -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
     }
-
-    * {
-      box-sizing: border-box;
+    .en-special{font-family:"Special Elite",serif;}
+    .code{font-family:"AR One Sans",sans-serif;}
+    .cn-serif{font-family:"Source Han Sans SC","Noto Sans HK","Noto Sans SC",sans-serif;}
+    header{position:relative;background:transparent;z-index:100;}
+    .nav{
+      max-width:1200px;margin:10px auto 0;padding:0 24px;
+      display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center;font-size:14px;
     }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      font-family: var(--font-main);
-      -webkit-font-smoothing: antialiased;
+    .nav a{
+      color:var(--text);text-decoration:none;opacity:.7;
+      transition:all 0.2s ease;display:inline-block;transform-origin:bottom center;
     }
-
-    a {
-      color: var(--text-color);
-      text-decoration: none;
-      position: relative;
+    .nav a:hover{opacity:1;}
+    .nav a:active{color:#ccc;transform:perspective(500px) rotateX(60deg) skewX(-15deg);}
+    .nav-left{justify-self:start;font-weight:500;}
+    .nav-center{justify-self:center;opacity:1;}
+    .nav-right{justify-self:end;}
+    .container{
+      max-width:1200px;margin:-90px auto 0;padding:120px 24px 80px;
+      min-height:calc(100vh - 180px);
     }
-    
-    a:hover {
-      text-decoration: underline;
+    .page-title{
+      font-family:"Special Elite",serif;font-size:28px;font-weight:500;
+      text-align:center;margin-bottom:60px;color:var(--text);
     }
-
-    /* ================= 布局容器 ================= */
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px 40px; /* Top 0 to control header spacing manually */
-      position: relative;
+    .timeline{
+      max-width:700px;margin:0 auto;position:relative;
     }
-
-    /* ================= 顶部导航 ================= */
-    header {
-      display: flex;
-      justify-content: flex-end; /* Nav aligned to right */
-      align-items: center;
-      padding-top: 10px; /* 与 about.html 一致 */
-      margin-bottom: 20px; /* 与 about.html 一致，从 60px 改为 20px */
+    .timeline::before{
+      content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;
+      background:rgba(0,0,0,0.1);transform:translateX(-50%);
     }
-
-    /* Page Title (was Logo) */
-    .page-title {
-      font-size: 48px;
-      font-weight: bold;
-      letter-spacing: -1px;
-      margin-bottom: 0px; /* 与 about.html 一致，从 20px 改为 0px */
-      font-family: var(--font-main);
-      position: relative;
-      z-index: 10;
+    .timeline-item{
+      position:relative;width:50%;padding:0 40px 60px 0;
     }
-
-    .nav-links {
-      display: flex;
-      gap: 30px;
-      font-size: 14px;
-      color: #999;
-      margin: 0;
-      font-family: var(--font-code); /* 使用 Source Code Pro */
+    .timeline-item:nth-child(even){
+      margin-left:50%;padding:0 0 60px 40px;
     }
-    
-    .nav-links a { 
-      color: #999; 
-      transition: all 0.2s ease;
-      display: inline-block;
-      text-decoration: none;
-      transform-origin: bottom center; /* 旋转轴在底部 */
+    .timeline-dot{
+      position:absolute;right:-8px;top:5px;width:16px;height:16px;
+      background:var(--bg);border:3px solid var(--text);border-radius:50%;
     }
-    .nav-links a:hover { 
-      color: #333; 
+    .timeline-item:nth-child(even) .timeline-dot{
+      left:-8px;right:auto;
     }
-    .nav-links a:active {
-      color: #ccc; /* 颜色变浅 */
-      text-shadow: none;
-      transform: perspective(500px) rotateX(60deg) skewX(-15deg); /* 向斜后方倾倒 */
+    .timeline-card{
+      background:#fff;padding:25px;border-radius:4px;
+      box-shadow:0 3px 15px rgba(0,0,0,0.1);
+      transition:all 0.3s ease;
     }
-
-    /* ================= Hero 区域 & 地图背景 ================= */
-    .hero-section {
-      position: relative;
-      margin-top: 40px; /* 向下平移 20px */
-      margin-bottom: 40px;
-      min-height: 400px;
+    .timeline-card:hover{
+      box-shadow:0 8px 25px rgba(0,0,0,0.15);
+      transform:translateY(-3px);
     }
-
-    .map-container {
-      position: relative;
-      width: 100%;
-      height: 500px;
-      margin-top: 0;
-      z-index: 1;
-      overflow: hidden;
-      display: flex;
-      justify-content: center; /* 居中地图 wrapper */
-      align-items: center;
+    .timeline-date{
+      font-family:"Special Elite",serif;font-size:13px;
+      color:#999;margin-bottom:8px;
     }
-
-    /* 新增 wrapper，尺寸将由 JS 动态设置为与图片渲染尺寸一致 */
-    #map-wrapper {
-      position: relative;
-      display: inline-block; /* 适应内容尺寸 */
-      /* 初始状态可能需要一些样式，但主要靠 JS */
-      width: auto;
-      height: 100%;
+    .timeline-title{
+      font-family:"Special Elite",serif;font-size:18px;
+      color:#444;margin:0 0 10px 0;
     }
-
-    .world-map {
-      width: auto;      /* 允许自然宽度 */
-      height: 100%;     /* 充满高度 */
-      max-width: 100%;  /* 不超宽 */
-      object-fit: contain;
-      opacity: 0.6;
-      display: block;
+    .timeline-company{
+      font-family:"AR One Sans",sans-serif;font-size:14px;
+      color:#666;margin:0 0 12px 0;font-weight:500;
     }
-
-    .world-map:not([src]), 
-    img[src="Earth.png"][style*="display: none"] ~ #map-placeholder,
-    img[src="Earth.png"][style*="display:none"] ~ #map-placeholder {
-       display: block !important;
+    .timeline-desc{
+      font-family:"AR One Sans",sans-serif;font-size:13px;
+      color:#777;margin:0;line-height:1.7;
     }
-    
-    #map-placeholder {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: -1;
-      opacity: 0.5;
-      background:
-        radial-gradient(circle at 83% 58%, rgba(0,0,0,.1) 0 3px, transparent 3px) no-repeat,
-        radial-gradient(circle at 78% 46%, rgba(0,0,0,.1) 0 3px, transparent 3px) no-repeat,
-        radial-gradient(circle at 68% 52%, rgba(0,0,0,.1) 0 3px, transparent 3px) no-repeat,
-        radial-gradient(circle at 71% 40%, rgba(0,0,0,.1) 0 3px, transparent 3px) no-repeat,
-        radial-gradient(circle at 75% 64%, rgba(0,0,0,.1) 0 3px, transparent 3px) no-repeat,
-        radial-gradient(circle at 56% 36%, rgba(0,0,0,.1) 0 3px, transparent 3px) no-repeat,
-        radial-gradient(circle at 53% 33%, rgba(0,0,0,.1) 0 3px, transparent 3px) no-repeat,
-        radial-gradient(circle at 49% 31%, rgba(0,0,0,.1) 0 3px, transparent 3px) no-repeat,
-        radial-gradient(circle at 22% 40%, rgba(0,0,0,.1) 0 3px, transparent 3px) no-repeat,
-        radial-gradient(circle at 18% 52%, rgba(0,0,0,.1) 0 3px, transparent 3px) no-repeat,
-        radial-gradient(circle at 80% 50%, rgba(0,0,0,.05) 0 50px, transparent 60px) no-repeat,
-        radial-gradient(circle at 55% 40%, rgba(0,0,0,.05) 0 40px, transparent 50px) no-repeat,
-        radial-gradient(circle at 25% 45%, rgba(0,0,0,.05) 0 50px, transparent 60px) no-repeat;
-      background-size: 100% 100%;
-    }
-    
-    .collaboration-text {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      font-size: 80px;
-      color: rgba(0, 0, 0, 0.03);
-      text-transform: capitalize;
-      pointer-events: none;
-      z-index: 0;
-      text-align: right;
-    }
-
-    .marker {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #fff;            /* 白色填充 */
-      border: 3px solid #9aa0a6;   /* 灰色边缘 */
-      transform: translate(-50%, -50%);
-      opacity: 0.9;
-      animation: blink 2.4s ease-in-out infinite;
-      cursor: pointer;
-      z-index: 2;
-    }
-    /* 灰色边缘轻微放大缩小（1.5x） */
-    .marker::after {
-      content: '';
-      position: absolute;
-      left: 50%; top: 50%;
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      border: 2px solid #9aa0a6;
-      transform: translate(-50%, -50%) scale(1);
-      opacity: 0.5;
-      animation: pulse 2.4s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    /* 标签 */
-    .marker .label {
-      position: absolute;
-      top: -20px; left: 50%;
-      transform: translateX(-50%);
-      color: #666; /* 灰色字体 */
-      font-family: var(--font-main); /* 保持一致字体 */
-      font-size: 10px;
-      white-space: nowrap;
-      display: none;
-      pointer-events: none;
-      background: none; /* 无背景色 */
-      padding: 0;
-      border-radius: 0;
-      text-shadow: 0 1px 2px rgba(255,255,255,0.8); /* 增加白色描边以防背景干扰 */
-    }
-
-    /* 标签位置修正：下方显示 */
-    .marker .label.label-bottom {
-      top: auto; 
-      bottom: -20px;
-    }
-
-    /* 初始动画 */
-    @keyframes blink {
-      0%, 100% { opacity: 0.9; }
-      50%      { opacity: 0.4; }
-    }
-    @keyframes pulse {
-      0%, 100% { transform: translate(-50%, -50%) scale(1); }
-      50%      { transform: translate(-50%, -50%) scale(1.5); }
-    }
-
-    /* 悬停任一点：所有标记点静止，但仅有hover的那个点显示标签 */
-    .map-container.paused .marker {
-      animation-play-state: paused;
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1); /* 保持在放大 1.1 倍的状态 */
-    }
-    .map-container.paused .marker::after {
-      animation-play-state: paused;
-      opacity: 0.5;
-      transform: translate(-50%, -50%) scale(1);
-    }
-    
-    /* 仅当鼠标真正悬停在具体的 .marker 上时，才显示该点的 label */
-    .marker:hover .label {
-      display: inline-block;
-    }
-
-    /* 地点标记位置 - 默认（桌面端） */
-    .m-wuhan { left: 78%; top: 45%; }
-    .m-shanghai { left: 80%; top: 47%; }
-
-    /* ================= 工作经历列表 ================= */
-    .experience-list {
-      display: grid;
-      grid-template-columns: 200px 1fr;
-      column-gap: 40px;
-      row-gap: 60px;
-      margin-bottom: 80px;
-    }
-
-    /* 左栏 */
-    .col-left {
-      font-size: 16px;
-      line-height: 1.5;
-      display: flex;
-      flex-direction: column;
-      gap: 12px; /* 统一的行间距 */
-      align-items: flex-start; /* 左对齐 */
-    }
-    .col-left .years {
-      font-size: 20px;
-      display: block;
-      line-height: 1.3; /* 紧凑一点的年份行高 */
-    }
-    .col-left .company {
-      font-size: 12px;
-      color: var(--muted-color);
-      display: block;
-      line-height: 1.4;
-    }
-    .tag {
-      display: inline-flex; /* 使用 flex 布局 */
-      align-items: center;  /* 垂直居中 */
-      justify-content: center; /* 水平居中 */
-      border: 1px solid #ccc;
-      border-radius: 50px; /* 大圆角形成椭圆 */
-      padding: 0px 6px; /* 增加内边距 */
-      /* 控制文字与顶部距离：通过 padding-top 微调，或直接 margin-top */
-      padding-top: 2px; /* 示例：向下微调文字位置 */
-      font-size: 10px;
-      color: #888;
-      line-height: 1; /* 重置行高，避免干扰垂直居中 */
-      height: 26px; /* 固定高度，确保视觉平衡 */
-      box-sizing: border-box;
-    }
-
-    /* 右侧内容容器 */
-    .col-content {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-    }
-
-    .job-item {
-      display: grid;
-      grid-template-columns: 1fr 200px;
-      gap: 40px;
-      align-items: flex-start;
-      transition: opacity 0.3s ease; /* 添加过渡效果 */
-    }
-
-    /* ================= Hover 效果 (关键修改) ================= */
-    /* 当鼠标悬停在整个列表区域时，所有 job-item 透明度降低 */
-    .experience-list:hover .job-item {
-      opacity: 0.5;
-    }
-
-    /* 当鼠标悬停在某个具体的 job-item 时，该项保持完全不透明 */
-    .job-item:hover {
-      opacity: 1 !important;
-    }
-
-    .job-desc {
-      font-size: 14px;
-      line-height: 1.8;
-      color: #333;
-    }
-    .job-desc p {
-      margin: 0;
-    }
-
-    .job-role {
-      text-align: right;
-    }
-    .role-zh {
-      font-size: 15px;
-      font-weight: bold;
-      display: block;
-    }
-    .role-en {
-      font-size: 12px;
-      color: var(--muted-color);
-      display: block;
-    }
-
-    /* ================= 底部活动列表 ================= */
-    .events-grid {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 120px;
-      gap: 20px;
-      align-items: baseline;
-    }
-    
-    .event-item {
-      display: contents;
-      font-weight: 300;
-    }
-
-    .event-location strong {
-      display: block;
-      font-size: 14px;
-      color: #000;
-    }
-    .event-location span {
-      font-size: 12px;
-      color: #666;
-    }
-
-    .event-position .role-zh {
-      font-size: 14px;
-      font-weight: 400; /* 减轻字重 */
-    }
-    .event-position .role-en {
-      font-size: 12px;
-      font-weight: 400; /* 减轻字重 */
-    }
-
-    .event-time {
-      text-align: right;
-      font-size: 12px;
-      color: #999;
-    }
-
-    /* ================= 底部 Footer ================= */
-    /* 图片全屏查看模态框 */
-    .img-modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.9);
-      align-items: center;
-      justify-content: center;
-      cursor: zoom-out;
-    }
-    .img-modal.active {
-      display: flex;
-    }
-    .img-modal-content {
-      max-width: 90%;
-      max-height: 90%;
-      object-fit: contain;
-    }
-    
-    .sidebar-img {
-      cursor: zoom-in;
-      display: block;
-      /* 宽度将由 JS 动态设置 */
-      filter: grayscale(100%);
-      transition: filter 0.3s ease;
-    }
-    
-    .sidebar-img:hover {
-        filter: grayscale(0%);
-    }
-
-    footer{
-      border-top:1px solid rgba(0,0,0,0.08);
-      margin-top:24px;
-    }
+    footer{border-top:1px solid rgba(0,0,0,0.08);margin-top:24px;}
     .footer-inner{
-      max-width:1200px;
-      margin:0 auto;
-      padding:18px 24px 28px;
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:12px;
-      font-size:13px; /* 12-14px */
-      color: #666666; /* 统一颜色 */
-      font-family: "AR One Sans", sans-serif; /* 统一字体 */
+      max-width:1200px;margin:0 auto;padding:18px 24px 28px;
+      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:13px;
     }
-    .footer-item b{
-      display:block;
-      font-weight:500;
-      margin-bottom:6px;
-      color: #666666; /* 统一颜色 */
-    }
-    .footer-item span {
-      opacity: 1; /* 统一透明度 */
-    }
-
-    /* ================= 模糊锁定 & 密码弹窗 ================= */
-    .blur-protected {
-      transition: filter 0.5s ease;
-    }
-    
-    .blur-protected.is-blurred {
-      filter: blur(12px); /* 模糊程度 */
-      user-select: none;
-      cursor: pointer; /* 提示可点击 */
-      pointer-events: auto; /* 确保能接收点击 */
-    }
-
-    /* 锁定状态下禁用 Hover 效果 */
-    .experience-list.locked:hover .job-item {
-      opacity: 1 !important; /* 强制不透明 */
-    }
-    .experience-list.locked .job-item:hover {
-      opacity: 1 !important;
-    }
-
-    /* 密码弹窗 */
-    #password-modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(255, 255, 255, 0.5); /* 半透明背景 */
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-    }
-    
-    #password-modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      text-align: center;
-      border: 1px solid #eee;
-    }
-
-    .modal-content h3 {
-      margin: 0 0 20px 0;
-      font-size: 16px;
-      font-weight: normal;
-      color: #333;
-    }
-
-    .pin-input {
-      font-family: var(--font-code);
-      font-size: 24px;
-      letter-spacing: 10px;
-      text-align: center;
-      width: 160px;
-      border: none;
-      border-bottom: 2px solid #ccc;
-      outline: none;
-      background: transparent;
-      color: #000;
-      padding: 5px;
-    }
-    
-    .pin-input:focus {
-      border-bottom-color: #000;
-    }
-
-    /* ================= 响应式 ================= */
-    @media (max-width: 900px) {
-      .experience-list {
-        grid-template-columns: 150px 1fr;
+    .footer-item b{display:block;font-weight:500;margin-bottom:6px;}
+    .footer-item a{color:inherit;text-decoration:none;}
+    @media (max-width:768px){
+      .timeline::before{left:20px;}
+      .timeline-item,.timeline-item:nth-child(even){
+        width:100%;margin-left:0;padding:0 0 40px 50px;
       }
-      .job-item {
-        grid-template-columns: 1fr 150px;
-        gap: 20px;
+      .timeline-dot,.timeline-item:nth-child(even) .timeline-dot{
+        left:12px;right:auto;
       }
     }
-    @media (max-width: 768px) {
-      .page-title {
-        font-size: 36px;
-      }
-
-      .hero-section {
-        margin-top: 10px; /* 上移 */
-        min-height: auto;
-      }
-      .map-container {
-        height: 300px; /* 缩小地图高度 */
-      }
-      .collaboration-text {
-        font-size: 40px; /* 缩小文字 */
-        bottom: 10px;
-        right: 10px;
-      }
-      
-      .experience-list {
-        display: flex;
-        flex-direction: column;
-        gap: 40px;
-      }
-      
-      /* 图片移至右侧，与2026顶部对齐 */
-      .col-left {
-        position: relative;
-        padding-right: 100px; /* 为图片留出空间 */
-        min-height: 80px; /* 确保高度足够 */
-      }
-      
-      .sidebar-img {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 80px !important; /* 强制宽度，覆盖 JS 设置 */
-        height: auto;
-        margin-top: 0;
-      }
-
-      .job-item {
-        display: flex;
-        flex-direction: column-reverse;
-        gap: 10px;
-      }
-      .job-role {
-        text-align: left;
-      }
-      
-      .events-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-      }
-      .event-item {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        padding-bottom: 15px;
-        border-bottom: 1px dashed #eee;
-      }
-      .event-time {
-        text-align: left;
-      }
-      
-      .footer-inner{
-        grid-template-columns:1fr 1fr;
-        row-gap:16px;
-        font-size:12px;
-      }
-
-      /* Mobile adjustments for Job Role */
-      .job-role {
-        align-self: flex-end;
-        text-align: right;
-      }
-
-      /* Mobile adjustments for Event Position and Time */
-      .event-position,
-      .event-time {
-        align-self: flex-end;
-        text-align: right;
-      }
-
-      /* Scroll Lyrics Effect - 使用 !important 确保覆盖默认样式 */
-      .job-item {
-        opacity: 0.2 !important; 
-        transition: opacity 0.5s ease;
-      }
-      
-      .job-item.scroll-active, 
-      .event-item.scroll-active {
-        opacity: 1 !important;
-      }
-
-      /* 
-       * =========================================
-       * 移动端地图标记位置微调区域
-       * 请在此处修改每个城市的 left (水平位置) 和 top (垂直位置)
-       * 数值范围 0% - 100%
-       * =========================================
-       */
-      .m-wuhan { left: 78%; top: 47%; }
-      .m-shanghai { left: 80%; top: 49%; }
-
-      /* Mobile Marker Size Reduction */
-      .marker {
-        width: 6px;
-        height: 6px;
-        border-width: 2px;
-      }
-      .marker::after {
-        width: 4px;
-        height: 4px;
-        border-width: 1px;
-      }
-      .marker.active .label {
-        display: inline-block !important;
-      }
-      .marker.active {
-        opacity: 0.9 !important;
-        animation: none !important; /* 保持常亮 */
-      }
-      .marker.active::after {
-        opacity: 0.5 !important;
-        animation: none !important;
-        transform: translate(-50%, -50%) scale(1.5); /* 保持扩大状态 */
-      }
-    }
-
-    /* 
-     * =========================================
-     * 平板横屏/小尺寸桌面调整 (768px - 1024px)
-     * =========================================
-     */
-    @media (min-width: 769px) and (max-width: 1024px) {
-       .m-wuhan { left: 76%; top: 43%; }
-       .m-shanghai { left: 78%; top: 45%; }
-    }
-
-    @media (max-width: 480px) {
-      .nav-links {
-        gap: 20px;
-        font-size: 12px;
-      }
-      
-      .page-title {
-        font-size: 28px;
-      }
+    @media (max-width:480px){
+      .nav{padding:0 16px;font-size:12px;}
+      .container{padding:60px 16px 64px;margin-top:50px;}
+      .page-title{font-size:22px;margin-bottom:40px;}
+      .footer-inner{grid-template-columns:1fr 1fr;row-gap:16px;font-size:12px;}
     }
   </style>
 </head>
 <body>
+  <header>
+    <nav class="nav code">
+      <a class="nav-left" href="/works.html">Works</a>
+      <a class="nav-center" href="/experience.html">Experience</a>
+      <a class="nav-right" href="/about.html">About</a>
+    </nav>
+  </header>
 
-  <div class="container">
-    <header>
-      <nav class="nav-links">
-        <a href="index.html">Sketchbook</a>
-        <a href="works.html">Works</a>
-        <a href="experience.html">Experience</a>
-        <a href="about.html">About</a>
-      </nav>
-    </header>
-    
-    <div class="page-title">Experience.</div>
-
-    <section class="hero-section">
-      <div class="map-container">
-        <div id="map-wrapper">
-          <img src="Earth.png" alt="World Map" class="world-map" id="world-map-img" onerror="this.style.display='none'; document.getElementById('map-placeholder').style.display='block'">
-          
-          <!-- 地点标记 -->
-          <div class="marker m-wuhan" data-city="Wuhan"><span class="label">Wuhan</span></div>
-          <div class="marker m-shanghai" data-city="Shanghai"><span class="label label-bottom">Shanghai</span></div>
-        </div>
-        <div id="map-placeholder" style="display:none;"></div>
-        <div class="collaboration-text">Collaboration</div>
-      </div>
-    </section>
-
-    <section class="experience-list">
-      
-      <!-- Block 1: Data Science Projects -->
-      <div class="exp-row" style="display:contents">
-        <div class="col-left">
-          <span class="years">2026<br>2026</span>
-          <span class="tag">PROJECT</span>
-          <span class="company">Data Science<br>Projects<br>(武汉)</span>
-        </div>
-        <div class="col-content">
-          <!-- Item 1 -->
-          <div class="job-item">
-            <div class="job-desc">
-              <p style="font-weight:400;margin-bottom:8px;">Fund Flow Forecasting for a Financial Institution &nbsp;|&nbsp; 金融服务机构资金流量预测</p>
-              <p>Built a daily fund-inflow time series from anonymized user-level subscription/redemption records using Python (pandas), including data cleaning, date aggregation, and a train/test split. Resolved non-stationarity via ADF testing and 7-day seasonal differencing, confirming remaining autocorrelation with the Ljung-Box test. Ran a grid search across 10 candidate SARIMA configurations, selecting the optimal model via residual whiteness tests and out-of-sample MAPE (≈15% average error), producing a forecast report to support cash-flow decisions.</p>
-            </div>
-            <div class="job-role">
-              <span class="role-zh">SARIMA时间序列建模</span>
-              <span class="role-en">Time-Series Modeling</span>
-            </div>
-          </div>
-          <!-- Item 2 -->
-          <div class="job-item">
-            <div class="job-desc">
-              <p style="font-weight:400;margin-bottom:8px;">End-to-End Big Data Pipeline & Dashboard for E-Commerce Member Analytics &nbsp;|&nbsp; 电商会员状况统计分析与可视化大屏</p>
-              <p>Independently built a full pipeline from data ingestion (Flume log collection into HDFS; Python web scraping for device data) to cleaning (Java MapReduce for field validation and activity-score computation), Hive-based multi-dimensional analysis (by membership tier, gender, device brand), and a Flask + ECharts interactive dashboard fed via Sqoop/MySQL. Delivered an interactive dashboard giving operations teams multi-dimensional visibility into member structure and device usage to support business decisions.</p>
-            </div>
-            <div class="job-role">
-              <span class="role-zh">大数据全流程开发</span>
-              <span class="role-en">Big Data Pipeline</span>
-            </div>
-          </div>
+  <main class="container">
+    <h1 class="page-title">Experience</h1>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-date">2025 - Present</div>
+          <h3 class="timeline-title">Master Student</h3>
+          <p class="timeline-company">Curtin University</p>
+          <p class="timeline-desc">Studying Integrated Marketing Communication (IMC).</p>
         </div>
       </div>
-
-      <!-- Block 2: Leadership -->
-      <div class="exp-row" style="display:contents">
-        <div class="col-left">
-          <span class="years">2025/06<br>2023/09</span>
-          <span class="tag">LEADERSHIP</span>
-          <span class="company">Spark Society<br>星火学社<br>(武汉)</span>
-        </div>
-        <div class="col-content">
-          <div class="job-item">
-            <div class="job-desc">
-              <p style="font-weight:400;margin-bottom:8px;">President &nbsp;|&nbsp; 社长 — Volunteer Project Management & Team Leadership</p>
-              <p>Designed activity plans based on direct needs assessments and coordinated staffing/resources for volunteer projects, ensuring smooth execution at every stage. Introduced a task-tracking system to streamline workflows, clarify responsibilities and timelines, and track progress in real time, improving efficiency and team cohesion. Organized regular training and experience-sharing sessions to develop new members' planning and communication skills, providing hands-on guidance that improved overall team performance.</p>
-            </div>
-            <div class="job-role">
-              <span class="role-zh">志愿者项目统筹与团队管理</span>
-              <span class="role-en">President</span>
-            </div>
-          </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-date">2021 - 2025</div>
+          <h3 class="timeline-title">Bachelor Student</h3>
+          <p class="timeline-company">Communication University of China</p>
+          <p class="timeline-desc">Completed undergraduate studies in media and communication.</p>
         </div>
       </div>
-      
-      <!-- Block 3: Skills & Awards (replaces Part Time section) -->
-      <div class="exp-row" style="display:contents">
-        <div class="col-left">
-          <span class="years">2027<br>2023</span>
-          <span class="tag">SKILLS</span>
-          <span class="company">Technical<br>Skills & Awards<br>(武汉)</span>
-        </div>
-        <div class="col-content">
-          <div class="events-grid">
-             <!-- Skill 1 -->
-             <div class="event-item">
-               <div class="event-location">
-                 <strong>Data Analysis & Modeling</strong>
-                 <span>Python · pandas · matplotlib · statsmodels</span>
-               </div>
-               <div class="event-position">
-                  <span class="role-zh">数据分析与建模</span>
-                  <span class="role-en">Proficient</span>
-               </div>
-               <div class="event-time">
-                  Python
-               </div>
-             </div>
-             <!-- Skill 2 -->
-             <div class="event-item">
-               <div class="event-location">
-                 <strong>Big Data Tools</strong>
-                 <span>Flume · Hadoop (HDFS/MapReduce) · Hive · Sqoop</span>
-               </div>
-               <div class="event-position">
-                  <span class="role-zh">大数据工具栈</span>
-                  <span class="role-en">Hadoop Ecosystem</span>
-               </div>
-               <div class="event-time">
-                  Big Data
-               </div>
-             </div>
-             <!-- Skill 3 -->
-             <div class="event-item">
-               <div class="event-location">
-                 <strong>Office & Visualization</strong>
-                 <span>Advanced Excel · Word · PowerPoint · ECharts</span>
-               </div>
-               <div class="event-position">
-                  <span class="role-zh">办公与可视化</span>
-                  <span class="role-en">Office Tools</span>
-               </div>
-               <div class="event-time">
-                  Office
-               </div>
-             </div>
-             <!-- Award 1 -->
-             <div class="event-item">
-               <div class="event-location">
-                 <strong>University Scholarship</strong>
-                 <span>International Education College, WTBU</span>
-               </div>
-               <div class="event-position">
-                  <span class="role-zh">国际教育学院奖学金</span>
-                  <span class="role-en">Scholarship</span>
-               </div>
-               <div class="event-time">
-                  Award
-               </div>
-             </div>
-             <!-- Award 2 -->
-             <div class="event-item">
-               <div class="event-location">
-                 <strong>"Three Good Student" Award</strong>
-                 <span>University-level Merit Award</span>
-               </div>
-               <div class="event-position">
-                  <span class="role-zh">校级三好学生</span>
-                  <span class="role-en">Merit Award</span>
-               </div>
-               <div class="event-time">
-                  Award
-               </div>
-             </div>
-          </div>
-        </div>
-      </div>
+    </div>
+  </main>
 
-    </section>
-
-  </div>
-
-  <!-- 底部 Footer -->
   <footer>
-    <div class="footer-inner" style="font-family: var(--font-code);">
+    <div class="footer-inner code">
       <div class="footer-item">
         <b>Email</b>
-        <span id="footer-email"></span>
+        <a id="email-link" href="" style="color:inherit;text-decoration:none;"></a>
       </div>
       <div class="footer-item">
         <b>LinkedIn</b>
-        <span><a href="https://www.linkedin.com/in/jackie-li6699" target="_blank" style="color:inherit;text-decoration:none;">linkedin.com/in/jackie-li6699</a></span>
+        <a href="https://www.linkedin.com/in/jackie-li6699" target="_blank" rel="noopener noreferrer">linkedin.com/in/jackie-li6699</a>
       </div>
       <div class="footer-item">
-        <b>Tel</b>
-        <span>+86 19153294495</span>
-      </div>
-      <div class="footer-item">
-        <b>Based</b>
-        <span>Wuhan / Shanghai</span>
+        <b>More</b>
+        <span>Coming soon...</span>
       </div>
     </div>
   </footer>
+
   <script>
     (function(){
-      var u='l118183365',d='gm'+'ail.c'+'om';
-      var el=document.getElementById('footer-email');
-      if(el) el.textContent=u+'@'+d;
+      var user = 'l118183365';
+      var dom = 'gm' + 'ail.c' + 'om';
+      var addr = user + '@' + dom;
+      var el = document.getElementById('email-link');
+      if(el){
+        el.href = 'mailto:' + addr;
+        el.textContent = addr;
+      }
     })();
-  </script>
-
-  <!-- Image Fullscreen Modal -->
-  <div id="img-modal" class="img-modal">
-    <img class="img-modal-content" id="img-modal-img">
-  </div>
-
-  <script>
-    const mapContainer = document.querySelector('.map-container');
-    const mapWrapper = document.getElementById('map-wrapper');
-    const mapImg = document.getElementById('world-map-img');
-
-    mapWrapper.querySelectorAll('.marker').forEach(m => {
-      m.addEventListener('mouseenter', () => {
-        if (window.innerWidth > 768) mapContainer.classList.add('paused');
-      });
-      m.addEventListener('mouseleave', () => {
-        if (window.innerWidth > 768) mapContainer.classList.remove('paused');
-      });
-      m.addEventListener('click', (e) => {
-        if (window.innerWidth <= 768) {
-           e.stopPropagation();
-           mapWrapper.querySelectorAll('.marker').forEach(marker => marker.classList.remove('active'));
-           m.classList.add('active');
-        }
-      });
-    });
-
-    document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 768) {
-            if (!e.target.closest('.marker')) {
-                mapWrapper.querySelectorAll('.marker').forEach(marker => marker.classList.remove('active'));
-            }
-        }
-    });
-
-    function syncMapWrapperSize() {
-      if (!mapImg || !mapWrapper) return;
-      const containerW = mapContainer.clientWidth;
-      const containerH = mapContainer.clientHeight;
-      const containerRatio = containerW / containerH;
-      const naturalW = mapImg.naturalWidth;
-      const naturalH = mapImg.naturalHeight;
-      const imgRatio = naturalW / naturalH;
-      if (!naturalW || !naturalH) return;
-      let renderW, renderH;
-      if (containerRatio > imgRatio) {
-        renderH = containerH;
-        renderW = renderH * imgRatio;
-      } else {
-        renderW = containerW;
-        renderH = renderW / imgRatio;
-      }
-      mapWrapper.style.width = `${renderW}px`;
-      mapWrapper.style.height = `${renderH}px`;
-    }
-
-    window.addEventListener('resize', syncMapWrapperSize);
-    mapImg.addEventListener('load', syncMapWrapperSize);
-    if (mapImg.complete) syncMapWrapperSize();
-
-    const imgModal = document.getElementById('img-modal');
-    const imgModalImg = document.getElementById('img-modal-img');
-    function openImageModal(img) {
-      imgModal.classList.add('active');
-      imgModalImg.src = img.src;
-    }
-    imgModal.addEventListener('click', () => {
-      imgModal.classList.remove('active');
-    });
-
-    function handleScrollLyrics() {
-      if (window.innerWidth > 768) {
-          document.querySelectorAll('.job-item, .event-item').forEach(el => {
-              el.style.opacity = '';
-              el.classList.remove('scroll-active');
-          });
-          return;
-      }
-      const triggerLine = window.innerHeight * 0.33;
-      const items = document.querySelectorAll('.job-item, .event-item');
-      let activeItem = null;
-      let minDist = Infinity;
-      items.forEach(item => {
-        const rect = item.getBoundingClientRect();
-        let dist = 0;
-        if (rect.top > triggerLine) dist = rect.top - triggerLine;
-        else if (rect.bottom < triggerLine) dist = triggerLine - rect.bottom;
-        else dist = 0;
-        if (dist < minDist) { minDist = dist; activeItem = item; }
-      });
-      items.forEach(item => {
-          if (item === activeItem) item.classList.add('scroll-active');
-          else item.classList.remove('scroll-active');
-      });
-    }
-    window.addEventListener('scroll', handleScrollLyrics);
-    window.addEventListener('resize', handleScrollLyrics);
-    window.addEventListener('load', handleScrollLyrics);
   </script>
 </body>
 </html>
