@@ -1,405 +1,2157 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Works - Jackie's Sketchbook</title>
-  <meta name="description" content="Jackie's works portfolio">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jackie's Portfolio</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400;500&family=Special+Elite&family=Noto+Sans+HK:wght@400;500&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+  
   <style>
-    :root{--bg:#F2F2F1;--text:#666666;}
-    *{box-sizing:border-box;margin:0;padding:0;}
-    html,body{height:100%;}
-    body{
-      background:var(--bg);color:var(--text);line-height:1.7;
-      -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
-    }
-    .en-special{font-family:"Special Elite",serif;}
-    .code{font-family:"AR One Sans",sans-serif;}
-    .cn-serif{font-family:"Source Han Sans SC","Noto Sans HK","Noto Sans SC",sans-serif;}
-    header{position:relative;background:transparent;z-index:100;}
-    .nav{
-      max-width:1200px;margin:10px auto 0;padding:0 24px;
-      display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center;font-size:14px;
-    }
-    .nav a{
-      color:var(--text);text-decoration:none;opacity:.7;
-      transition:all 0.2s ease;display:inline-block;transform-origin:bottom center;
-    }
-    .nav a:hover{opacity:1;}
-    .nav a:active{color:#ccc;transform:perspective(500px) rotateX(60deg) skewX(-15deg);}
-    .nav-left{justify-self:start;font-weight:500;opacity:1;}
-    .nav-center{justify-self:center;}
-    .nav-right{justify-self:end;}
-    .container{
-      max-width:1200px;margin:-90px auto 0;padding:120px 24px 80px;
-      min-height:calc(100vh - 180px);
-    }
-    .section{margin-bottom:100px;}
-    .section-title{
-      font-family:"Special Elite",serif;font-size:24px;font-weight:500;
-      text-align:center;margin-bottom:50px;color:var(--text);
+    :root {
+      --bg-color: #F2F2F1;
+      --text-color: #000000;
+      --muted-color: #666666;
+      --border-color: #DDDDDD;
+      --font-main: "Special Elite", "Noto Sans SC", "Source Han Sans SC", "Source Han Sans", sans-serif;
+      --font-code: "AR One Sans", sans-serif;
+      --font-chinese: "Noto Sans SC", sans-serif;
     }
 
-    .projects-container{
-      display:flex;justify-content:center;align-items:center;
-      perspective:1200px;min-height:450px;position:relative;
+    * {
+      box-sizing: border-box;
     }
-    .folder{
-      position:relative;width:380px;height:320px;cursor:pointer;
-      transform-style:preserve-3d;transition:transform 0.6s ease;
-    }
-    .folder:hover{transform:translateY(-10px);}
-    .folder.open .folder-cover{transform:rotateY(-160deg);}
-    .folder.open .folder-back{transform:translateX(80px);}
-    .folder-cover{
-      position:absolute;top:0;left:0;width:100%;height:100%;
-      background:linear-gradient(135deg,#d4c4a8 0%,#c9b896 100%);
-      border-radius:4px 8px 8px 4px;
-      transform-origin:left center;transition:transform 0.7s cubic-bezier(0.4,0,0.2,1);
-      z-index:10;box-shadow:2px 2px 10px rgba(0,0,0,0.15);
-      backface-visibility:hidden;
-    }
-    .folder-cover::before{
-      content:'';position:absolute;top:0;left:0;right:0;height:35px;
-      background:linear-gradient(180deg,#c9b896 0%,#bfae82 100%);
-      border-radius:4px 8px 0 0;
-    }
-    .folder-cover-label{
-      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-      font-family:"Special Elite",serif;font-size:20px;color:#5a4d3a;
-      text-align:center;
-    }
-    .folder-back{
-      position:absolute;top:0;left:0;width:100%;height:100%;
-      background:linear-gradient(135deg,#e8dcc8 0%,#ddd0b8 100%);
-      border-radius:4px 8px 8px 4px;z-index:5;
-      transition:transform 0.6s ease;box-shadow:inset 2px 0 8px rgba(0,0,0,0.08);
-    }
-    .folder-pages{
-      position:absolute;top:15px;left:15px;right:-15px;bottom:15px;
-      background:#fff;border-radius:2px;z-index:8;
-      box-shadow:3px 3px 12px rgba(0,0,0,0.12);
-      padding:25px;overflow:hidden;
-    }
-    .project-card{
-      position:absolute;width:260px;height:200px;
-      background:#fff;border-radius:3px;
-      box-shadow:0 4px 15px rgba(0,0,0,0.1);
-      cursor:pointer;transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
-      transform-origin:center center;
-    }
-    .project-card:hover{
-      box-shadow:0 12px 35px rgba(0,0,0,0.2);
-      transform:translateY(-8px) scale(1.02)!important;
-      z-index:20!important;
-    }
-    .project-card:nth-child(1){
-      top:30px;left:20px;transform:rotate(-6deg);z-index:11;
-    }
-    .project-card:nth-child(2){
-      top:50px;left:70px;transform:rotate(4deg);z-index:12;
-    }
-    .project-card:nth-child(3){
-      top:70px;left:120px;transform:rotate(-3deg);z-index:13;
-    }
-    .project-thumb{
-      width:100%;height:150px;object-fit:cover;
-      border-radius:3px 3px 0 0;
-    }
-    .project-title{
-      font-family:"Special Elite",serif;font-size:13px;
-      padding:10px 12px;color:#555;margin:0;
-    }
-    .project-preview{
-      position:fixed;top:0;left:0;width:100%;height:100%;
-      background:rgba(0,0,0,0.7);z-index:1000;
-      display:none;justify-content:center;align-items:center;
-      padding:40px;
-    }
-    .project-preview.active{display:flex;}
-    .preview-content{
-      background:#fff;border-radius:6px;max-width:700px;
-      max-height:90vh;overflow:auto;padding:20px;position:relative;
-    }
-    .preview-img{
-      width:100%;height:auto;border-radius:4px;display:block;
-    }
-    .preview-close{
-      position:absolute;top:15px;right:20px;font-size:28px;
-      cursor:pointer;color:#999;background:none;border:none;
-      font-family:inherit;
-    }
-    .preview-close:hover{color:#333;}
 
-    .pinboard-container{
-      position:relative;width:100%;height:600px;
-      background:linear-gradient(145deg,#e8dcc4 0%,#d9c9a8 100%);
-      border-radius:6px;overflow:hidden;
-      box-shadow:inset 0 2px 10px rgba(0,0,0,0.15);
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--font-main);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
-    .pinboard-container::before{
-      content:'';position:absolute;top:0;left:0;right:0;bottom:0;
-      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
-      pointer-events:none;
-    }
-    .pinned-item{
-      position:absolute;cursor:pointer;
-      transition:all 0.3s ease;padding:12px 12px 30px 12px;
-      background:#fff;border-radius:2px;
-      box-shadow:0 3px 10px rgba(0,0,0,0.15);
-      width:240px;
-    }
-    .pinned-item:hover{
-      box-shadow:0 15px 40px rgba(0,0,0,0.3);
-      transform:translateY(-12px) scale(1.03) rotate(0deg)!important;
-      z-index:100;
-    }
-    .pin{
-      position:absolute;top:-8px;left:50%;transform:translateX(-50%);
-      width:18px;height:18px;border-radius:50%;
-      background:radial-gradient(circle at 35% 35%,#ffb3b3,#e74c3c 60%,#c0392b);
-      box-shadow:0 3px 6px rgba(0,0,0,0.3),inset 0 1px 2px rgba(255,255,255,0.4);
-      z-index:10;
-    }
-    .pin::after{
-      content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-      width:5px;height:5px;border-radius:50%;
-      background:rgba(255,255,255,0.6);
-    }
-    .pin-thumb{
-      width:100%;height:160px;object-fit:cover;
-      border-radius:1px;margin-bottom:10px;
-    }
-    .pin-title{
-      font-family:"Special Elite",serif;font-size:14px;
-      color:#444;margin:0 0 6px 0;line-height:1.3;
-    }
-    .pin-desc{
-      font-family:"AR One Sans",sans-serif;font-size:11px;
-      color:#777;margin:0;line-height:1.5;
-    }
-    .leadership-modal{
-      position:fixed;top:0;left:0;width:100%;height:100%;
-      background:rgba(0,0,0,0.8);z-index:1000;
-      display:none;justify-content:center;align-items:center;
-      padding:40px;
-    }
-    .leadership-modal.active{display:flex;}
-    .modal-content{
-      background:#fff;border-radius:6px;max-width:800px;width:100%;
-      max-height:90vh;overflow:auto;padding:30px;position:relative;
-    }
-    .modal-img{
-      width:100%;height:auto;border-radius:4px;margin-bottom:20px;
-    }
-    .modal-title{
-      font-family:"Special Elite",serif;font-size:24px;margin:0 0 15px 0;
-      color:#333;
-    }
-    .modal-desc{
-      font-family:"AR One Sans",sans-serif;font-size:15px;
-      color:#666;line-height:1.8;
-    }
-    .modal-close{
-      position:absolute;top:15px;right:20px;font-size:28px;
-      cursor:pointer;color:#999;background:none;border:none;
-      font-family:inherit;
-    }
-    .modal-close:hover{color:#333;}
 
-    footer{border-top:1px solid rgba(0,0,0,0.08);margin-top:24px;}
+    a {
+      color: var(--text-color);
+      text-decoration: none;
+      position: relative;
+    }
+    
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 20;
+      pointer-events: none;
+    }
+    
+    .nav-links {
+      pointer-events: auto;
+    }
+    
+    .page-title {
+      pointer-events: auto;
+    }
+    
+    .subtitle {
+      pointer-events: auto;
+    }
+    
+    .canvas-spacer {
+      pointer-events: none;
+    }
+
+    header {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding-top: 10px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      font-size: 14px;
+      color: #999;
+      margin: 0;
+      font-family: var(--font-code);
+    }
+    
+    .nav-links a { 
+      color: #999; 
+      transition: all 0.2s ease;
+      display: inline-block;
+      text-decoration: none;
+      transform-origin: bottom center;
+    }
+    .nav-links a:hover { 
+      color: #333; 
+    }
+    .nav-links a:active {
+      color: #ccc;
+      text-shadow: none;
+      transform: perspective(500px) rotateX(60deg) skewX(-15deg);
+    }
+
+    .page-title {
+      font-size: 48px;
+      font-weight: bold;
+      letter-spacing: -1px;
+      margin-bottom: 0px;
+      font-family: var(--font-main);
+      position: relative;
+      z-index: 10;
+    }
+
+    .canvas-container {
+      position: absolute;
+      top: 40px;
+      left: 0;
+      width: 100vw;
+      z-index: 0;
+    }
+
+    #p5-canvas {
+      width: 100% !important;
+      height: auto !important;
+      display: block;
+      cursor: pointer;
+    }
+    
+    .content-wrapper {
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
+    }
+    
+    .canvas-spacer {
+      pointer-events: none;
+    }
+
+    .canvas-spacer {
+      width: 100%;
+      padding-top: 48.67%;
+      margin-top: 105px;
+    }
+
+    .gallery-container {
+      position: absolute;
+      top: 130px;
+      left: 0;
+      width: 100%;
+      height: 400px;
+      z-index: 200;
+      pointer-events: none;
+      overflow: hidden;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .gallery-container.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ================= Projects (Folder / Origami Style) ================= */
+    #graphicDesignGallery {
+      position: absolute;
+      top: 130px;
+      left: 0;
+      width: 100%;
+      height: 400px;
+      z-index: 200;
+      display: none;
+      overflow: visible;
+      padding: 0;
+      perspective: 1400px;
+      perspective-origin: center center;
+    }
+    #graphicDesignGallery.show {
+      display: block !important;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .accordion-stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .folder-container {
+      position: relative;
+      width: 340px;
+      height: 400px;
+      perspective: 1400px;
+    }
+
+    .folder-spine {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 8px;
+      height: 100%;
+      background: linear-gradient(to right, #b71c1c, #d32f2f, #c62828);
+      border-radius: 2px 0 0 2px;
+      z-index: 100;
+      box-shadow: 2px 0 6px rgba(183, 28, 28, 0.3);
+    }
+
+    .folder-tab {
+      position: absolute;
+      top: -14px;
+      left: 8px;
+      width: 80px;
+      height: 28px;
+      background: linear-gradient(to bottom, #d32f2f, #b71c1c);
+      border-radius: 6px 6px 0 0;
+      z-index: 101;
+      box-shadow: 0 -2px 4px rgba(0,0,0,0.15);
+    }
+    .folder-tab::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: #b71c1c;
+    }
+    .folder-tab-label {
+      position: absolute;
+      top: 4px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-family: 'Special Elite', serif;
+      font-size: 10px;
+      color: #fff;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .pages-stack {
+      position: absolute;
+      top: 0;
+      left: 8px;
+      width: 332px;
+      height: 100%;
+      perspective: 1400px;
+      perspective-origin: left center;
+    }
+
+    .folder-page {
+      position: absolute;
+      top: 10px;
+      left: 6px;
+      width: 320px;
+      height: 380px;
+      background-color: #f6f3ea;
+      background-image:
+        repeating-linear-gradient(
+          to bottom,
+          transparent,
+          transparent 27px,
+          rgba(100, 149, 237, 0.15) 27px,
+          rgba(100, 149, 237, 0.15) 28px
+        ),
+        url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 1px 3px 3px 1px;
+      overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      will-change: transform;
+      backface-visibility: hidden;
+      transform-origin: left center;
+      transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.6s ease;
+      box-shadow:
+        2px 2px 6px rgba(0,0,0,0.1),
+        inset 0 0 60px rgba(0,0,0,0.03);
+      z-index: 10;
+    }
+
+    .folder-page::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(0,0,0,0.06) 0%, transparent 40%);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .folder-page::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(to right, rgba(200,60,60,0.15), transparent);
+      pointer-events: none;
+      z-index: 6;
+    }
+
+    .folder-page .page-content-wrapper {
+      position: relative;
+      z-index: 7;
+      width: 100%;
+      height: 100%;
+      padding: 22px 24px;
+      display: flex;
+      flex-direction: column;
+      background: transparent;
+      overflow-y: auto;
+    }
+    .folder-page .proj-title {
+      font-family: 'Special Elite', serif;
+      font-size: 16px;
+      color: #222;
+      margin-bottom: 4px;
+      flex-shrink: 0;
+      line-height: 1.3;
+    }
+    .folder-page .proj-subtitle {
+      font-family: 'AR One Sans', sans-serif;
+      font-size: 10px;
+      color: #888;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+    .folder-page .proj-image {
+      width: 100%;
+      max-height: 160px;
+      object-fit: cover;
+      border-radius: 2px;
+      margin: 8px 0;
+      flex-shrink: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .folder-page .proj-desc {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 11px;
+      line-height: 1.7;
+      color: #444;
+      flex-shrink: 0;
+    }
+    .folder-page .proj-tags {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+    .folder-page .proj-tag {
+      border: 1px solid #ccc;
+      border-radius: 50px;
+      padding: 2px 9px;
+      font-size: 9px;
+      color: #888;
+      font-family: 'AR One Sans', sans-serif;
+      display: inline-block;
+    }
+
+    .folder-hint {
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'AR One Sans', sans-serif;
+      font-size: 10px;
+      color: #999;
+      text-align: center;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 480px) {
+      .folder-container {
+        width: 200px;
+        height: 340px;
+      }
+      .folder-spine {
+        width: 6px;
+      }
+      .folder-tab {
+        left: 6px;
+        width: 55px;
+        height: 22px;
+        top: -10px;
+      }
+      .folder-tab-label {
+        font-size: 8px;
+        top: 3px;
+      }
+      .pages-stack {
+        left: 6px;
+        width: 194px;
+      }
+      .folder-page {
+        width: 170px;
+        height: 300px;
+        top: 8px;
+        left: 4px;
+      }
+      .folder-page .page-content-wrapper {
+        padding: 12px 14px;
+      }
+      .folder-page .proj-title {
+        font-size: 12px;
+      }
+      .folder-page .proj-subtitle {
+        font-size: 8px;
+        margin-bottom: 6px;
+      }
+      .folder-page .proj-desc {
+        font-size: 9px;
+        line-height: 1.5;
+      }
+      .folder-page .proj-tag {
+        font-size: 7px;
+        padding: 1px 6px;
+      }
+      .folder-page .proj-image {
+        max-height: 100px;
+        margin: 4px 0;
+      }
+    }
+
+    /* ================= Leadership (Pin Board) ================= */
+    #visualDisplayGallery {
+      position: absolute;
+      top: 130px;
+      left: 0;
+      width: 100%;
+      height: 400px;
+      z-index: 200;
+      display: none;
+      overflow: visible;
+      padding: 20px;
+    }
+    #visualDisplayGallery.show {
+      display: block !important;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .pin-board {
+      position: relative;
+      width: 100%;
+      max-width: 700px;
+      height: 360px;
+      margin: 0 auto;
+      background-color: #c9a87c;
+      background-image:
+        repeating-linear-gradient(
+          45deg,
+          rgba(139, 90, 43, 0.08) 0px,
+          rgba(139, 90, 43, 0.08) 1px,
+          transparent 1px,
+          transparent 4px
+        ),
+        repeating-linear-gradient(
+          -45deg,
+          rgba(101, 67, 33, 0.06) 0px,
+          rgba(101, 67, 33, 0.06) 1px,
+          transparent 1px,
+          transparent 4px
+        ),
+        radial-gradient(ellipse at 30% 40%, rgba(160, 110, 60, 0.3), transparent 50%),
+        radial-gradient(ellipse at 70% 60%, rgba(139, 90, 43, 0.2), transparent 40%);
+      border-radius: 4px;
+      box-shadow:
+        inset 0 2px 8px rgba(0,0,0,0.2),
+        0 4px 16px rgba(0,0,0,0.15);
+      border: 3px solid #8b5a2b;
+      overflow: hidden;
+    }
+
+    .gallery-item.visual-display {
+      position: absolute;
+      background: #fff;
+      padding: 8px 8px 12px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transform: rotate(var(--rotation, 0deg)) translateY(-120vh);
+      opacity: 0;
+      z-index: 1;
+    }
+    .gallery-item.visual-display.dropped {
+      transform: rotate(var(--rotation, 0deg)) translateY(0);
+      opacity: 1;
+    }
+    .gallery-item.visual-display:hover {
+      transform: rotate(var(--rotation, 0deg)) translateY(-15px) scale(1.05) !important;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4) !important;
+      z-index: 50 !important;
+    }
+
+    .gallery-item.visual-display img {
+      display: block;
+      max-width: 150px;
+      max-height: 180px;
+      width: auto;
+      height: auto;
+      object-fit: cover;
+      border-radius: 1px;
+    }
+
+    .gallery-item.visual-display .pin {
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 12px;
+      z-index: 10;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .gallery-item.visual-display.pinned .pin {
+      opacity: 1;
+    }
+    .gallery-item.visual-display .pin::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fff8f0, #f5e6d3 40%, #e8d4be 70%, #c9a87c);
+      box-shadow:
+        0 2px 5px rgba(0,0,0,0.25),
+        inset 0 -1px 2px rgba(160,120,80,0.2),
+        inset 0 1px 3px rgba(255,255,255,0.7),
+        0 0 0 1px rgba(200,170,130,0.3);
+    }
+    .gallery-item.visual-display .pin::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 40%, rgba(255,255,255,0.95), rgba(255,248,240,0.3));
+    }
+
+    .gallery-item.visual-display .item-label {
+      font-family: 'Special Elite', serif;
+      font-size: 10px;
+      color: #333;
+      text-align: center;
+      margin-top: 6px;
+      line-height: 1.3;
+    }
+
+    .gallery-item.visual-display.coming-soon-card {
+      background: #fafafa;
+      border: 1px dashed #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 120px;
+      min-height: 150px;
+      padding: 16px;
+      text-align: center;
+      cursor: default;
+    }
+    .gallery-item.visual-display.coming-soon-card .placeholder-content {
+      font-family: 'Special Elite', serif;
+    }
+    .gallery-item.visual-display.coming-soon-card .placeholder-q {
+      font-size: 36px;
+      color: #ccc;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .gallery-item.visual-display.coming-soon-card .placeholder-text {
+      font-size: 10px;
+      color: #bbb;
+      line-height: 1.5;
+    }
+
+    /* ================= Content Showcase (Phone + Article List - UNCHANGED) ================= */
+    #socialMediaGallery {
+      display: none;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 20px;
+      position: absolute;
+      top: 130px;
+      width: 100%;
+      height: 400px;
+      z-index: 200;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    #socialMediaGallery.show {
+      opacity: 1;
+      pointer-events: auto;
+      display: flex !important;
+    }
+
+    .article-list {
+      width: 220px;
+      max-height: 380px;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+    .article-list-card {
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+    .article-list-card.active {
+      border-left: 3px solid #07c160;
+      background: #f9f9f9;
+    }
+    .article-list-card:hover {
+      border-color: #ccc;
+    }
+    .article-list-card .list-heart {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      font-size: 14px;
+      color: #ccc;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.2s;
+    }
+    .article-list-card .list-heart.liked {
+      color: #ff4d4f;
+    }
+    .article-list-card .list-title {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: #333;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      padding-right: 18px;
+    }
+    .article-list-card .list-date {
+      font-family: 'AR One Sans', sans-serif;
+      font-size: 9px;
+      color: #999;
+      margin-top: 4px;
+    }
+    .article-hint {
+      font-family: 'AR One Sans', sans-serif;
+      font-size: 10px;
+      color: #999;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .wx-phone-frame {
+      width: 260px;
+      height: 380px;
+      background: #1a1a1a;
+      border-radius: 32px;
+      padding: 8px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .wx-phone-frame::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 18px;
+      background: #1a1a1a;
+      border-radius: 0 0 14px 14px;
+      z-index: 100;
+    }
+    .wx-phone-frame::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: #333;
+      border-radius: 2px;
+      z-index: 100;
+    }
+    .wx-phone-status-bar {
+      position: absolute;
+      top: 0;
+      left: 8px;
+      right: 8px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      font-family: -apple-system, sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      color: #000;
+      z-index: 50;
+      pointer-events: none;
+    }
+    .wx-phone-screen {
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .wx-header {
+      background: #ededed;
+      padding: 36px 8px 6px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #e0e0e0;
+      flex-shrink: 0;
+      min-height: 32px;
+    }
+    .wx-header-back {
+      font-size: 16px;
+      color: #333;
+      padding: 2px 6px;
+      cursor: pointer;
+    }
+    .wx-header-title {
+      flex: 1;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: #333;
+      font-family: -apple-system, "Noto Sans SC", sans-serif;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 0 6px;
+    }
+    .wx-header-more {
+      font-size: 16px;
+      color: #333;
+      padding: 2px 6px;
+    }
+    .wx-article-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+    }
+    .wx-article-scroll img {
+      width: 100%;
+      display: block;
+    }
+    .wx-bottom-bar {
+      height: 36px;
+      background: #f7f7f7;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 10px;
+      flex-shrink: 0;
+    }
+    .wx-action-btn {
+      font-size: 16px;
+      cursor: pointer;
+      color: #666;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      user-select: none;
+    }
+    .wx-action-btn.liked {
+      color: #ff4d4f;
+    }
+    .wx-action-btn span {
+      font-size: 10px;
+      font-family: 'AR One Sans', sans-serif;
+    }
+
+    /* ================= Image Modal ================= */
+    .image-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .image-modal.show {
+      display: flex;
+    }
+    .modal-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      cursor: pointer;
+    }
+    .modal-content {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      z-index: 10001;
+      overflow: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content img {
+      max-width: 90vw;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      cursor: grab;
+    }
+    .modal-content img:active {
+      cursor: grabbing;
+    }
+
+    /* ================= Footer ================= */
+    footer{
+      border-top:1px solid rgba(0,0,0,0.08);
+      margin-top:24px;
+    }
     .footer-inner{
-      max-width:1200px;margin:0 auto;padding:18px 24px 28px;
-      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:13px;
+      max-width:1200px;
+      margin:0 auto;
+      padding:18px 24px 28px;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      font-size:13px;
+      color: #666666;
+      font-family: "AR One Sans", sans-serif;
     }
-    .footer-item b{display:block;font-weight:500;margin-bottom:6px;}
-    .footer-item a{color:inherit;text-decoration:none;}
-    @media (max-width:1024px){
-      .folder{width:320px;height:280px;}
-      .project-card{width:220px;height:170px;}
-      .pinboard-container{height:550px;}
-      .pinned-item{width:200px;}
+    .footer-item b{
+      display:block;
+      font-weight:500;
+      margin-bottom:6px;
+      color: #666666;
     }
-    @media (max-width:480px){
-      .nav{padding:0 16px;font-size:12px;}
-      .container{padding:60px 16px 64px;margin-top:50px;}
-      .section{margin-bottom:60px;}
-      .section-title{font-size:20px;margin-bottom:30px;}
-      .folder{width:280px;height:240px;}
-      .project-card{width:180px;height:140px;}
-      .pinboard-container{height:auto;min-height:700px;}
-      .pinned-item{width:85%;left:50%!important;top:auto!important;
-        transform:translateX(-50%)!important;position:relative;margin-bottom:20px;}
-      .footer-inner{grid-template-columns:1fr 1fr;row-gap:16px;font-size:12px;}
+    .footer-item span {
+      opacity: 1;
+    }
+
+    /* ================= Responsive ================= */
+    @media (min-width: 481px) and (max-width: 1200px) {
+      .canvas-container {
+        position: absolute !important;
+        left: 0;
+        z-index: 0;
+        width: 100vw;
+      }
+      footer {
+        position: relative;
+        margin-top: 0;
+        z-index: 10;
+        width: 100%;
+      }
+      .container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      .canvas-spacer {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 36px;
+      }
+      .canvas-container {
+        margin-bottom: 40px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links {
+        gap: 20px;
+        font-size: 12px;
+      }
+      .page-title {
+        font-size: 28px;
+      }
+      .footer-inner{
+        grid-template-columns:1fr 1fr;
+        row-gap:16px;
+        font-size:12px;
+      }
+
+      body.locked-scroll {
+        overflow: hidden;
+      }
+
+      .canvas-container {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        height: 500px !important;
+        z-index: 20;
+        pointer-events: none;
+      }
+      #p5-canvas {
+        height: 100% !important;
+        width: 100% !important;
+        object-fit: cover;
+        object-position: center bottom;
+        pointer-events: auto;
+      }
+
+      footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 30;
+        background: transparent;
+        border-top: none;
+        margin-top: 0;
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+        height: 60px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        transform: none !important;
+      }
+      .footer-inner {
+        padding: 5px 24px 5px;
+      }
+
+      #graphicDesignGallery,
+      #visualDisplayGallery,
+      #socialMediaGallery {
+        top: 90px !important;
+        bottom: 220px !important;
+        height: auto !important;
+        min-height: 200px;
+        overflow-y: auto;
+        z-index: 25;
+        padding: 10px !important;
+      }
+
+      #socialMediaGallery {
+        flex-direction: column !important;
+        gap: 12px !important;
+      }
+      #socialMediaGallery .wx-phone-frame {
+        width: 240px;
+        height: 360px;
+      }
+      #socialMediaGallery .article-list {
+        width: 260px;
+        max-height: 160px;
+      }
+
+      .accordion-stage {
+        width: 100%;
+        height: auto;
+        min-height: 340px;
+      }
+
+      .gallery-item.visual-display img {
+        max-width: 100px;
+        max-height: 110px;
+      }
+      .pin-board {
+        height: auto;
+        min-height: 300px;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <nav class="nav code">
-      <a class="nav-left" href="/works.html">Works</a>
-      <a class="nav-center" href="/experience.html">Experience</a>
-      <a class="nav-right" href="/about.html">About</a>
-    </nav>
-  </header>
 
-  <main class="container">
-    <section class="section">
-      <h2 class="section-title">Projects</h2>
-      <div class="projects-container">
-        <div class="folder" id="projectsFolder">
-          <div class="folder-back"></div>
-          <div class="folder-pages">
-            <div class="project-card" data-preview="1">
-              <img class="project-thumb" src="/images/spark-activity.jpg" alt="Project 1">
-              <p class="project-title">Social Media Campaign</p>
-            </div>
-            <div class="project-card" data-preview="2">
-              <img class="project-thumb" src="/images/ecommerce-dashboard.png" alt="Project 2">
-              <p class="project-title">Brand Design</p>
-            </div>
-          </div>
-          <div class="folder-cover">
-            <div class="folder-cover-label">Social Media<br>Content</div>
-          </div>
-        </div>
-      </div>
-    </section>
+  <div class="canvas-container" id="canvas-container">
+  </div>
 
-    <section class="section">
-      <h2 class="section-title">Leadership</h2>
-      <div class="pinboard-container" id="pinboard">
-      </div>
-    </section>
-  </main>
+  <div class="gallery-container" id="graphicDesignGallery" style="display: none;"></div>
+  <div class="gallery-container" id="visualDisplayGallery" style="display: none;"></div>
 
-  <div class="project-preview" id="projectPreview">
-    <div class="preview-content">
-      <button class="preview-close" id="previewClose">&times;</button>
-      <img class="preview-img" id="previewImg" src="" alt="Project preview">
+  <div class="image-modal" id="imageModal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <img id="modalImage" src="" alt="Full Image" />
     </div>
   </div>
 
-  <div class="leadership-modal" id="leadershipModal">
-    <div class="modal-content">
-      <button class="modal-close" id="modalClose">&times;</button>
-      <img class="modal-img" id="modalImg" src="" alt="Leadership preview">
-      <h3 class="modal-title" id="modalTitle"></h3>
-      <p class="modal-desc" id="modalDesc"></p>
+  <div class="gallery-container" id="socialMediaGallery" style="display: none;"></div>
+
+  <div class="container">
+    <header>
+      <nav class="nav-links">
+        <a href="index.html">Sketchbook</a>
+        <a href="works.html">Works</a>
+        <a href="experience.html">Experience</a>
+        <a href="about.html">About</a>
+      </nav>
+    </header>
+    
+    <div class="content-wrapper">
+      <div class="page-title">Works.</div>
+      <div class="canvas-spacer"></div>
     </div>
   </div>
 
   <footer>
-    <div class="footer-inner code">
+    <div class="footer-inner" style="font-family: var(--font-code);">
       <div class="footer-item">
         <b>Email</b>
-        <a id="email-link" href="" style="color:inherit;text-decoration:none;"></a>
+        <span id="footer-email"></span>
       </div>
       <div class="footer-item">
         <b>LinkedIn</b>
-        <a href="https://www.linkedin.com/in/jackie-li6699" target="_blank" rel="noopener noreferrer">linkedin.com/in/jackie-li6699</a>
+        <span><a href="https://www.linkedin.com/in/jackie-li6699" target="_blank" style="color:inherit;text-decoration:none;">linkedin.com/in/jackie-li6699</a></span>
       </div>
       <div class="footer-item">
-        <b>More</b>
-        <span>Coming soon...</span>
+        <b>Tel</b>
+        <span>+86 19153294495</span>
+      </div>
+      <div class="footer-item">
+        <b>Based</b>
+        <span>Wuhan / Shanghai</span>
       </div>
     </div>
   </footer>
-
   <script>
     (function(){
-      var folder = document.getElementById('projectsFolder');
-      var isOpen = false;
-      folder.addEventListener('click', function(e){
-        if(e.target.closest('.project-card')) return;
-        isOpen = !isOpen;
-        folder.classList.toggle('open', isOpen);
-      });
-
-      var projectPreview = document.getElementById('projectPreview');
-      var previewImg = document.getElementById('previewImg');
-      var previewClose = document.getElementById('previewClose');
-
-      document.querySelectorAll('.project-card').forEach(function(card){
-        card.addEventListener('click', function(e){
-          e.stopPropagation();
-          var id = card.getAttribute('data-preview');
-          var imgSrc = id === '1' ? '/images/spark-activity.jpg' : '/images/ecommerce-dashboard.png';
-          previewImg.src = imgSrc;
-          projectPreview.classList.add('active');
-        });
-      });
-      previewClose.addEventListener('click', function(){
-        projectPreview.classList.remove('active');
-      });
-      projectPreview.addEventListener('click', function(e){
-        if(e.target === projectPreview) projectPreview.classList.remove('active');
-      });
-
-      var leadershipItems = [
-        {
-          img: '/images/article1.jpg',
-          title: 'Student Union Leader',
-          desc: 'Led a team of 20+ members to organize campus events and activities.'
-        },
-        {
-          img: '/images/article2.jpg',
-          title: 'Club President',
-          desc: 'Managed club operations and hosted multiple successful workshops.'
-        }
-      ];
-
-      var pinboard = document.getElementById('pinboard');
-      var positions = [
-        {top: 60, left: 80, rot: -5},
-        {top: 80, left: 380, rot: 4}
-      ];
-
-      leadershipItems.forEach(function(item, idx){
-        var el = document.createElement('div');
-        el.className = 'pinned-item';
-        var pos = positions[idx] || {top: 100 + idx * 200, left: 100, rot: Math.random() * 10 - 5};
-        el.style.top = pos.top + 'px';
-        el.style.left = pos.left + 'px';
-        el.style.transform = 'rotate(' + pos.rot + 'deg)';
-        el.innerHTML = '<div class="pin"></div>' +
-          '<img class="pin-thumb" src="' + item.img + '" alt="' + item.title + '">' +
-          '<p class="pin-title">' + item.title + '</p>' +
-          '<p class="pin-desc">' + item.desc + '</p>';
-        el.addEventListener('click', function(){
-          document.getElementById('modalImg').src = item.img;
-          document.getElementById('modalTitle').textContent = item.title;
-          document.getElementById('modalDesc').textContent = item.desc;
-          document.getElementById('leadershipModal').classList.add('active');
-        });
-        pinboard.appendChild(el);
-      });
-
-      var leadershipModal = document.getElementById('leadershipModal');
-      var modalClose = document.getElementById('modalClose');
-      modalClose.addEventListener('click', function(){
-        leadershipModal.classList.remove('active');
-      });
-      leadershipModal.addEventListener('click', function(e){
-        if(e.target === leadershipModal) leadershipModal.classList.remove('active');
-      });
+      var u='l118183365',d='gm'+'ail.c'+'om';
+      var el=document.getElementById('footer-email');
+      if(el) el.textContent=u+'@'+d;
     })();
   </script>
 
   <script>
-    (function(){
-      var user = 'l118183365';
-      var dom = 'gm' + 'ail.c' + 'om';
-      var addr = user + '@' + dom;
-      var el = document.getElementById('email-link');
-      if(el){
-        el.href = 'mailto:' + addr;
-        el.textContent = addr;
+    let config = {
+      topBoundary: 100,
+      riseSpeed: 0.1,
+      fallSpeed: 4.5,
+      lineGapInitial: 70,
+      lineGapCompressed: 48,
+      paddingBottom: 90,
+      trailDensity: 12,
+      waveCurvature: 2,
+      textGapRatio: 1.3, 
+      closingSpeed: 0.15,
+      bgColor: 242
+    };
+
+    let waves = [];
+    let activeWaveIdx = -1;
+    let hasBeenClicked = false;
+    let scaleFactor = 1;
+    let currentDisplayedImageId = -1;
+    let isMobileMode = false;
+    let activeFlyingItem = null;
+
+    const workImages = [];
+    const displayImages = [];
+    const seashellPins = [];
+    const pinFiles = [];
+    pinFiles.forEach(file => {
+      seashellPins.push(`./images/seashells/${file}`);
+    });
+
+    let graphicDesignGallery = null;
+    let visualDisplayGallery = null;
+    let socialMediaGallery = null;
+    let imageModal = null;
+    
+    const projectPages = [
+      {
+        title: "Fund Flow Forecasting",
+        subtitle: "SARIMA · Python · Financial Time Series · 2026",
+        desc: "Built a daily fund-inflow time series from anonymized user-level subscription/redemption records. Conducted ADF stationarity tests, seasonal differencing, and ACF/PACF analysis to identify SARIMA parameters. Delivered a 7-day rolling forecast with MAE/RMSE evaluation.",
+        tags: ["Time Series", "SARIMA", "pandas", "matplotlib"],
+        image: null
+      },
+      {
+        title: "E-Commerce Review Analytics",
+        subtitle: "NLP · Python · E-Commerce · 2026",
+        desc: "Crawled and cleaned 50,000+ e-commerce user reviews. Performed Chinese word segmentation (jieba), TF-IDF keyword extraction, sentiment classification, and LDA topic modeling to identify consumer pain points. Built an interactive visualization dashboard.",
+        tags: ["NLP", "LDA", "jieba", "Dashboard"],
+        image: "./images/ecommerce-dashboard.png"
       }
-    })();
+    ];
+
+    const socialMediaData = [
+      {
+        title: "用青春温度，暖银发时光",
+        date: "2025年4月7日",
+        account: "青春武工商",
+        cover: "./images/spark-activity.jpg",
+        screenshot: "./images/article1.jpg",
+        excerpt: "三月的风拂过江南，嫩柳新鲜，樱花轻盈。星火学社志愿者们走进江夏天使养老院开展春日志愿服务，为老人们送去温暖与关怀。",
+        link: "https://mp.weixin.qq.com/s/zOJ3kT-4f_0eyjcer2D56w"
+      },
+      {
+        title: "青丝伴白发，代际共温情",
+        date: "2025年5月24日",
+        account: "青春武工商",
+        cover: "./images/spark-activity.jpg",
+        screenshot: "./images/article2.jpg",
+        excerpt: "星火学社的志愿者们再次走进养老院，通过倾听和行动传递美好。用温暖的陪伴抚慰心灵，以勤劳的劳动改善环境。",
+        link: "https://mp.weixin.qq.com/s/Z-_i5gsXK2_nD-f4SSWO5g"
+      }
+    ];
+
+    function setup() {
+      console.log('Setup 开始');
+      
+      isMobileMode = windowWidth <= 480;
+      let isTabletMode = windowWidth > 480 && windowWidth <= 1200;
+
+      if (isMobileMode) {
+        document.body.classList.add('locked-scroll');
+      }
+
+      let canvasWidth = windowWidth;
+      let canvasHeight;
+      
+      if (isMobileMode) {
+        canvasHeight = 500;
+        config.lineGapInitial = 100;
+        config.lineGapCompressed = config.lineGapInitial * 0.7;
+        config.paddingBottom = 120;
+        config.textGapRatio = 1.0; 
+      } else if (isTabletMode) {
+        canvasHeight = canvasWidth * (623 / 1280) - 20; 
+        config.paddingBottom = 30;
+        config.lineGapInitial = 75; 
+        config.lineGapCompressed = 60;
+        config.textGapRatio = 1.2;
+      } else {
+        canvasHeight = canvasWidth * (623 / 1280) - 20;
+        config.paddingBottom = 90;
+        config.lineGapInitial = 70;
+        config.lineGapCompressed = 48;
+        config.textGapRatio = 1.3;
+      }
+      
+      let canvas = createCanvas(canvasWidth, canvasHeight);
+      canvas.parent('canvas-container');
+      canvas.id('p5-canvas');
+      
+      if (isTabletMode) {
+          const canvasContainer = document.getElementById('canvas-container');
+          if (canvasContainer) {
+              canvasContainer.style.top = (window.innerHeight - canvasHeight - 10) + 'px';
+          }
+      } else if (!isMobileMode) {
+          const canvasContainer = document.getElementById('canvas-container');
+          if (canvasContainer) {
+              canvasContainer.style.top = '40px';
+          }
+      }
+      
+      textFont('Special Elite');
+
+      if (isMobileMode) {
+         scaleFactor = 0.6; 
+      } else {
+         scaleFactor = canvasWidth / 1280;
+      }
+
+      let labels = ["Projects", "Leadership", "Content Showcase"];
+      let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
+      let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
+      
+      for (let i = 0; i < labels.length; i++) {
+        let fontSize = isMobileMode ? 14 : 16 * scaleFactor;
+        textSize(fontSize);
+        let tw = textWidth(labels[i]) * config.textGapRatio;
+        if (isMobileMode) tw *= 0.8; 
+        
+        let startY = firstLineY + i * config.lineGapInitial * scaleFactor;
+        waves.push(new Wave(startY, labels[i], i, tw));
+      }
+      
+      graphicDesignGallery = document.getElementById('graphicDesignGallery');
+      visualDisplayGallery = document.getElementById('visualDisplayGallery');
+      socialMediaGallery = document.getElementById('socialMediaGallery');
+      imageModal = document.getElementById('imageModal');
+      
+      initProjectsFolder();
+      initLeadershipCards();
+      initSocialMediaGallery();
+      
+      console.log('Setup 完成，缩放比例：' + scaleFactor);
+    }
+    
+    function windowResized() {
+      isMobileMode = windowWidth <= 480;
+      let isTabletMode = windowWidth > 480 && windowWidth <= 1200;
+      
+      let canvasWidth = windowWidth;
+      let canvasHeight;
+      
+      if (isMobileMode) {
+        canvasHeight = 500;
+        config.lineGapInitial = 100;
+        config.lineGapCompressed = config.lineGapInitial * 0.8;
+        config.paddingBottom = 120;
+      } else if (isTabletMode) {
+        canvasHeight = canvasWidth * (623 / 1280) - 20;
+        config.paddingBottom = 30;
+        config.lineGapInitial = 75;
+        config.lineGapCompressed = 60;
+      } else {
+        canvasHeight = canvasWidth * (623 / 1280) - 20;
+        config.lineGapInitial = 70;
+        config.lineGapCompressed = 48;
+        config.paddingBottom = 90;
+      }
+
+      resizeCanvas(canvasWidth, canvasHeight);
+      
+      if (isTabletMode) {
+          const canvasContainer = document.getElementById('canvas-container');
+          if (canvasContainer) {
+              canvasContainer.style.top = (window.innerHeight - canvasHeight - 10) + 'px';
+          }
+      } else if (!isMobileMode) {
+          const canvasContainer = document.getElementById('canvas-container');
+          if (canvasContainer) {
+              canvasContainer.style.top = '40px';
+          }
+      }
+      
+      if (isMobileMode) {
+         scaleFactor = 0.6;
+      } else {
+         scaleFactor = canvasWidth / 1280;
+      }
+      
+      waves = [];
+      let labels = ["Projects", "Leadership", "Content Showcase"];
+      let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
+      let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
+      
+      for (let i = 0; i < labels.length; i++) {
+        let fontSize = isMobileMode ? 14 : 16 * scaleFactor;
+        textSize(fontSize);
+        let tw = textWidth(labels[i]) * config.textGapRatio;
+        if (isMobileMode) tw *= 0.8;
+        
+        let startY = firstLineY + i * config.lineGapInitial * scaleFactor;
+        waves.push(new Wave(startY, labels[i], i, tw));
+      }
+
+      if (currentDisplayedImageId === 0 && graphicDesignGallery && graphicDesignGallery.classList.contains('show')) {
+        setTimeout(() => update3DLayout(), 50);
+      }
+      if (currentDisplayedImageId === 1 && visualDisplayGallery && visualDisplayGallery.classList.contains('show')) {
+        initLeadershipCards();
+        setTimeout(() => triggerPinBoardAnimation(), 100);
+      }
+    }
+
+
+    function updateTargetPositions() {
+      let currentGapY = hasBeenClicked ? config.lineGapCompressed : config.lineGapInitial;
+      let lastLineY = height - config.paddingBottom * scaleFactor;
+      let firstLineY = lastLineY - (2 * currentGapY * scaleFactor);
+
+      for (let i = 0; i < waves.length; i++) {
+        waves[i].homeY = firstLineY + i * currentGapY * scaleFactor;
+      }
+    }
+
+    class Wave {
+      constructor(y, txt, id, fullWidth) {
+        this.homeY = y;
+        this.currentY = y;
+        this.txt = txt;
+        this.id = id;
+        this.state = 'IDLE';
+        this.displayOpacity = 255;
+        this.textBaseWidth = fullWidth;
+        this.currentTextScale = 1.0; 
+        this.waterTrails = [];
+        this.noiseSeed = random(1000);
+        this.centerX = [width * 0.28, width * 0.5, width * 0.72][id];
+        this.imageOpacity = 0;
+        this.imageElement = null;
+      }
+
+      update() {
+        if (activeWaveIdx !== -1 && activeWaveIdx !== this.id) {
+          this.displayOpacity = lerp(this.displayOpacity, 0, 0.15);
+        } else {
+          this.displayOpacity = lerp(this.displayOpacity, 255, 0.1);
+        }
+
+        if (this.state === 'RISING') {
+          this.currentY = lerp(this.currentY, config.topBoundary * scaleFactor, config.riseSpeed);
+          this.currentTextScale = lerp(this.currentTextScale, 0, config.closingSpeed);
+          this.generateFullWidthTrails();
+          hideAllGalleries();
+          currentDisplayedImageId = -1;
+          if (this.currentY <= config.topBoundary * scaleFactor + 2) {
+            this.state = 'FALLING';
+          }
+        } 
+        else if (this.state === 'FALLING') {
+          this.currentY = lerp(this.currentY, this.homeY, 0.08); 
+          
+          if (this.currentY > this.homeY - 150 * scaleFactor) {
+            this.currentTextScale = lerp(this.currentTextScale, 1.0, 0.08); 
+          }
+          let fallProgress = (this.currentY - config.topBoundary * scaleFactor) / (this.homeY - config.topBoundary * scaleFactor);
+          fallProgress = constrain(fallProgress, 0, 1);
+          if (fallProgress > 0.3) {
+             if (this.id === 0) {
+                showGalleryForWave(this.id);
+             } else if (this.id === 1) {
+                if (currentDisplayedImageId !== 1) {
+                   showGalleryForWave(this.id);
+                   currentDisplayedImageId = 1;
+                }
+             } else {
+                showGalleryForWave(this.id);
+             }
+          }
+          
+          if (abs(this.currentY - this.homeY) < 1.0) {
+            this.currentY = this.homeY;
+            this.state = 'IDLE';
+            activeWaveIdx = -1;
+            this.imageOpacity = 1;
+            currentDisplayedImageId = this.id;
+            showGalleryForWave(this.id, 1);
+            
+            if (isMobileMode) {
+               document.body.classList.remove('locked-scroll');
+            }
+          }
+        } else {
+          this.currentY = lerp(this.currentY, this.homeY, 0.1);
+          this.currentTextScale = lerp(this.currentTextScale, 1.0, 0.1);
+          if (this.id === currentDisplayedImageId) {
+            this.imageOpacity = 1;
+            showGalleryForWave(this.id, 1);
+          }
+        }
+
+        for (let i = this.waterTrails.length - 1; i >= 0; i--) {
+          let t = this.waterTrails[i];
+          t.y += t.speed * scaleFactor;
+          t.opacity -= 3;
+          if (t.opacity <= 0) this.waterTrails.splice(i, 1);
+        }
+      }
+
+      display() {
+        if (this.displayOpacity < 5) return;
+
+        push();
+        for (let t of this.waterTrails) {
+          stroke(180, 190, 200, t.opacity * (this.displayOpacity / 255));
+          strokeWeight(t.thickness * scaleFactor);
+          line(t.x, t.y, t.x, t.y + t.len * scaleFactor);
+        }
+
+        for (let i = 0; i < 2; i++) {
+          let yOff = i * 4 * scaleFactor;
+          let alpha = i === 0 ? 255 : 80;
+          stroke(0, alpha * (this.displayOpacity / 255));
+          strokeWeight(i === 0 ? 1.5 * scaleFactor : 0.8 * scaleFactor);
+          noFill();
+          this.drawSingleLongWave(yOff);
+        }
+
+        let gapWidth = this.textBaseWidth * this.currentTextScale;
+        if (gapWidth > 0.5) {
+          noStroke();
+          fill(242, 242, 241); 
+          rectMode(CENTER);
+          rect(this.centerX, this.currentY + 2 * scaleFactor, gapWidth, 20 * scaleFactor); 
+        }
+
+        if (this.currentTextScale > 0.02) {
+          push();
+          translate(this.centerX, this.currentY + 2 * scaleFactor);
+          scale(this.currentTextScale, 1.0);
+          noStroke();
+          fill(0, this.displayOpacity * Math.pow(this.currentTextScale, 1.5));
+          textAlign(CENTER, CENTER);
+          textSize(16 * scaleFactor);
+          text(this.txt, 0, 0);
+          pop();
+        }
+        pop();
+      }
+
+      drawSingleLongWave(yOffset) {
+        beginShape();
+        let gapHalf = (this.textBaseWidth * this.currentTextScale) / 2;
+        
+        curveVertex(-20, this.currentY + yOffset);
+        for (let x = 0; x <= width; x += 15 * scaleFactor) {
+          let nx = x * 0.004 / scaleFactor;
+          let noiseVal = noise(nx, this.noiseSeed + yOffset);
+          let baseMod = map(noiseVal, 0, 1, -25, 25) * config.waveCurvature * scaleFactor;
+          
+          let distToCenter = abs(x - this.centerX);
+          let taper = map(distToCenter, gapHalf * 0.5, gapHalf * 1.5, 0, 1, true);
+          if (this.currentTextScale < 0.1) taper = 1;
+
+          curveVertex(x, this.currentY + yOffset + baseMod * taper);
+        }
+        curveVertex(width + 20, this.currentY + yOffset);
+        endShape();
+      }
+
+      generateFullWidthTrails() {
+        for (let i = 0; i < config.trailDensity; i++) {
+          let rx = random(0, width);
+          let gapHalf = (this.textBaseWidth * this.currentTextScale) / 2;
+          if (rx > this.centerX - gapHalf && rx < this.centerX + gapHalf) continue;
+
+          this.waterTrails.push({
+            x: rx, 
+            y: this.currentY + random(-5, 5) * scaleFactor,
+            len: random(30, 80), 
+            speed: random(4, 8),
+            thickness: random(0.5, 1.8), 
+            opacity: random(100, 200)
+          });
+        }
+      }
+
+
+      checkClick(mx, my) {
+        if (activeWaveIdx === -1 && abs(my - this.currentY) < 35 * scaleFactor) {
+          this.state = 'RISING';
+          activeWaveIdx = this.id;
+          hasBeenClicked = true;
+          for(let i=0; i<60; i++) this.generateFullWidthTrails();
+        }
+      }
+    }
+
+    function mousePressed() {
+      for (let w of waves) w.checkClick(mouseX, mouseY);
+    }
+
+    function drawUI() {}
+
+    // ================= Projects Folder - Origami / Paper Folder Style =================
+    let _folderPages = [];
+    let _folderOpen = false;
+
+    function initProjectsFolder() {
+      if (!graphicDesignGallery) return;
+      graphicDesignGallery.innerHTML = '';
+
+      const stage = document.createElement('div');
+      stage.className = 'accordion-stage';
+      stage.id = 'projectsAccordionStage';
+
+      const folderContainer = document.createElement('div');
+      folderContainer.className = 'folder-container';
+
+      const spine = document.createElement('div');
+      spine.className = 'folder-spine';
+      folderContainer.appendChild(spine);
+
+      const tab = document.createElement('div');
+      tab.className = 'folder-tab';
+      const tabLabel = document.createElement('div');
+      tabLabel.className = 'folder-tab-label';
+      tabLabel.textContent = 'Projects';
+      tab.appendChild(tabLabel);
+      folderContainer.appendChild(tab);
+
+      const pagesStack = document.createElement('div');
+      pagesStack.className = 'pages-stack';
+
+      _folderPages = [];
+
+      projectPages.forEach((proj, idx) => {
+        const page = document.createElement('div');
+        page.className = 'folder-page';
+        page.dataset.idx = idx;
+
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = 'page-content-wrapper';
+
+        let imgHtml = '';
+        if (proj.image) {
+          imgHtml = `<img class="proj-image" src="${proj.image}" alt="${proj.title}">`;
+        }
+
+        const tagsHtml = proj.tags.map(t => `<span class="proj-tag">${t}</span>`).join('');
+
+        contentWrapper.innerHTML = `
+          <div class="proj-title">${proj.title}</div>
+          <div class="proj-subtitle">${proj.subtitle}</div>
+          ${imgHtml}
+          <div class="proj-desc">${proj.desc}</div>
+          <div class="proj-tags">${tagsHtml}</div>
+        `;
+        page.appendChild(contentWrapper);
+
+        page.addEventListener('click', (e) => {
+          e.stopPropagation();
+          _folderOpen = !_folderOpen;
+          update3DLayout();
+        });
+
+        pagesStack.appendChild(page);
+        _folderPages.push(page);
+      });
+
+      folderContainer.appendChild(pagesStack);
+
+      const hint = document.createElement('div');
+      hint.className = 'folder-hint';
+      hint.textContent = 'Click to open/close · 点击开合文件夹';
+      folderContainer.appendChild(hint);
+
+      stage.appendChild(folderContainer);
+      graphicDesignGallery.appendChild(stage);
+
+      setTimeout(() => {
+        update3DLayout();
+      }, 50);
+    }
+
+    function update3DLayout() {
+      const total = _folderPages.length;
+      if (total === 0) return;
+
+      const gallery = graphicDesignGallery;
+      if (!gallery) return;
+      const stage = document.getElementById('projectsAccordionStage');
+      if (!stage) return;
+      const folderContainer = stage.querySelector('.folder-container');
+      const pagesStack = stage.querySelector('.pages-stack');
+      if (!folderContainer || !pagesStack) return;
+
+      const containerWidth = gallery.clientWidth || window.innerWidth;
+      const containerHeight = gallery.clientHeight || 400;
+      const isMobile = window.innerWidth <= 480;
+      const isSmall = containerWidth < 700;
+
+      let pageWidth = 320;
+      let pageHeight = 380;
+      let folderWidth = 340;
+      let folderHeight = 400;
+
+      if (isMobile) {
+        pageWidth = Math.min(170, containerWidth * 0.48);
+        pageHeight = Math.min(300, containerHeight - 40);
+        folderWidth = pageWidth + 24;
+        folderHeight = pageHeight + 30;
+      } else if (isSmall) {
+        pageWidth = Math.min(260, containerWidth * 0.38);
+        pageHeight = Math.min(340, containerHeight - 20);
+        folderWidth = pageWidth + 20;
+        folderHeight = pageHeight + 20;
+      }
+
+      folderContainer.style.width = folderWidth + 'px';
+      folderContainer.style.height = folderHeight + 'px';
+
+      const pagesEl = pagesStack;
+      pagesEl.style.width = (folderWidth - 8) + 'px';
+      pagesEl.style.height = '100%';
+
+      _folderPages.forEach((page, i) => {
+        page.style.width = pageWidth + 'px';
+        page.style.height = pageHeight + 'px';
+        page.style.transformOrigin = 'left center';
+        page.style.top = (isMobile ? 8 : 10) + 'px';
+
+        if (_folderOpen) {
+          if (i === 0) {
+            page.style.left = '6px';
+            page.style.zIndex = (30 + i);
+            page.style.transform = `rotateY(-35deg) translateZ(${(total - 1 - i) * 2}px)`;
+            page.style.boxShadow = '6px 4px 20px rgba(0,0,0,0.2), inset 0 0 60px rgba(0,0,0,0.02)';
+          } else {
+            page.style.left = '6px';
+            page.style.zIndex = (30 - i);
+            page.style.transform = `rotateY(35deg) translateZ(${(total - 1 - i) * 2}px)`;
+            page.style.boxShadow = '-6px 4px 20px rgba(0,0,0,0.2), inset 0 0 60px rgba(0,0,0,0.02)';
+          }
+        } else {
+          const offsetPer = isMobile ? 10 : 15;
+          const offsetX = i * offsetPer;
+          const offsetY = i * offsetPer;
+          page.style.left = (6 + offsetX) + 'px';
+          page.style.top = ((isMobile ? 8 : 10) + offsetY) + 'px';
+          page.style.zIndex = (20 + (total - i));
+          page.style.transform = 'rotateY(0deg) translateZ(' + ((total - 1 - i) * 1) + 'px)';
+          page.style.boxShadow = (2 + i * 1.5) + 'px ' + (2 + i * 1.5) + 'px ' + (6 + i * 3) + 'px rgba(0,0,0,' + (0.08 + i * 0.04) + '), inset 0 0 60px rgba(0,0,0,0.03)';
+        }
+      });
+    }
+
+    // ================= Leadership Cards - Pin Board =================
+    let _pinBoardItems = [];
+
+    function initLeadershipCards() {
+      if (!visualDisplayGallery) return;
+      visualDisplayGallery.innerHTML = '';
+      _pinBoardItems = [];
+
+      const board = document.createElement('div');
+      board.className = 'pin-board';
+      board.id = 'leadershipPinBoard';
+
+      const leadershipData = [
+        {
+          title: "Spark Society · 星火学社",
+          image: "./images/spark-activity.jpg",
+          comingSoon: false
+        },
+        {
+          title: null,
+          image: null,
+          comingSoon: true
+        },
+        {
+          title: null,
+          image: null,
+          comingSoon: true
+        }
+      ];
+
+      const isMobileView = window.innerWidth <= 480;
+      const boardMaxWidth = Math.min(700, window.innerWidth - 80);
+      const boardHeight = isMobileView ? 300 : 360;
+      const cardW = isMobileView ? 120 : 150;
+      const cardH = isMobileView ? 160 : 200;
+      const margin = isMobileView ? 20 : 25;
+
+      board.style.maxWidth = boardMaxWidth + 'px';
+      board.style.width = '100%';
+      board.style.height = boardHeight + 'px';
+
+      const placedRects = [];
+
+      leadershipData.forEach((item, idx) => {
+        const el = document.createElement('div');
+        el.className = 'gallery-item visual-display' + (item.comingSoon ? ' coming-soon-card' : '');
+
+        let attempts = 0;
+        let posX, posY, rotation;
+        let placed = false;
+        const maxX = boardMaxWidth - cardW - margin;
+        const maxY = boardHeight - cardH - margin;
+
+        while (!placed && attempts < 300) {
+          posX = margin + Math.random() * Math.max(10, maxX - margin);
+          posY = margin + Math.random() * Math.max(10, maxY - margin);
+          rotation = (Math.random() * 16 - 8);
+
+          let collision = false;
+          const pad = 12;
+          for (let r of placedRects) {
+            if (!(posX + cardW + pad < r.x || posX - pad > r.x + r.w ||
+                  posY + cardH + pad < r.y || posY - pad > r.y + r.h)) {
+              collision = true;
+              break;
+            }
+          }
+
+          if (!collision) {
+            placed = true;
+            placedRects.push({ x: posX, y: posY, w: cardW, h: cardH });
+          }
+          attempts++;
+        }
+
+        if (!placed) {
+          const cols = Math.floor(boardMaxWidth / (cardW + 30));
+          posX = margin + (idx % Math.max(1, cols)) * (cardW + 25) + Math.random() * 10;
+          posY = margin + Math.floor(idx / Math.max(1, cols)) * (cardH + 20) + Math.random() * 8;
+          rotation = (Math.random() * 16 - 8);
+        }
+
+        el.style.left = posX + 'px';
+        el.style.top = posY + 'px';
+        el.style.setProperty('--rotation', rotation + 'deg');
+        el.style.width = cardW + 'px';
+
+        const pin = document.createElement('div');
+        pin.className = 'pin';
+        el.appendChild(pin);
+
+        if (item.comingSoon) {
+          const ph = document.createElement('div');
+          ph.className = 'placeholder-content';
+          ph.innerHTML = '<div class="placeholder-q">?</div><div class="placeholder-text">More coming soon<br>更多经历即将到来</div>';
+          el.appendChild(ph);
+        } else {
+          if (item.image) {
+            const img = document.createElement('img');
+            img.src = item.image;
+            img.alt = item.title || '';
+            img.draggable = false;
+            el.appendChild(img);
+
+            img.addEventListener('click', (e) => {
+              e.stopPropagation();
+              openImageModal(item.image);
+            });
+          }
+          if (item.title) {
+            const label = document.createElement('div');
+            label.className = 'item-label';
+            label.textContent = item.title;
+            el.appendChild(label);
+          }
+
+          el.addEventListener('click', (e) => {
+            if (item.image) openImageModal(item.image);
+          });
+        }
+
+        board.appendChild(el);
+        _pinBoardItems.push(el);
+      });
+
+      visualDisplayGallery.appendChild(board);
+    }
+
+    function triggerPinBoardAnimation() {
+      _pinBoardItems.forEach((item, idx) => {
+        item.classList.remove('dropped', 'pinned');
+        item.style.transitionDelay = '';
+        void item.offsetWidth;
+
+        setTimeout(() => {
+          item.style.transition = `transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) ${idx * 0.15}s, box-shadow 0.35s ease, opacity 0.5s ease ${idx * 0.15}s`;
+          item.classList.add('dropped');
+          
+          setTimeout(() => {
+            item.classList.add('pinned');
+          }, 700 + idx * 150 + 200);
+        }, 50);
+      });
+    }
+
+    function openImageModal(imgSrc) {
+      if (!imageModal) return;
+      const modalImg = document.getElementById('modalImage');
+      if (modalImg) {
+        modalImg.src = imgSrc;
+        resetImageState(modalImg);
+        setupModalEvents(modalImg);
+      }
+      imageModal.classList.add('show');
+    }
+
+    // ================= Content Showcase (Phone + Article List) =================
+    let _likedArticles = {};
+    function initSocialMediaGallery() {
+      if (!socialMediaGallery) return;
+      socialMediaGallery.innerHTML = '';
+
+      let currentIdx = 0;
+      const articles = socialMediaData;
+
+      const listWrap = document.createElement('div');
+      listWrap.style.display = 'flex';
+      listWrap.style.flexDirection = 'column';
+
+      const articleList = document.createElement('div');
+      articleList.className = 'article-list';
+
+      function renderList() {
+        articleList.innerHTML = '';
+        articles.forEach((art, idx) => {
+          const card = document.createElement('div');
+          card.className = 'article-list-card' + (idx === currentIdx ? ' active' : '');
+          const liked = _likedArticles[idx];
+          card.innerHTML = `
+            <div class="list-heart ${liked ? 'liked' : ''}">${liked ? '❤' : '♡'}</div>
+            <div class="list-title">${art.title}</div>
+            <div class="list-date">${art.date}</div>
+          `;
+          card.addEventListener('click', (e) => {
+            if (e.target.classList.contains('list-heart')) {
+              e.stopPropagation();
+              _likedArticles[idx] = !_likedArticles[idx];
+              renderList();
+              updatePhoneLike();
+              return;
+            }
+            currentIdx = idx;
+            updatePhoneContent();
+            renderList();
+            articleScroll.scrollTop = 0;
+          });
+          articleList.appendChild(card);
+        });
+      }
+
+      listWrap.appendChild(articleList);
+
+      const hint = document.createElement('div');
+      hint.className = 'article-hint';
+      hint.textContent = '点击文章查看手机预览';
+      listWrap.appendChild(hint);
+
+      const phoneFrame = document.createElement('div');
+      phoneFrame.className = 'wx-phone-frame';
+
+      const statusBar = document.createElement('div');
+      statusBar.className = 'wx-phone-status-bar';
+      statusBar.innerHTML = '<span>9:41</span><span>●●● 📶 🔋</span>';
+      phoneFrame.appendChild(statusBar);
+
+      const screen = document.createElement('div');
+      screen.className = 'wx-phone-screen';
+
+      const wxHeader = document.createElement('div');
+      wxHeader.className = 'wx-header';
+      const backBtn = document.createElement('div');
+      backBtn.className = 'wx-header-back';
+      backBtn.textContent = '‹';
+      const headerTitle = document.createElement('div');
+      headerTitle.className = 'wx-header-title';
+      const moreBtn = document.createElement('div');
+      moreBtn.className = 'wx-header-more';
+      moreBtn.textContent = '···';
+      wxHeader.appendChild(backBtn);
+      wxHeader.appendChild(headerTitle);
+      wxHeader.appendChild(moreBtn);
+      screen.appendChild(wxHeader);
+
+      const articleScroll = document.createElement('div');
+      articleScroll.className = 'wx-article-scroll';
+      screen.appendChild(articleScroll);
+
+      const bottomBar = document.createElement('div');
+      bottomBar.className = 'wx-bottom-bar';
+      const viewBtn = document.createElement('div');
+      viewBtn.className = 'wx-action-btn';
+      viewBtn.innerHTML = '👁 <span>阅读</span>';
+      const commentBtn = document.createElement('div');
+      commentBtn.className = 'wx-action-btn';
+      commentBtn.innerHTML = '💬 <span>评论</span>';
+      const likeBtn = document.createElement('div');
+      likeBtn.className = 'wx-action-btn';
+      const shareBtn = document.createElement('div');
+      shareBtn.className = 'wx-action-btn';
+      shareBtn.innerHTML = '↗';
+      shareBtn.addEventListener('click', () => {
+        window.open(articles[currentIdx].link, '_blank');
+      });
+      likeBtn.addEventListener('click', () => {
+        _likedArticles[currentIdx] = !_likedArticles[currentIdx];
+        updatePhoneLike();
+        renderList();
+      });
+      bottomBar.appendChild(viewBtn);
+      bottomBar.appendChild(commentBtn);
+      bottomBar.appendChild(likeBtn);
+      bottomBar.appendChild(shareBtn);
+      screen.appendChild(bottomBar);
+
+      phoneFrame.appendChild(screen);
+
+      socialMediaGallery.appendChild(listWrap);
+      socialMediaGallery.appendChild(phoneFrame);
+
+      function updatePhoneContent() {
+        const art = articles[currentIdx];
+        headerTitle.textContent = art.title;
+        articleScroll.innerHTML = '';
+        const img = document.createElement('img');
+        img.src = art.screenshot;
+        img.alt = art.title;
+        img.onerror = function() {
+          this.style.display = 'none';
+          const fallback = document.createElement('div');
+          fallback.style.cssText = 'padding:16px;font-family:"Noto Sans SC",sans-serif;font-size:13px;color:#333;line-height:1.8;';
+          fallback.innerHTML = `<div style="font-size:18px;font-weight:bold;margin-bottom:12px;">${art.title}</div><div style="color:#999;font-size:11px;margin-bottom:10px;">${art.account} · ${art.date}</div><div>${art.excerpt}</div><a href="${art.link}" target="_blank" style="color:#576b95;text-decoration:underline;">阅读原文 →</a>`;
+          articleScroll.appendChild(fallback);
+        };
+        articleScroll.appendChild(img);
+        updatePhoneLike();
+      }
+
+      function updatePhoneLike() {
+        const liked = _likedArticles[currentIdx];
+        likeBtn.classList.toggle('liked', !!liked);
+        likeBtn.innerHTML = liked ? '❤ <span>赞</span>' : '♡ <span>赞</span>';
+      }
+
+      renderList();
+      updatePhoneContent();
+    }
+
+    function hideAllGalleries() {
+      [graphicDesignGallery, visualDisplayGallery, socialMediaGallery].forEach(g => {
+        if (g) {
+          g.classList.remove('show');
+          g.style.display = 'none';
+        }
+      });
+    }
+
+    let _pinAnimationTriggered = false;
+
+    function showGalleryForWave(waveId, opacity = null) {
+      const targets = [graphicDesignGallery, visualDisplayGallery, socialMediaGallery];
+      const target = targets[waveId];
+      
+      if (target && target.classList.contains('show') && target.style.display !== 'none') {
+        target.style.opacity = 1;
+        if (waveId === 0) {
+          update3DLayout();
+        }
+        return;
+      }
+      
+      hideAllGalleries();
+      _pinAnimationTriggered = false;
+      
+      if (target) {
+        if (waveId === 0) {
+          target.style.display = 'block';
+        } else if (waveId === 1) {
+          target.style.display = 'block';
+        } else {
+          target.style.display = 'flex';
+        }
+        target.style.opacity = 1;
+        target.classList.add('show');
+
+        if (waveId === 0) {
+          setTimeout(() => update3DLayout(), 60);
+        }
+        if (waveId === 1) {
+          setTimeout(() => {
+            triggerPinBoardAnimation();
+          }, 200);
+        }
+      }
+    }
+
+    function handleImageClick(e, item, imgPath, type) {
+      e.stopPropagation();
+    }
+
+    let currentScale = 1;
+    let isDragging = false;
+    let startX, startY, initialLeft, initialTop;
+    let translateX = 0, translateY = 0;
+    
+    let initialPinchDistance = 0;
+    let initialScale = 1;
+
+    function resetImageState(img) {
+      currentScale = 1;
+      translateX = 0;
+      translateY = 0;
+      updateImageTransform(img);
+      img.style.cursor = 'grab';
+    }
+    
+    function updateImageTransform(img) {
+      img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
+    }
+    
+    function setupModalEvents(img) {
+      img.onwheel = (e) => {
+        e.preventDefault();
+        const delta = e.deltaY * -0.001;
+        const newScale = Math.min(Math.max(0.5, currentScale + delta), 5);
+        currentScale = newScale;
+        updateImageTransform(img);
+      };
+      
+      img.onmousedown = (e) => {
+        e.preventDefault();
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        img.style.cursor = 'grabbing';
+      };
+      
+      window.onmousemove = (e) => {
+        if (isDragging) {
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          translateX += dx;
+          translateY += dy;
+          startX = e.clientX;
+          startY = e.clientY;
+          updateImageTransform(img);
+        }
+      };
+      
+      window.onmouseup = () => {
+        isDragging = false;
+        img.style.cursor = 'grab';
+      };
+      
+      img.ontouchstart = (e) => {
+        if (e.touches.length === 2) {
+          e.preventDefault();
+          initialPinchDistance = getDistance(e.touches[0], e.touches[1]);
+          initialScale = currentScale;
+        } else if (e.touches.length === 1) {
+          isDragging = true;
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+        }
+      };
+      
+      img.ontouchmove = (e) => {
+        e.preventDefault();
+        if (e.touches.length === 2) {
+          const currentDistance = getDistance(e.touches[0], e.touches[1]);
+          if (initialPinchDistance > 0) {
+            const scaleDiff = currentDistance / initialPinchDistance;
+            currentScale = Math.min(Math.max(0.5, initialScale * scaleDiff), 5);
+            updateImageTransform(img);
+          }
+        } else if (e.touches.length === 1 && isDragging) {
+          const dx = e.touches[0].clientX - startX;
+          const dy = e.touches[0].clientY - startY;
+          translateX += dx;
+          translateY += dy;
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+          updateImageTransform(img);
+        }
+      };
+      
+      img.ontouchend = (e) => {
+        if (e.touches.length < 2) {
+          initialPinchDistance = 0;
+        }
+        if (e.touches.length === 0) {
+          isDragging = false;
+        }
+      };
+      
+      const modalContent = document.querySelector('.modal-content');
+      if (modalContent) {
+         modalContent.onclick = (e) => {
+           if (e.target === modalContent) {
+             closeModal();
+           }
+         };
+      }
+      
+      img.onclick = (e) => {
+        e.stopPropagation();
+      };
+    }
+    
+    function getDistance(touch1, touch2) {
+      const dx = touch1.clientX - touch2.clientX;
+      const dy = touch1.clientY - touch2.clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+    
+    function closeModal() {
+      if (imageModal) {
+        imageModal.classList.remove('show');
+        window.onmousemove = null;
+        window.onmouseup = null;
+        
+        if (activeFlyingItem) {
+            activeFlyingItem.style.transition = 'opacity 0.5s ease';
+            activeFlyingItem.style.opacity = '1';
+            activeFlyingItem.style.zIndex = ''; 
+            activeFlyingItem = null;
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const modalBackdrop = document.querySelector('.modal-backdrop');
+      if (modalBackdrop) {
+        modalBackdrop.addEventListener('click', closeModal);
+      }
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeModal();
+        }
+      });
+    });
+
+    function draw() {
+      clear();
+      drawUI();
+      updateTargetPositions();
+
+      for (let w of waves) {
+        w.update();
+        w.display();
+      }
+    }
   </script>
 </body>
 </html>
