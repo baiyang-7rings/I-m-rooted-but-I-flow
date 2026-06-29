@@ -330,9 +330,9 @@
 
   <!-- P5.js Sketch -->
   <script>
-    let bgImg, img1, img2, img3, img4, img5;
+    let bgImg, img1, img2, img3, img4;
     let isExtracted = false; 
-    let currentImg1X = 105; // 从 110 改为 105，向左移动5px    
+    let currentImg1X = 105;
     let img3Pos; 
     let img3Vel; 
     
@@ -344,7 +344,7 @@
     let img3State = "HIDDEN"; 
     let dropStartTime = 0; 
     let imagesLoaded = 0;
-    let totalImages = 6;
+    let totalImages = 5;
     let scaleFactor = 1; // 缩放比例
     let isMobileMode = false;
 
@@ -366,13 +366,6 @@
       h: 134                // 高度
     };
 
-    let img5Config = {
-      x: 200,
-      y: 460,
-      w: 130,
-      h: 160
-    };
-
     let config = {
       canvasW: 1280,
       canvasH: 623,
@@ -382,7 +375,6 @@
       img1Size: { w: 117, h: 145 }, 
       img3Size: { w: 135, h: 32 },  
       img4Size: { w: 260, h: 134 }, 
-      img5Size: { w: 130, h: 160 },
       extractDist: 200,              
       triggerThreshold: 186, 
       img3InitialX: 70,      
@@ -397,17 +389,17 @@
         () => { console.error('背景图加载失败'); }
       ); 
       
-      img1 = loadImage('./images/image_1.svg',
+      img1 = loadImage('./images/image_1.png',
         () => { console.log('image_1 加载成功'); imagesLoaded++; },
         () => { console.error('image_1 加载失败'); }
       );   
       
-      img2 = loadImage('./images/image_2.svg',
+      img2 = loadImage('./images/image_2.png',
         () => { console.log('image_2 加载成功'); imagesLoaded++; },
         () => { console.error('image_2 加载失败'); }
       );   
       
-      img3 = loadImage('./images/image_3.svg',
+      img3 = loadImage('./images/image_3.png',
         () => { console.log('image_3 加载成功'); imagesLoaded++; },
         () => { console.error('image_3 加载失败'); }
       );   
@@ -416,8 +408,6 @@
         () => { console.log('image_4 加载成功'); imagesLoaded++; },
         () => { console.error('image_4 加载失败'); }
       );   
-      
-      img5 = loadImage('./images/profile.jpg', () => { imagesLoaded++; }, () => { console.error('profile.jpg load failed'); });
     }
 
     function setup() {
@@ -461,8 +451,6 @@
          img4Config.x = cx;
          img4Config.y = cy + 100;
          
-         img5Config = { x: cx, y: cy + 220, w: 100, h: 124 };
-         
       } else {
          scaleFactor = canvasWidth / config.canvasW;
          // 恢复默认配置
@@ -470,7 +458,6 @@
          config.baseY = 623 * 0.40;
          img4Config.x = 850;
          img4Config.y = 420;
-         img5Config = { x: 200, y: 460, w: 130, h: 160 };
       }
       
       // Auto-align footer to the bottom of the canvas
@@ -504,14 +491,12 @@
          config.baseY = cy - 80;
          img4Config.x = cx;
          img4Config.y = cy + 100;
-         img5Config = { x: cx, y: cy + 220, w: 100, h: 124 };
       } else {
          scaleFactor = canvasWidth / config.canvasW;
          config.baseX = 1280 * 0.35;
          config.baseY = 623 * 0.40;
          img4Config.x = 850;
          img4Config.y = 420;
-         img5Config = { x: 200, y: 460, w: 130, h: 160 };
       }
       
       // Re-align footer on resize
@@ -605,21 +590,6 @@
       // 绘制钉子（在卡片内部顶部中间）
       drawPin(0, -img4Config.h * scaleFactor / 2 + 10 * scaleFactor);
       
-      pop();
-
-      // --- Draw img5 (profile photo - polaroid style) ---
-      push();
-      translate(img5Config.x * scaleFactor, img5Config.y * scaleFactor);
-      rotate(-3);
-      fill(255, 255, 255, 240);
-      noStroke();
-      rectMode(CENTER);
-      let pad = 8 * scaleFactor;
-      let bottomPad = 24 * scaleFactor;
-      rect(0, 0, img5Config.w * scaleFactor + pad*2, img5Config.h * scaleFactor + pad + bottomPad, 3 * scaleFactor);
-      image(img5, 0, -(bottomPad-pad)/2 * scaleFactor, img5Config.w * scaleFactor, img5Config.h * scaleFactor);
-      drawPin(0, -(img5Config.h * scaleFactor + pad + bottomPad)/2 + 10 * scaleFactor);
-      rectMode(CORNER);
       pop();
 
       push();
