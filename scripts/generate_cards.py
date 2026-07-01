@@ -48,58 +48,59 @@ def text_height(draw, text, font):
 
 
 def generate_image_1():
-    """Photo card - 117x145 @4x = 468x580, polaroid with cherry blossom photo."""
-    SCALE = 4
-    W, H = 117 * SCALE, 145 * SCALE
+    """Photo card with cherry blossom photo - original photo size 960x720 preserved (no crop/resize).
+    Style matches original SVG: cream #F2F2F1 background, black border with same proportional thickness,
+    white polaroid border, bottom caption area. All decorations scale proportionally from original."""
+    photo_path = os.path.join(IMG_DIR, "607B97BBAD6B53FF8C5D48388347E988.jpg")
+    photo = Image.open(photo_path).convert('RGB')
+    photo_w, photo_h = photo.size
+    print(f"Original photo size: {photo_w}x{photo_h}")
+
+    # Original SVG specs (viewBox units, 4x scale = 468x580px):
+    #   photo area = 95x97 units, border=2, margin=1, pad=8, bottom_white=26, font=8
+    # Ratios relative to photo area width (95 units):
+    #   border / photo_w = 2/95, pad / photo_w = 8/95, bottom_white / photo_w = 26/95
+    #   margin / photo_w = 1/95, font / photo_w = 8/95
+    R_BORDER = 2 / 95
+    R_PAD = 8 / 95
+    R_BOTTOM = 26 / 95
+    R_MARGIN = 1 / 95
+    R_FONT = 8 / 95
+
+    bw = max(2, int(round(photo_w * R_BORDER)))
+    pad = int(round(photo_w * R_PAD))
+    bottom_white = int(round(photo_w * R_BOTTOM))
+    margin = max(1, int(round(photo_w * R_MARGIN)))
+    font_size = int(round(photo_w * R_FONT))
+
+    W = margin * 2 + bw * 2 + pad * 2 + photo_w
+    H = margin * 2 + bw * 2 + pad + photo_h + bottom_white + pad
+
     img = Image.new('RGB', (W, H), CREAM)
     draw = ImageDraw.Draw(img)
 
-    bw = 2 * SCALE
-    margin = 1
-    # Outer rectangle (cream fill, black stroke), matching SVG: M1 1h115v143H1z
     draw.rectangle([margin, margin, W - margin - 1, H - margin - 1], fill=CREAM, outline=BLACK, width=bw)
 
-    # Photo area with white polaroid border
-    pad = 8 * SCALE
     photo_area_x = margin + bw + pad
     photo_area_y = margin + bw + pad
-    photo_area_w = W - margin*2 - bw*2 - pad*2
-    bottom_white = 26 * SCALE
-    photo_area_h = H - margin*2 - bw*2 - pad - bottom_white - 8*SCALE
 
-    # White border for polaroid
     draw.rectangle([photo_area_x, photo_area_y,
-                    photo_area_x + photo_area_w, photo_area_y + photo_area_h + bottom_white],
+                    photo_area_x + photo_w, photo_area_y + photo_h + bottom_white],
                    fill=WHITE_PAPER)
 
-    # Load and embed profile photo
-    photo_path = os.path.join(IMG_DIR, "profile.jpg")
-    photo = Image.open(photo_path).convert('RGB')
-    pw, ph = photo.size
-    target_ratio = photo_area_w / photo_area_h
-    img_ratio = pw / ph
-    if img_ratio > target_ratio:
-        new_w = int(ph * target_ratio)
-        left = (pw - new_w) // 2
-        photo = photo.crop((left, 0, left + new_w, ph))
-    else:
-        new_h = int(pw / target_ratio)
-        top = (ph - new_h) // 3
-        photo = photo.crop((0, top, pw, top + new_h))
-    photo = photo.resize((photo_area_w, photo_area_h), Image.LANCZOS)
     img.paste(photo, (photo_area_x, photo_area_y))
 
-    # Typewriter caption under photo
-    font_cap = load_font("SpecialElite.ttf", int(8 * SCALE))
+    font_cap = load_font("SpecialElite.ttf", font_size)
     caption = "Jackie Li"
     tw = text_width(draw, caption, font_cap)
-    cap_x = photo_area_x + (photo_area_w - tw) // 2
-    cap_y = photo_area_y + photo_area_h + 8 * SCALE
+    cap_x = photo_area_x + (photo_w - tw) // 2
+    cap_y = photo_area_y + photo_h + (bottom_white - font_size) // 2
     draw.text((cap_x, cap_y), caption, fill=BLACK, font=font_cap)
 
     out_path = os.path.join(IMG_DIR, "image_1.png")
     img.save(out_path, 'PNG', dpi=(300, 300))
-    print(f"Generated {out_path} ({W}x{H})")
+    print(f"Generated {out_path} ({W}x{H}), border={bw}px, pad={pad}px, bottom_white={bottom_white}px")
+    return W, H
 
 
 def generate_image_2():
@@ -140,7 +141,7 @@ def generate_image_2():
     details = [
         "Wuhan Technology and Business University",
         "Wuhan / Shanghai",
-        "l118183365@",
+        "l118183365@" + "gmail.com",
         "linkedin.com/in/jackie-li6699",
     ]
     for d in details:
