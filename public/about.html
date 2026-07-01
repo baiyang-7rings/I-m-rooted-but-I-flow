@@ -363,7 +363,7 @@
       x: 850,               // 画布水平位置
       y: 420,               // 画布垂直位置
       w: 260,               // 宽度
-      h: 134                // 高度
+      h: 135                // 高度 (260*111/214=134.86≈135)
     };
 
     let config = {
@@ -374,7 +374,7 @@
       img2Size: { w: 308, h: 154 }, 
       img1Size: { w: 117, h: 119 }, 
       img3Size: { w: 135, h: 32 },  
-      img4Size: { w: 260, h: 134 }, 
+      img4Size: { w: 260, h: 135 }, 
       extractDist: 200,              
       triggerThreshold: 186, 
       img3InitialX: 70,      
@@ -404,7 +404,7 @@
         () => { console.error('image_3 加载失败'); }
       );   
       
-      img4 = loadImage('./images/image_4.svg',
+      img4 = loadImage('./images/image_4.png',
         () => { console.log('image_4 加载成功'); imagesLoaded++; },
         () => { console.error('image_4 加载失败'); }
       );   
