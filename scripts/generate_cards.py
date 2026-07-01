@@ -113,41 +113,54 @@ def draw_en(draw, x, y_du, text, font, s, max_w=None):
 
 
 def generate_image_1():
-    photo_path = os.path.join(IMG_DIR, "607B97BBAD6B53FF8C5D48388347E988.jpg")
-    photo = Image.open(photo_path).convert('RGB')
-    photo_w, photo_h = photo.size
-
-    R_BORDER = 2 / 95
-    R_PAD = 8 / 95
-    R_BOTTOM = 26 / 95
-    R_MARGIN = 1 / 95
-    R_FONT = 8 / 95
-
-    bw = max(2, int(round(photo_w * R_BORDER)))
-    pad = int(round(photo_w * R_PAD))
-    bottom_white = int(round(photo_w * R_BOTTOM))
-    margin = max(1, int(round(photo_w * R_MARGIN)))
-    font_size = int(round(photo_w * R_FONT))
-
-    W = margin * 2 + bw * 2 + pad * 2 + photo_w
-    H = margin * 2 + bw * 2 + pad + photo_h + bottom_white + pad
+    """
+    Photo card matching original image_1.svg (viewBox 117x145).
+    Exact dimensions: width=468, height=580 (scale=4).
+    - Outer rect: (1,1) to (116,144), stroke-width=2
+    - Photo area with white bottom caption area
+    - Caption "Jackie Li" in Special Elite
+    """
+    DVW, DVH = 117, 145
+    SCALE = 4
+    W, H = DVW * SCALE, DVH * SCALE
+    s = SCALE
 
     img = Image.new('RGB', (W, H), CREAM)
     draw = ImageDraw.Draw(img)
+
+    bw = max(2, int(round(2 * s)))
+    margin = 1 * s
     draw.rectangle([margin, margin, W - margin - 1, H - margin - 1], fill=CREAM, outline=BLACK, width=bw)
 
-    photo_area_x = margin + bw + pad
-    photo_area_y = margin + bw + pad
-    draw.rectangle([photo_area_x, photo_area_y, photo_area_x + photo_w, photo_area_y + photo_h + bottom_white],
-                   fill=WHITE_PAPER)
-    img.paste(photo, (photo_area_x, photo_area_y))
+    inner_x1 = margin + bw
+    inner_y1 = margin + bw
+    inner_x2 = W - margin - bw
+    inner_y2 = H - margin - bw
 
+    photo_path = os.path.join(IMG_DIR, "607B97BBAD6B53FF8C5D48388347E988.jpg")
+    photo = Image.open(photo_path).convert('RGB')
+
+    pad = int(8 * s)
+    bottom_white = int(26 * s)
+
+    photo_area_x = inner_x1 + pad
+    photo_area_y = inner_y1 + pad
+    photo_area_w = inner_x2 - inner_x1 - pad * 2
+    photo_area_h = inner_y2 - inner_y1 - pad - bottom_white - pad
+
+    photo_resized = photo.resize((photo_area_w, photo_area_h), Image.Resampling.LANCZOS)
+
+    draw.rectangle([photo_area_x, photo_area_y, photo_area_x + photo_area_w, photo_area_y + photo_area_h + bottom_white],
+                   fill=WHITE_PAPER)
+    img.paste(photo_resized, (photo_area_x, photo_area_y))
+
+    font_size = int(8 * s)
     font_cap = load_font("SpecialElite.ttf", font_size)
     caption = "Jackie Li"
     tw, _, tt, tb = text_size(draw, caption, font_cap)
     cap_h = tb - tt
-    cap_x = photo_area_x + (photo_w - tw) // 2
-    cap_y = photo_area_y + photo_h + (bottom_white - cap_h) // 2 - tt
+    cap_x = photo_area_x + (photo_area_w - tw) // 2
+    cap_y = photo_area_y + photo_area_h + (bottom_white - cap_h) // 2 - tt
     draw.text((cap_x, cap_y), caption, fill=BLACK, font=font_cap)
 
     out = os.path.join(IMG_DIR, "image_1.png")
@@ -169,7 +182,7 @@ def generate_image_2():
     - EN line gap: ~3.5du
     """
     DVW, DVH = 252, 126
-    SCALE = 6
+    SCALE = 4
     W, H = DVW * SCALE, DVH * SCALE
     s = SCALE
 
@@ -188,7 +201,7 @@ def generate_image_2():
     en_target_h = int(6.5 * s)
     sep = " | "
 
-    cn_size, font_cn = find_font_size(draw, "别名毕业技能武", cn_target_h, "NotoSansSC-Black.ttf", int(8 * s))
+    cn_size, font_cn = find_font_size(draw, "别名毕业技能武", cn_target_h, "NotoSansSC-Bold.ttf", int(8 * s))
     en_size, font_en = find_font_size(draw, "LocationGuangdongSkillsPython", en_target_h, "SpecialElite.ttf", int(8 * s))
 
     left_pad = int(15.2 * s)
@@ -231,7 +244,7 @@ def generate_image_3():
     Original EN text cap+descender height ~9.0du.
     """
     DVW, DVH = 135, 32
-    SCALE = 6
+    SCALE = 4
     W, H = DVW * SCALE, DVH * SCALE
     s = SCALE
 
@@ -260,7 +273,7 @@ def generate_image_4():
     """
     Cat card - future companion version (viewBox 214x111).
     Original: cat photo top-right (x=152 y=12 w=54 h=57), 3 rows of fields.
-    Our version: photo area with "?" for future cat + faint cat ears, fields use ？/TBD.
+    Our version: original cat photo + "?" beside it for future cat, fields use ？/TBD.
     Positions (from original SVG pixel analysis):
     - Rounded rect: (0.76, 0.76) to (213.17, 109.24), r=6.83, stroke=1.52
     - CN rows top at y=28.0, 52.7, 77.9 (h≈7.1du)
@@ -270,7 +283,7 @@ def generate_image_4():
     - CN-EN gap ≈ 3.3du, field gap ≈ 7.5-8.0du
     """
     DVW, DVH = 214, 111
-    SCALE = 6
+    SCALE = 4
     W, H = DVW * SCALE, DVH * SCALE
     s = SCALE
 
@@ -285,39 +298,32 @@ def generate_image_4():
     bw = max(2, int(round(1.52 * s)))
     rounded_rect(draw, [rx1, ry1, rx2, ry2], radius, fill=CREAM, outline=BLACK, width=bw)
 
-    # Photo area
+    # Photo area - place original cat head
     photo_x = int(152 * s)
     photo_y = int(12 * s)
     photo_w = int(54 * s)
     photo_h = int(57 * s)
     draw.rectangle([photo_x, photo_y, photo_x + photo_w, photo_y + photo_h], fill=WHITE_PAPER)
 
+    cat_photo_path = "/workspace/scripts/cat_cropped.png"
+    if os.path.exists(cat_photo_path):
+        cat_photo = Image.open(cat_photo_path).convert('RGB')
+        cat_resized = cat_photo.resize((photo_w, photo_h), Image.Resampling.LANCZOS)
+        img.paste(cat_resized, (photo_x, photo_y))
+
     cn_target_h = int(7.1 * s)
     en_target_h = int(6.5 * s)
 
-    cn_size, font_cn = find_font_size(draw, "姓名性别品种年", cn_target_h, "NotoSansSC-Black.ttf", int(8 * s))
+    cn_size, font_cn = find_font_size(draw, "姓名性别品种年", cn_target_h, "NotoSansSC-Bold.ttf", int(8 * s))
     en_size, font_en = find_font_size(draw, "FemaleLocationTBDCompanion", en_target_h, "SpecialElite.ttf", int(8 * s))
 
-    # Question mark in photo area - elegant large question mark
-    qm_target = int(30 * s)
-    qm_size, qm_font = find_font_size(draw, "?", qm_target, "SpecialElite.ttf", int(32 * s))
+    # Question mark beside the cat photo - indicating "will have"
+    qm_target = int(18 * s)
+    qm_size, qm_font = find_font_size(draw, "?", qm_target, "SpecialElite.ttf", int(20 * s))
     qw, qh, qt, qb = text_size(draw, "?", qm_font)
-    qx = photo_x + (photo_w - qw) // 2
+    qx = photo_x + photo_w + int(3 * s)
     qy = photo_y + (photo_h - qh) // 2 - qt
-    draw.text((qx, qy), "?", fill=(185, 185, 183), font=qm_font)
-
-    # Faint cat ears peeking from top - subtle triangular outlines
-    ear_color = (210, 210, 208)
-    ear_w = int(9 * s)
-    ear_h = int(12 * s)
-    ear_y = photo_y + int(4 * s)
-    ear_l_x = photo_x + int(9 * s)
-    ear_r_x = photo_x + photo_w - int(9 * s) - ear_w
-    ear_stroke = max(1, int(1.0 * s))
-    draw.polygon([(ear_l_x, ear_y + ear_h), (ear_l_x + ear_w // 2, ear_y), (ear_l_x + ear_w, ear_y + ear_h)],
-                 fill=None, outline=ear_color, width=ear_stroke)
-    draw.polygon([(ear_r_x, ear_y + ear_h), (ear_r_x + ear_w // 2, ear_y), (ear_r_x + ear_w, ear_y + ear_h)],
-                 fill=None, outline=ear_color, width=ear_stroke)
+    draw.text((qx, qy), "?", fill=(129, 129, 129), font=qm_font)
 
     left_pad = int(13.9 * s)
     right_col_x = int(94.5 * s)
