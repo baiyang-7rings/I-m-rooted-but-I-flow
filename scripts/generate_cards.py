@@ -1,66 +1,78 @@
 #!/usr/bin/env python3
 """
-Generate three sketchbook-style card images for the About page:
-- image_1.png: Photo card with cherry blossom profile photo (polaroid-style) - 468x580
-- image_2.png: Name/info card (envelope-style with typewriter text) - 1232x636
-- image_3.png: Small stamp/tag card with WeChat ID - 540x128
+Generate sketchbook-style card images for the About page, matching the original website exactly.
+- image_1.png: Photo card with cherry blossom profile photo (polaroid-style)
+- image_2.png: Bilingual info card (Chinese + English, two-column layout)
+- image_3.png: Small WeChat stamp/tag
 
-Style: Cream #F2F2F1 background, perfectly straight black 2px border (matching original SVG),
-typewriter font (Special Elite), polaroid photo, minimal decorative elements.
+Style matches original SVG: Cream #F2F2F1 background, black border,
+typewriter English font (Special Elite), serif Chinese font (Noto Serif SC).
+No extra decorative elements beyond what the original has.
 """
 from PIL import Image, ImageDraw, ImageFont
-import random
-import math
 import os
-
-random.seed(42)
 
 CREAM = (242, 242, 241)
 BLACK = (0, 0, 0)
-GRAY = (140, 140, 140)
-DARK_GRAY = (80, 80, 80)
+GRAY = (129, 129, 129)
 WHITE_PAPER = (250, 250, 248)
-RED_STAMP = (170, 55, 55)
 
 FONT_DIR = "/workspace/public/fonts"
 IMG_DIR = "/workspace/public/images"
+
 
 def load_font(name, size):
     path = os.path.join(FONT_DIR, name)
     try:
         return ImageFont.truetype(path, size)
     except Exception as e:
-        print(f"Warning: could not load {name}: {e}")
+        print(f"Warning: could not load {name} at size {size}: {e}")
         return ImageFont.load_default()
 
-def draw_clean_border(draw, box, width=2):
-    """Draw a perfectly straight rectangle border matching the original SVG style."""
-    x1, y1, x2, y2 = box
-    draw.rectangle([x1, y1, x2, y2], outline=BLACK, width=width)
 
 def text_width(draw, text, font):
     bbox = draw.textbbox((0, 0), text, font=font)
     return bbox[2] - bbox[0]
 
-def text_height(draw, text, font):
-    bbox = draw.textbbox((0, 0), text, font=font)
-    return bbox[3] - bbox[1]
+
+def text_bbox(draw, text, font):
+    return draw.textbbox((0, 0), text, font=font)
+
+
+def rounded_rect(draw, box, radius, fill=None, outline=None, width=1):
+    """Draw a rounded rectangle. PIL's ImageDraw.rounded_rectangle exists in newer versions."""
+    x1, y1, x2, y2 = box
+    r = radius
+    if hasattr(draw, 'rounded_rectangle'):
+        draw.rounded_rectangle(box, radius=r, fill=fill, outline=outline, width=width)
+    else:
+        if fill:
+            draw.rectangle([x1 + r, y1, x2 - r, y2], fill=fill)
+            draw.rectangle([x1, y1 + r, x2, y2 - r], fill=fill)
+            draw.pieslice([x1, y1, x1 + 2*r, y1 + 2*r], 180, 270, fill=fill)
+            draw.pieslice([x2 - 2*r, y1, x2, y1 + 2*r], 270, 360, fill=fill)
+            draw.pieslice([x1, y2 - 2*r, x1 + 2*r, y2], 90, 180, fill=fill)
+            draw.pieslice([x2 - 2*r, y2 - 2*r, x2, y2], 0, 90, fill=fill)
+        if outline and width > 0:
+            draw.arc([x1, y1, x1 + 2*r, y1 + 2*r], 180, 270, fill=outline, width=width)
+            draw.arc([x2 - 2*r, y1, x2, y1 + 2*r], 270, 360, fill=outline, width=width)
+            draw.arc([x1, y2 - 2*r, x1 + 2*r, y2], 90, 180, fill=outline, width=width)
+            draw.arc([x2 - 2*r, y2 - 2*r, x2, y2], 0, 90, fill=outline, width=width)
+            draw.line([x1 + r, y1, x2 - r, y1], fill=outline, width=width)
+            draw.line([x1 + r, y2, x2 - r, y2], fill=outline, width=width)
+            draw.line([x1, y1 + r, x1, y2 - r], fill=outline, width=width)
+            draw.line([x2, y1 + r, x2, y2 - r], fill=outline, width=width)
 
 
 def generate_image_1():
-    """Photo card with cherry blossom photo - original photo size 960x720 preserved (no crop/resize).
-    Style matches original SVG: cream #F2F2F1 background, black border with same proportional thickness,
-    white polaroid border, bottom caption area. All decorations scale proportionally from original."""
+    """Photo card - cherry blossom photo preserved at original 960x720 size.
+    Layout matches original image_1.svg: cream background, black border,
+    white polaroid area, bottom caption 'Jackie Li'."""
     photo_path = os.path.join(IMG_DIR, "607B97BBAD6B53FF8C5D48388347E988.jpg")
     photo = Image.open(photo_path).convert('RGB')
     photo_w, photo_h = photo.size
     print(f"Original photo size: {photo_w}x{photo_h}")
 
-    # Original SVG specs (viewBox units, 4x scale = 468x580px):
-    #   photo area = 95x97 units, border=2, margin=1, pad=8, bottom_white=26, font=8
-    # Ratios relative to photo area width (95 units):
-    #   border / photo_w = 2/95, pad / photo_w = 8/95, bottom_white / photo_w = 26/95
-    #   margin / photo_w = 1/95, font / photo_w = 8/95
     R_BORDER = 2 / 95
     R_PAD = 8 / 95
     R_BOTTOM = 26 / 95
@@ -94,7 +106,9 @@ def generate_image_1():
     caption = "Jackie Li"
     tw = text_width(draw, caption, font_cap)
     cap_x = photo_area_x + (photo_w - tw) // 2
-    cap_y = photo_area_y + photo_h + (bottom_white - font_size) // 2
+    bbox = text_bbox(draw, caption, font_cap)
+    cap_h = bbox[3] - bbox[1]
+    cap_y = photo_area_y + photo_h + (bottom_white - cap_h) // 2 - bbox[1]
     draw.text((cap_x, cap_y), caption, fill=BLACK, font=font_cap)
 
     out_path = os.path.join(IMG_DIR, "image_1.png")
@@ -104,111 +118,200 @@ def generate_image_1():
 
 
 def generate_image_2():
-    """Info/envelope card - 308x159 @4x = 1232x636 with typewriter text."""
+    """Info card matching original image_2.svg exactly:
+    - Rounded corners, black border, cream background
+    - Two-column bilingual layout (Chinese bold + gray English subtitles)
+    - Fields: 别名/Name, 居住地/Location, 毕业院校/Education, 技能/Skills
+    - No extra decorations (no stamps, lines, corner marks)
+    """
+    # Work in design units matching original SVG viewBox 252x126, scale by 4
+    DVW, DVH = 252, 126
     SCALE = 4
-    W, H = 308 * SCALE, 159 * SCALE
+    W, H = DVW * SCALE, DVH * SCALE
+
     img = Image.new('RGB', (W, H), CREAM)
     draw = ImageDraw.Draw(img)
 
-    bw = 2 * SCALE
-    margin = 1
-    draw.rectangle([margin, margin, W - margin - 1, H - margin - 1], fill=CREAM, outline=BLACK, width=bw)
+    # Original SVG specs: rect x=0.79 y=0.79 w=243.28 h=124.42 rx=7.13 stroke=1.58
+    s = SCALE
+    rect_x1 = int(0.79 * s)
+    rect_y1 = int(0.79 * s)
+    rect_x2 = int((0.79 + 243.28) * s)
+    rect_y2 = int((0.79 + 124.42) * s)
+    rx = int(7.13 * s)
+    bw = max(2, int(round(1.58 * s)))
 
-    pad_x = 16 * SCALE
-    pad_y = 12 * SCALE
+    rounded_rect(draw, [rect_x1, rect_y1, rect_x2, rect_y2], rx,
+                 fill=CREAM, outline=BLACK, width=bw)
 
-    font_name = load_font("SpecialElite.ttf", int(14 * SCALE))
-    font_title = load_font("SpecialElite.ttf", int(8 * SCALE))
-    font_detail = load_font("SpecialElite.ttf", int(7 * SCALE))
-    font_tiny = load_font("SpecialElite.ttf", int(5 * SCALE))
+    # Font sizes (in design units, scaled by s)
+    cn_size = int(10 * s)
+    en_size = int(6.5 * s)
 
-    y = pad_y + 2*SCALE
+    font_cn_bold = load_font("NotoSerifSC-Bold.ttf", cn_size)
+    font_cn_reg = load_font("NotoSerifSC-Regular.ttf", cn_size)
+    font_en = load_font("SpecialElite.ttf", en_size)
 
-    # Name
-    draw.text((pad_x, y), "Jackie Li", fill=BLACK, font=font_name)
-    y += 24 * SCALE
+    # Content area bounds (inside the border, past the rounded corners)
+    # Vertical borders are at rect_x1+bw/2 and rect_x2-bw/2
+    # Horizontal flat area starts after the corner radius at top/bottom
+    border_inset = bw // 2
+    inner_x1 = rect_x1 + border_inset
+    inner_y1 = rect_y1 + rx + border_inset
+    inner_x2 = rect_x2 - border_inset
+    inner_y2 = rect_y2 - rx - border_inset
+    inner_w = inner_x2 - inner_x1
+    inner_h = inner_y2 - inner_y1
 
-    # Horizontal divider line
-    line_y = y
-    draw.line([(pad_x, line_y), (W - pad_x, line_y)], fill=BLACK, width=SCALE)
-    y += 12 * SCALE
+    # Padding from inner edge (generous to match original's breathing room)
+    pad_x = int(inner_w * 0.08)
+    pad_y = int(inner_h * 0.14)
 
-    # Title
-    draw.text((pad_x, y), "Data Science & Big Data Technology", fill=DARK_GRAY, font=font_title)
-    y += 14 * SCALE
+    content_x1 = inner_x1 + pad_x
+    content_x2 = inner_x2 - pad_x
+    content_w = content_x2 - content_x1
 
-    # Contact details
-    details = [
-        "Wuhan Technology and Business University",
-        "Wuhan / Shanghai",
-        "l118183365@" + "gmail.com",
-        "linkedin.com/in/jackie-li6699",
-    ]
-    for d in details:
-        draw.text((pad_x, y), d, fill=BLACK, font=font_detail)
-        y += 11 * SCALE
+    # Column split - right column starts at ~52% mark
+    col2_x = content_x1 + int(content_w * 0.52)
 
-    # Red stamp in bottom-right corner (like a personal seal)
-    stamp_size = 22 * SCALE
-    stamp_pad = 14 * SCALE
-    sx = W - pad_x - stamp_size
-    sy = H - pad_y - stamp_size
-    draw.rectangle([sx, sy, sx + stamp_size, sy + stamp_size], outline=RED_STAMP, width=SCALE)
-    # "JL" and date inside stamp
-    stamp_text1 = "JL"
-    stamp_text2 = "2026"
-    tw1 = text_width(draw, stamp_text1, font_tiny)
-    tw2 = text_width(draw, stamp_text2, font_tiny)
-    draw.text((sx + (stamp_size - tw1)//2, sy + 4*SCALE), stamp_text1, fill=RED_STAMP, font=font_tiny)
-    draw.text((sx + (stamp_size - tw2)//2, sy + 12*SCALE), stamp_text2, fill=RED_STAMP, font=font_tiny)
+    # Spacing
+    cn_en_gap = int(1 * s)
+    field_gap = int(10 * s)
 
-    # Top-right corner mark (small L-shape)
-    corner = 8 * SCALE
-    cx, cy = W - pad_x, pad_y + 4*SCALE
-    draw.line([(cx - corner, cy), (cx, cy)], fill=BLACK, width=SCALE)
-    draw.line([(cx, cy), (cx, cy + corner)], fill=BLACK, width=SCALE)
+    separator = " | "
 
-    # Bottom-right corner mark
-    cx2, cy2 = W - pad_x, H - pad_y - 4*SCALE
-    draw.line([(cx2 - corner, cy2), (cx2, cy2)], fill=BLACK, width=SCALE)
-    draw.line([(cx2, cy2), (cx2, cy2 - corner)], fill=BLACK, width=SCALE)
+    def wrap_text(text, font, max_width):
+        """Simple word-wrap for English text, returns list of lines."""
+        words = text.split(' ')
+        lines = []
+        current = ''
+        for word in words:
+            test = (current + ' ' + word).strip()
+            if text_width(draw, test, font) <= max_width:
+                current = test
+            else:
+                if current:
+                    lines.append(current)
+                current = word
+        if current:
+            lines.append(current)
+        return lines
+
+    def draw_field(x, y, cn_label, cn_value, en_label, en_value, max_w):
+        """Draw a single field (CN line + EN line(s)) at (x,y). Returns total height."""
+        label_text = cn_label + separator
+        label_w = text_width(draw, label_text, font_cn_bold)
+        draw.text((x, y), label_text, fill=BLACK, font=font_cn_bold)
+        draw.text((x + label_w, y), cn_value, fill=BLACK, font=font_cn_reg)
+
+        cn_bbox = text_bbox(draw, label_text + cn_value, font_cn_bold)
+        cn_h = cn_bbox[3] - cn_bbox[1]
+        en_y = y + cn_h + cn_en_gap
+
+        en_text = en_label + separator + en_value
+        en_lines = wrap_text(en_text, font_en, max_w)
+        line_h = text_bbox(draw, en_text, font_en)[3] - text_bbox(draw, en_text, font_en)[1]
+        for i, line in enumerate(en_lines):
+            draw.text((x, en_y + i * (line_h + int(0.5 * s))), line, fill=GRAY, font=font_en)
+
+        total_h = cn_h + cn_en_gap + len(en_lines) * (line_h + int(0.5 * s)) - int(0.5 * s)
+        return total_h
+
+    def measure_field(cn_label, cn_value, en_label, en_value, max_w):
+        """Measure height of a field without drawing."""
+        label_text = cn_label + separator
+        cn_bbox = text_bbox(draw, label_text + cn_value, font_cn_bold)
+        cn_h = cn_bbox[3] - cn_bbox[1]
+        en_text = en_label + separator + en_value
+        en_lines = wrap_text(en_text, font_en, max_w)
+        line_h = text_bbox(draw, en_text, font_en)[3] - text_bbox(draw, en_text, font_en)[1]
+        total_h = cn_h + cn_en_gap + len(en_lines) * (line_h + int(0.5 * s)) - int(0.5 * s)
+        return total_h
+
+    gap_between_cols = int(content_w * 0.04)
+    left_w = col2_x - content_x1 - gap_between_cols
+    right_w = content_x2 - col2_x
+
+    h1 = measure_field("别名", "Jackie", "Name", "Jackie Li", left_w)
+    h2 = measure_field("所在地", "武汉 / 上海", "Location", "Wuhan / Shanghai", right_w)
+    h3 = measure_field("毕业院校", "武汉工商学院", "Education",
+                       "Wuhan Technology and Business University", content_w)
+    h4 = measure_field("技能", "数据分析、Python、SQL、机器学习", "Skills",
+                       "Data Analysis, Python, SQL, Machine Learning, Data Viz, Leadership", content_w)
+
+    total_content_h = max(h1, h2) + field_gap + h3 + field_gap + h4
+    available_h = inner_y2 - inner_y1
+    start_y = inner_y1 + (available_h - total_content_h) // 2
+
+    y = start_y
+
+    # Row 1: two columns
+    h1 = draw_field(content_x1, y, "别名", "Jackie", "Name", "Jackie Li", left_w)
+    h2 = draw_field(col2_x, y, "所在地", "武汉 / 上海", "Location", "Wuhan / Shanghai", right_w)
+    row1_h = max(h1, h2)
+    y += row1_h + field_gap
+
+    # Row 2: Education
+    h3 = draw_field(content_x1, y, "毕业院校", "武汉工商学院", "Education",
+                    "Wuhan Technology and Business University", content_w)
+    y += h3 + field_gap
+
+    # Row 3: Skills
+    h4 = draw_field(content_x1, y, "技能", "数据分析、Python、SQL、机器学习", "Skills",
+                    "Data Analysis, Python, SQL, Machine Learning, Data Viz, Leadership",
+                    content_w)
+    y += h4
 
     out_path = os.path.join(IMG_DIR, "image_2.png")
     img.save(out_path, 'PNG', dpi=(300, 300))
     print(f"Generated {out_path} ({W}x{H})")
+    return W, H
 
 
 def generate_image_3():
-    """Small tag/stamp - 135x32 @4x = 540x128 with WeChat info."""
+    """WeChat stamp matching original image_3.svg exactly:
+    - Simple rectangle with single black border
+    - Cream (#F2F2F1) background
+    - 'Wechat: JaQby8888' centered in Special Elite typewriter font
+    - Same proportions as original 'Wechat: Apollorpheus'
+    """
+    DVW, DVH = 135, 32
     SCALE = 4
-    W, H = 135 * SCALE, 32 * SCALE
+    W, H = DVW * SCALE, DVH * SCALE
+
     img = Image.new('RGB', (W, H), CREAM)
     draw = ImageDraw.Draw(img)
 
-    bw = 2 * SCALE
-    margin = 1
-    # Matching original SVG: <rect x="0.5" y="0.5" width="133.988" height="31" fill="#F2F2F1" stroke="black"/>
-    draw.rectangle([margin, margin, W - margin - 1, H - margin - 1], fill=CREAM, outline=BLACK, width=bw)
+    s = SCALE
+    bw = int(round(1 * s))
+    rect_x1 = int(0.5 * s)
+    rect_y1 = int(0.5 * s)
+    rect_x2 = int((0.5 + 134) * s)
+    rect_y2 = int((0.5 + 31) * s)
 
-    pad_x = 8 * SCALE
-    pad_y = 5 * SCALE
+    draw.rectangle([rect_x1, rect_y1, rect_x2, rect_y2], fill=CREAM, outline=BLACK, width=bw)
 
-    font_main = load_font("SpecialElite.ttf", int(8 * SCALE))
-    font_sub = load_font("SpecialElite.ttf", int(6 * SCALE))
+    font_size = int(8 * s)
+    font_main = load_font("SpecialElite.ttf", font_size)
 
-    draw.text((pad_x, pad_y), "WeChat: JaQby8888", fill=BLACK, font=font_main)
-    draw.text((pad_x, pad_y + 12*SCALE), "Data Analyst | Python | SQL", fill=DARK_GRAY, font=font_sub)
+    text = "Wechat: JaQby8888"
+    tw = text_width(draw, text, font_main)
+    bbox = text_bbox(draw, text, font_main)
+    th = bbox[3] - bbox[1]
+
+    tx = (W - tw) // 2
+    ty = (H - th) // 2 - bbox[1] - 1
+
+    draw.text((tx, ty), text, fill=BLACK, font=font_main)
 
     out_path = os.path.join(IMG_DIR, "image_3.png")
     img.save(out_path, 'PNG', dpi=(300, 300))
     print(f"Generated {out_path} ({W}x{H})")
+    return W, H
 
 
 if __name__ == "__main__":
-    random.seed(42)
     generate_image_1()
-    random.seed(123)
     generate_image_2()
-    random.seed(456)
     generate_image_3()
     print("All cards generated successfully!")
