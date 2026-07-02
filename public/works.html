@@ -1598,7 +1598,7 @@
          scaleFactor = canvasWidth / 1280;
       }
 
-      let labels = ["Data Projects", "Leadership", "Content Showcase"];
+      let labels = ["Project", "Leadership", "Content Showcase"];
       // 初始位置由 updateTargetPositions 计算，这里先用临时值
       let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
       let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
@@ -1623,9 +1623,6 @@
       
       // 初始化图片展示
       initImageGalleries();
-      
-      populateProjectCards();
-      populateLeadership();
       
       console.log('Setup 完成，缩放比例：' + scaleFactor);
     }
@@ -1678,7 +1675,7 @@
       
       // 重新初始化波浪
       waves = [];
-      let labels = ["Data Projects", "Leadership", "Content Showcase"];
+      let labels = ["Project", "Leadership", "Content Showcase"];
       // 初始位置由 updateTargetPositions 计算
       let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
       let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
@@ -1693,9 +1690,13 @@
         waves.push(new Wave(startY, labels[i], i, tw));
       }
       
-      // 如果当前显示的是Visual Display，重新布局
+      // 如果当前显示的是Project，重新布局
+      if (currentDisplayedImageId === 0 && graphicDesignGallery && graphicDesignGallery.classList.contains('show')) {
+        populateProjectCards();
+      }
+      // 如果当前显示的是Leadership，重新布局
       if (currentDisplayedImageId === 1 && visualDisplayGallery && visualDisplayGallery.classList.contains('show')) {
-        initVisualDisplayGallery();
+        populateLeadership();
       }
       // 如果当前显示的是Social Media，重新布局
       if (currentDisplayedImageId === 2 && socialMediaGallery && socialMediaGallery.classList.contains('show')) {
@@ -1930,358 +1931,320 @@
 
     function populateProjectCards() {
       if (!graphicDesignGallery) return;
-      graphicDesignGallery.style.position = 'relative';
+      graphicDesignGallery.innerHTML = '';
+
+      const titleElement = document.querySelector('.page-title');
+      let canvasWidth = windowWidth;
+      let canvasHeight = isMobileMode ? 500 : (canvasWidth * (623 / 1280) - 20);
+      let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
+      let effectiveGap = isMobileMode ? config.lineGapCompressed : config.lineGapInitial;
+      let firstLineY = lastLineY - (2 * effectiveGap * scaleFactor);
+      let isTabletMode = windowWidth > 480 && windowWidth <= 1200;
+
+      let topPos = 80;
+      let availableHeight = 400;
+
+      if (titleElement) {
+        const titleRect = titleElement.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        topPos = titleRect.bottom + scrollTop + 20;
+
+        if (!isMobileMode) {
+          if (isTabletMode) {
+            const canvasTop = window.innerHeight - canvasHeight - 10;
+            const waveTopY = canvasTop + firstLineY;
+            availableHeight = waveTopY - topPos - 20;
+          } else {
+            const canvasTop = 40;
+            const waveTopY = canvasTop + firstLineY;
+            availableHeight = waveTopY - topPos - 10 + 50;
+          }
+        } else {
+          topPos = 90;
+          availableHeight = window.innerHeight - 90 - 220;
+        }
+      }
+
+      graphicDesignGallery.style.position = 'absolute';
       graphicDesignGallery.style.flexDirection = 'column';
       graphicDesignGallery.style.alignItems = 'center';
-      graphicDesignGallery.style.padding = '30px 20px';
-      graphicDesignGallery.style.gap = '20px';
+      graphicDesignGallery.style.padding = '20px 20px 40px';
+      graphicDesignGallery.style.gap = '24px';
       graphicDesignGallery.style.overflowY = 'auto';
-      graphicDesignGallery.style.top = '';
-      graphicDesignGallery.style.height = '';
-      graphicDesignGallery.style.maxHeight = '';
-      graphicDesignGallery.style.paddingLeft = '20px';
-      graphicDesignGallery.style.paddingRight = '20px';
+      graphicDesignGallery.style.overflowX = 'hidden';
       graphicDesignGallery.style.justifyContent = 'flex-start';
       graphicDesignGallery.style.flexWrap = 'nowrap';
+      graphicDesignGallery.style.left = '0';
+      graphicDesignGallery.style.width = '100%';
+      graphicDesignGallery.style.top = topPos + 'px';
+      graphicDesignGallery.style.height = Math.max(200, availableHeight) + 'px';
+      graphicDesignGallery.style.maxHeight = Math.max(200, availableHeight) + 'px';
+      graphicDesignGallery.style.zIndex = '200';
+      graphicDesignGallery.style.pointerEvents = 'auto';
+      graphicDesignGallery.style.display = 'none';
+      graphicDesignGallery.style.opacity = '0';
+      graphicDesignGallery.style.background = '#F2F2F1';
 
-      const cards = [
-        {
-          html: `<div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">Fund Flow Forecasting</div>
-<div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">金融服务机构资金流量预测 · SARIMA · Python · 2026</div>
-<div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
-Built a daily fund-inflow time series from anonymized user-level subscription/redemption records. Conducted stationarity tests (ADF), seasonal differencing, and ACF/PACF analysis to identify SARIMA parameters. Delivered a 7-day rolling forecast with MAE/RMSE evaluation. Visualized trends, seasonality, and residual diagnostics using matplotlib.
-</div>`,
-          rotation: -1.5
-        },
-        {
-          html: `<div style="margin: -4px -4px 12px -4px;"><img src="./images/ecommerce-dashboard.png" style="width:100%;border-radius:3px 3px 0 0;display:block;"></div><div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">E-Commerce Review Analytics</div>
-<div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">电商大数据用户评论分析 · NLP · Python · 2026</div>
-<div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
-Crawled and cleaned 50,000+ e-commerce user reviews. Performed Chinese word segmentation (jieba), stopword removal, and TF-IDF keyword extraction. Conducted sentiment classification and topic modeling (LDA) to identify consumer pain points. Built an interactive visualization dashboard summarizing rating distributions, review volume trends, and high-frequency complaint categories.
-</div>`,
-          rotation: 1
-        }
+      const cardData = [
+        { rotation: -1.5 },
+        { rotation: 1 },
+        { rotation: -0.8 },
+        { rotation: 1.2 }
       ];
 
-      cards.forEach((card, i) => {
+      cardData.forEach((card, i) => {
         const cardEl = document.createElement('div');
-        cardEl.style.maxWidth = '600px';
-        cardEl.style.width = '100%';
-        cardEl.style.background = 'rgba(255,255,255,0.7)';
+        cardEl.className = 'project-card';
+        cardEl.style.maxWidth = '640px';
+        cardEl.style.width = '90%';
+        cardEl.style.flexShrink = '0';
+        cardEl.style.background = 'rgba(255,255,255,0.85)';
         cardEl.style.border = '1px solid #ddd';
-        cardEl.style.borderRadius = '4px';
-        cardEl.style.padding = '18px 22px';
+        cardEl.style.borderRadius = '3px';
+        cardEl.style.padding = '0';
         cardEl.style.position = 'relative';
-        cardEl.style.transform = `rotate(${card.rotation}deg)`;
-        cardEl.innerHTML = card.html;
+        cardEl.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)';
+        cardEl.style.opacity = '0';
+        cardEl.style.transform = `rotate(${card.rotation}deg) translateY(60px)`;
+        cardEl.style.transition = 'opacity 0.7s ease, transform 0.7s cubic-bezier(0.2,0.8,0.2,1), box-shadow 0.3s ease';
+        cardEl.style.transitionDelay = `${i * 0.15}s`;
+        cardEl.style.overflow = 'hidden';
+        cardEl.style.cursor = 'pointer';
+
+        cardEl.addEventListener('mouseenter', () => {
+          cardEl.style.boxShadow = '0 12px 32px rgba(0,0,0,0.15)';
+          cardEl.style.transform = `rotate(${card.rotation}deg) translateY(-4px)`;
+        });
+        cardEl.addEventListener('mouseleave', () => {
+          cardEl.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)';
+          cardEl.style.transform = `rotate(${card.rotation}deg) translateY(0)`;
+        });
+
+        const photoArea = document.createElement('div');
+        photoArea.style.width = '100%';
+        photoArea.style.height = '280px';
+        photoArea.style.background = 'linear-gradient(135deg, #e8e8e8 0%, #ddd 50%, #d0d0d0 100%)';
+        photoArea.style.display = 'flex';
+        photoArea.style.alignItems = 'center';
+        photoArea.style.justifyContent = 'center';
+        photoArea.style.position = 'relative';
+        photoArea.style.overflow = 'hidden';
+
+        const placeholderText = document.createElement('div');
+        placeholderText.style.fontFamily = "'Special Elite', serif";
+        placeholderText.style.fontSize = '14px';
+        placeholderText.style.color = '#999';
+        placeholderText.style.letterSpacing = '1px';
+        placeholderText.textContent = '[ Photo Placeholder ]';
+        photoArea.appendChild(placeholderText);
+
+        const infoArea = document.createElement('div');
+        infoArea.style.padding = '18px 22px 22px';
+
+        const titleEl = document.createElement('div');
+        titleEl.style.fontFamily = "'Special Elite', serif";
+        titleEl.style.fontSize = '18px';
+        titleEl.style.marginBottom = '6px';
+        titleEl.style.color = '#222';
+        titleEl.textContent = `Project ${i + 1}`;
+
+        const metaEl = document.createElement('div');
+        metaEl.style.fontFamily = "'AR One Sans', sans-serif";
+        metaEl.style.fontSize = '11px';
+        metaEl.style.color = '#999';
+        metaEl.style.marginBottom = '10px';
+        metaEl.textContent = 'Project description placeholder · 2025';
+
+        const descEl = document.createElement('div');
+        descEl.style.fontFamily = "'Noto Sans SC', sans-serif";
+        descEl.style.fontSize = '13px';
+        descEl.style.lineHeight = '1.7';
+        descEl.style.color = '#666';
+        descEl.textContent = 'This is a placeholder card for project content. Photos and detailed descriptions will be added here later.';
+
+        infoArea.appendChild(titleEl);
+        infoArea.appendChild(metaEl);
+        infoArea.appendChild(descEl);
+
+        cardEl.appendChild(photoArea);
+        cardEl.appendChild(infoArea);
         graphicDesignGallery.appendChild(cardEl);
+      });
+    }
+
+    function revealProjectCards() {
+      if (!graphicDesignGallery) return;
+      const cards = graphicDesignGallery.querySelectorAll('.project-card');
+      cards.forEach((card, i) => {
+        const transform = card.style.transform;
+        const rotMatch = transform.match(/rotate\(([^)]+)\)/);
+        const rotation = rotMatch ? rotMatch[1] : '0deg';
+        setTimeout(() => {
+          card.style.opacity = '1';
+          card.style.transform = `rotate(${rotation}) translateY(0)`;
+        }, i * 150 + 200);
       });
     }
 
     function populateLeadership() {
       if (!visualDisplayGallery) return;
-      visualDisplayGallery.style.position = 'relative';
-      visualDisplayGallery.style.flexDirection = 'column';
-      visualDisplayGallery.style.alignItems = 'center';
-      visualDisplayGallery.style.justifyContent = 'center';
-      visualDisplayGallery.style.padding = '40px 20px';
-      visualDisplayGallery.style.overflowY = 'auto';
-      visualDisplayGallery.style.top = '';
-      visualDisplayGallery.style.height = '';
-      visualDisplayGallery.style.maxHeight = '';
-      visualDisplayGallery.style.left = '';
-      visualDisplayGallery.style.right = '';
-      visualDisplayGallery.style.bottom = '';
-      visualDisplayGallery.innerHTML = `<div style="max-width:600px;width:100%;background:rgba(255,255,255,0.7);border:1px solid #ddd;border-radius:4px;padding:22px 26px;transform:rotate(-1deg);">
-  <div style="margin: -4px -4px 14px -4px;"><img src="./images/spark-activity.jpg" style="width:100%;border-radius:3px 3px 0 0;display:block;max-height:280px;object-fit:cover;"></div>
-  <div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">Spark Society · 星火学社</div>
-  <div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">Founder &amp; President · 2023.09 – Present · Wuhan</div>
-  <div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
-    Founded and led a student association of 50+ members. Organized public welfare events including nursing home visits (养老公益行) and community outreach. Managed a cross-functional team across event planning, marketing, design, and communications. Produced WeChat Official Account promotional content, handling copywriting and content strategy.
-  </div>
-  <div style="font-family:'Noto Sans SC',sans-serif;font-size:12px;line-height:1.6;color:#888;margin-top:10px;">
-    · 社团成员50+人<br>
-    · 组织养老院公益探访等活动<br>
-    · 负责公众号宣发文案与内容策划
-  </div>
-</div>`;
-    }
-
-    function initGraphicDesignGallery() {
-      if (!graphicDesignGallery) return;
-      graphicDesignGallery.innerHTML = '';
-      
-      // 动态计算 Graphic Design 容器的位置和高度
+      visualDisplayGallery.innerHTML = '';
       const titleElement = document.querySelector('.page-title');
       let canvasWidth = windowWidth;
       let canvasHeight = isMobileMode ? 500 : (canvasWidth * (623 / 1280) - 20);
       let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
-      // 关键修改：使用 compressed 间距来计算波浪线位置，防止图片与压缩后的波浪线重叠
-      let effectiveGap = isMobileMode ? config.lineGapCompressed : config.lineGapInitial;
-      let firstLineY = lastLineY - (2 * effectiveGap * scaleFactor);
-      
-      let galleryHeight = 500;
-      
-      // Add tablet check
+      let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
       let isTabletMode = windowWidth > 480 && windowWidth <= 1200;
+
+      let topPos = 80;
+      let availableHeight = 400;
 
       if (titleElement) {
         const titleRect = titleElement.getBoundingClientRect();
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const topPos = titleRect.bottom + scrollTop + 10; // 标题下方留白，加上滚动偏移
-        
+        topPos = titleRect.bottom + scrollTop + 20;
+
         if (!isMobileMode) {
           if (isTabletMode) {
-             // Tablet: Calculate available space above waves
-             const canvasTop = window.innerHeight - canvasHeight - 10;
-             const waveTopY = canvasTop + firstLineY;
-             
-             // Calculate available height: Wave Top - Gallery Top - Padding
-             // We want the image to stop a bit above the wave
-             const availableHeight = waveTopY - topPos - 20;
-             
-             graphicDesignGallery.style.top = topPos + 'px';
-             graphicDesignGallery.style.height = Math.max(100, availableHeight) + 'px'; // Ensure min height
-             graphicDesignGallery.style.maxHeight = Math.max(100, availableHeight) + 'px';
-             graphicDesignGallery.style.paddingBottom = '0'; 
+            availableHeight = window.innerHeight - topPos - 150;
           } else {
-             // Desktop: Canvas top is 40px
-             const canvasTop = 40;
-             const waveTopY = canvasTop + firstLineY; // 波浪线相对于文档顶部的Y坐标
-             
-             const availableHeight = waveTopY - topPos - 10 + 50 - 35; 
-             
-             graphicDesignGallery.style.top = topPos + 'px';
-             graphicDesignGallery.style.height = availableHeight + 'px';
-             // 确保图片不覆盖波浪线
-             graphicDesignGallery.style.maxHeight = availableHeight + 'px';
+            const canvasTop = 40;
+            const waveTopY = canvasTop + firstLineY;
+            availableHeight = waveTopY - topPos - 10 + 50;
           }
         } else {
-          // 移动端：样式由 CSS 控制 (height: calc(100vh - 100px))
-          // 清除 JS 设置的样式，防止干扰
-          graphicDesignGallery.style.top = '';
-          graphicDesignGallery.style.height = '';
-          graphicDesignGallery.style.maxHeight = '';
+          topPos = 90;
+          availableHeight = window.innerHeight - 90 - 220;
         }
       }
 
-        // 随机顺序数组
-        const randomIndices = Array.from({length: workImages.length}, (_, i) => i);
-        // Shuffle
-        for (let i = randomIndices.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [randomIndices[i], randomIndices[j]] = [randomIndices[j], randomIndices[i]];
-        }
-        
-        workImages.forEach((imgPath, index) => {
-          const item = document.createElement('div');
-          // ... (省略创建元素代码) ...
-          item.className = 'gallery-item graphic-design';
-          
-          const wrapper = document.createElement('div');
-          wrapper.className = 'image-wrapper';
-          
-          const img = document.createElement('img');
-          img.src = imgPath;
-          img.alt = `Graphic Design ${index + 1}`;
-          // 移除直接打开Modal的事件，改为在 item 上处理
-          // img.onclick = () => openModal(imgPath);
-          
-          img.onload = () => {
-               if (img.offsetHeight > wrapper.offsetHeight * 1.1) {
-                   item.classList.add('long-image');
-               }
-          };
-          
-          const pinPath = seashellPins[Math.floor(Math.random() * seashellPins.length)];
-          const pin = document.createElement('div');
-          pin.className = 'pin';
-          const pinImg = document.createElement('img');
-          pinImg.src = pinPath;
-          pinImg.alt = 'Pin';
-          pin.appendChild(pinImg);
-          
-          wrapper.appendChild(img);
-          item.appendChild(wrapper);
-          item.appendChild(pin);
-          
-          // 设置随机动画延迟
-          // 找到当前 index 在随机数组中的位置（顺序）
-          const delayOrder = randomIndices.indexOf(index);
-          item.style.animationDelay = `${delayOrder * 0.15}s`; // 增加一点间隔 0.1 -> 0.15
-          
-          // 绑定点击交互
-          item.onclick = (e) => handleImageClick(e, item, imgPath, 'graphic');
-          
-          graphicDesignGallery.appendChild(item);
+      visualDisplayGallery.style.position = 'absolute';
+      visualDisplayGallery.style.top = topPos + 'px';
+      visualDisplayGallery.style.left = '0';
+      visualDisplayGallery.style.width = '100%';
+      visualDisplayGallery.style.height = Math.max(200, availableHeight) + 'px';
+      visualDisplayGallery.style.maxHeight = Math.max(200, availableHeight) + 'px';
+      visualDisplayGallery.style.display = 'none';
+      visualDisplayGallery.style.opacity = '0';
+      visualDisplayGallery.style.flexDirection = 'column';
+      visualDisplayGallery.style.alignItems = 'center';
+      visualDisplayGallery.style.justifyContent = 'flex-start';
+      visualDisplayGallery.style.padding = '20px 20px 40px';
+      visualDisplayGallery.style.gap = '24px';
+      visualDisplayGallery.style.overflowY = 'auto';
+      visualDisplayGallery.style.overflowX = 'hidden';
+      visualDisplayGallery.style.zIndex = '200';
+      visualDisplayGallery.style.pointerEvents = 'auto';
+      visualDisplayGallery.style.background = '#F2F2F1';
+
+      const leadershipData = [
+        { rotation: -1 },
+        { rotation: 0.8 },
+        { rotation: -0.5 }
+      ];
+
+      leadershipData.forEach((item, i) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'leadership-card';
+        cardEl.style.maxWidth = '640px';
+        cardEl.style.width = '90%';
+        cardEl.style.flexShrink = '0';
+        cardEl.style.background = 'rgba(255,255,255,0.85)';
+        cardEl.style.border = '1px solid #ddd';
+        cardEl.style.borderRadius = '3px';
+        cardEl.style.padding = '0';
+        cardEl.style.position = 'relative';
+        cardEl.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)';
+        cardEl.style.opacity = '0';
+        cardEl.style.transform = `rotate(${item.rotation}deg) translateY(60px)`;
+        cardEl.style.transition = 'opacity 0.7s ease, transform 0.7s cubic-bezier(0.2,0.8,0.2,1), box-shadow 0.3s ease';
+        cardEl.style.transitionDelay = `${i * 0.15}s`;
+        cardEl.style.overflow = 'hidden';
+        cardEl.style.cursor = 'pointer';
+
+        cardEl.addEventListener('mouseenter', () => {
+          cardEl.style.boxShadow = '0 12px 32px rgba(0,0,0,0.15)';
+          cardEl.style.transform = `rotate(${item.rotation}deg) translateY(-4px)`;
         });
+        cardEl.addEventListener('mouseleave', () => {
+          cardEl.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)';
+          cardEl.style.transform = `rotate(${item.rotation}deg) translateY(0)`;
+        });
+
+        const photoArea = document.createElement('div');
+        photoArea.style.width = '100%';
+        photoArea.style.height = '260px';
+        photoArea.style.background = 'linear-gradient(135deg, #e0e0e0 0%, #d5d5d5 50%, #c8c8c8 100%)';
+        photoArea.style.display = 'flex';
+        photoArea.style.alignItems = 'center';
+        photoArea.style.justifyContent = 'center';
+        photoArea.style.position = 'relative';
+        photoArea.style.overflow = 'hidden';
+
+        const placeholderText = document.createElement('div');
+        placeholderText.style.fontFamily = "'Special Elite', serif";
+        placeholderText.style.fontSize = '14px';
+        placeholderText.style.color = '#999';
+        placeholderText.style.letterSpacing = '1px';
+        placeholderText.textContent = '[ Photo Placeholder ]';
+        photoArea.appendChild(placeholderText);
+
+        const infoArea = document.createElement('div');
+        infoArea.style.padding = '18px 22px 22px';
+
+        const titleEl = document.createElement('div');
+        titleEl.style.fontFamily = "'Special Elite', serif";
+        titleEl.style.fontSize = '18px';
+        titleEl.style.marginBottom = '6px';
+        titleEl.style.color = '#222';
+        titleEl.textContent = `Leadership ${i + 1}`;
+
+        const metaEl = document.createElement('div');
+        metaEl.style.fontFamily = "'AR One Sans', sans-serif";
+        metaEl.style.fontSize = '11px';
+        metaEl.style.color = '#999';
+        metaEl.style.marginBottom = '10px';
+        metaEl.textContent = 'Role · Organization · 2023 – Present';
+
+        const descEl = document.createElement('div');
+        descEl.style.fontFamily = "'Noto Sans SC', sans-serif";
+        descEl.style.fontSize = '13px';
+        descEl.style.lineHeight = '1.7';
+        descEl.style.color = '#666';
+        descEl.textContent = 'This is a placeholder card for leadership experience. Photos and detailed descriptions will be added here later.';
+
+        infoArea.appendChild(titleEl);
+        infoArea.appendChild(metaEl);
+        infoArea.appendChild(descEl);
+
+        cardEl.appendChild(photoArea);
+        cardEl.appendChild(infoArea);
+        visualDisplayGallery.appendChild(cardEl);
+      });
+    }
+
+    function revealLeadershipCards() {
+      if (!visualDisplayGallery) return;
+      const cards = visualDisplayGallery.querySelectorAll('.leadership-card');
+      cards.forEach((card, i) => {
+        const transform = card.style.transform;
+        const rotMatch = transform.match(/rotate\(([^)]+)\)/);
+        const rotation = rotMatch ? rotMatch[1] : '0deg';
+        setTimeout(() => {
+          card.style.opacity = '1';
+          card.style.transform = `rotate(${rotation}) translateY(0)`;
+        }, i * 150 + 200);
+      });
+    }
+
+    function initGraphicDesignGallery() {
+      if (!graphicDesignGallery) return;
+      populateProjectCards();
     }
 
     function initVisualDisplayGallery() {
       if (!visualDisplayGallery) return;
-      visualDisplayGallery.innerHTML = '';
-      
-      // 延迟执行以确保DOM已渲染
-      setTimeout(() => {
-        // 获取标题和波浪线的位置范围
-        const titleElement = document.querySelector('.page-title');
-        
-        // 重新计算波浪线顶部位置
-        let canvasWidth = windowWidth;
-        let canvasHeight = canvasWidth * (623 / 1280) - 20;
-        let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
-        let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
-        
-        if (!titleElement) return;
-        
-        const titleRect = titleElement.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        // Default Desktop Boundaries (Document Relative)
-        let topBoundary = titleRect.bottom + scrollTop + 10; 
-        let leftBoundary = 24;
-        let rightBoundary = window.innerWidth - 24;
-        
-        // Canvas top is 40px
-        const canvasTop = 40;
-        let bottomBoundary;
-
-        let isTabletMode = windowWidth > 480 && windowWidth <= 1200;
-
-        if (isMobileMode) {
-             // Mobile Adjustments
-             // 1. Vertical: Relative to container (top: 90px)
-             topBoundary = 0; // Start from top of container
-             
-             // Container Height calculation: Window - Top(90) - Bottom(220)
-             // We set bottomBoundary as the max Y coordinate available in the container
-             // 增加底部留白，确保图片不会太靠下
-             bottomBoundary = window.innerHeight - 90 - 240;   
-             
-             // 2. Horizontal: Wider spread (Reduce margin)
-             const marginX = 10; // Fixed small margin to reduce whitespace
-             leftBoundary = marginX;
-             rightBoundary = window.innerWidth - marginX;
-             
-        } else if (isTabletMode) {
-             // Tablet: Use viewport height with some padding
-             bottomBoundary = window.innerHeight - 150;
-        } else {
-             // Desktop
-             bottomBoundary = canvasTop + firstLineY - 10 + 30; 
-        }
-        
-        // 存储已放置图片的区域，用于碰撞检测
-        const placedRects = [];
-
-        displayImages.forEach((imgPath, index) => {
-          const item = document.createElement('div');
-          item.className = 'gallery-item visual-display';
-          
-          // 根据移动端调整占位尺寸，与CSS保持一致
-          const imgWidth = isMobileMode ? 85 : 150; 
-          const imgHeight = isMobileMode ? 110 : 180;
-          
-          const minX = leftBoundary;
-          const maxX = Math.max(minX, rightBoundary - imgWidth);
-          const minY = topBoundary;
-          const maxY = Math.max(minY, bottomBoundary - imgHeight);
-          
-          // 尝试多次放置，避免严重重叠
-          let bestX = minX;
-          let bestY = minY;
-          let minOverlap = Infinity;
-          let foundGoodSpot = false;
-
-          for (let attempt = 0; attempt < 100; attempt++) { 
-             const x = Math.random() * (maxX - minX) + minX;
-             const y = Math.random() * (maxY - minY) + minY;
-             
-             // 计算当前尝试位置与所有已放置图片的重叠面积总和
-             let totalOverlapArea = 0;
-             const currentRect = { x: x, y: y, w: imgWidth, h: imgHeight };
-             
-             for (const rect of placedRects) {
-               const overlapW = Math.max(0, Math.min(x + imgWidth, rect.x + rect.w) - Math.max(x, rect.x));
-               const overlapH = Math.max(0, Math.min(y + imgHeight, rect.y + rect.h) - Math.max(y, rect.y));
-               totalOverlapArea += overlapW * overlapH;
-             }
-             
-             const selfArea = imgWidth * imgHeight;
-             const overlapRatio = totalOverlapArea / selfArea;
-             
-             // 记录最佳位置（重叠最小）
-             if (overlapRatio < minOverlap) {
-               minOverlap = overlapRatio;
-               bestX = x;
-               bestY = y;
-             }
-             
-             // 如果重叠少于10%，直接使用
-             if (overlapRatio < 0.1) {
-               foundGoodSpot = true;
-               break;
-             }
-          }
-          
-          placedRects.push({ x: bestX, y: bestY, w: imgWidth, h: imgHeight });
-          
-          const rotation = Math.random() * 30 - 15; // 增加旋转角度 -15 到 +15 度
-          
-          // 设置 CSS 变量用于 hover 动画
-          item.style.setProperty('--rotation', rotation + 'deg');
-          
-          // 保存最终位置到 dataset
-          item.dataset.finalX = bestX;
-          item.dataset.finalY = bestY;
-          item.dataset.finalRot = rotation;
-          
-          // 初始位置：从导航栏下方的一条线散落，且水平位置接近最终落点
-          const startOffset = (Math.random() - 0.5) * 100; // 左右偏移 -50px 到 50px
-          const startX = bestX + startOffset;
-          const startY = isMobileMode ? 0 : 120; // 移动端从容器顶部(0)开始，桌面端从120开始
-
-          item.style.left = startX + 'px';
-          item.style.top = startY + 'px';
-          item.style.transform = 'rotate(0deg)';
-          item.style.opacity = '0'; // 初始透明
-          item.style.transition = 'none'; // 初始禁止 transition
-          
-          const img = document.createElement('img');
-          img.src = imgPath;
-          img.alt = `Visual Display ${index + 1}`;
-          // 移除直接打开Modal的事件
-          // img.onclick = () => openModal(imgPath);
-          
-          // 绑定点击交互
-          item.onclick = (e) => handleImageClick(e, item, imgPath, 'visual');
-          
-          // 随机选择图钉
-          const pinPath = seashellPins[Math.floor(Math.random() * seashellPins.length)];
-          const pin = document.createElement('div');
-          pin.className = 'pin'; // 默认 pin 样式里 opacity: 0
-          const pinImg = document.createElement('img');
-          pinImg.src = pinPath;
-          pinImg.alt = 'Pin';
-          pin.appendChild(pinImg);
-          
-          item.appendChild(img);
-          item.appendChild(pin);
-          visualDisplayGallery.appendChild(item);
-        });
-        
-        // 如果当前应该是显示状态（比如 resize 后），立即触发动画
-        // 或者是第一次加载且已经处于显示状态
-        if (visualDisplayGallery.classList.contains('show') || (currentDisplayedImageId === 1 && !visualDisplayGallery.style.display.includes('none'))) {
-           // 确保 display 是 block
-           visualDisplayGallery.style.display = 'block';
-           visualDisplayGallery.classList.add('show');
-           runVisualDisplayAnimation();
-        }
-
-        populateLeadership();
-        
-      }, 100);
+      populateLeadership();
     }
     
     // 运行 Visual Display 的散落动画
@@ -2947,45 +2910,44 @@ Crawled and cleaned 50,000+ e-commerce user reviews. Performed Chinese word segm
       
       // 2. 显示目标 gallery
       if (waveId === 0) {
-        // Graphic Design
+        // Project
         if (graphicDesignGallery) {
-          // 只有当它是隐藏状态时，才执行显示初始化逻辑
           if (graphicDesignGallery.style.display === 'none') {
               graphicDesignGallery.style.display = 'flex';
               graphicDesignGallery.style.opacity = 1;
               graphicDesignGallery.classList.add('show');
               
-              // 在显示后检查长图
-              setTimeout(() => {
-                const items = graphicDesignGallery.querySelectorAll('.gallery-item.graphic-design');
-                items.forEach(item => {
-                  const img = item.querySelector('img');
-                  const wrapper = item.querySelector('.image-wrapper');
-                  if (img && wrapper) {
-                     if (img.offsetHeight > wrapper.offsetHeight + 1) {
-                       item.classList.add('long-image');
-                     } else {
-                       item.classList.remove('long-image');
-                     }
-                  }
-                });
-              }, 100);
+              const cards = graphicDesignGallery.querySelectorAll('.project-card');
+              cards.forEach(card => {
+                const rotMatch = card.style.transform.match(/rotate\(([^)]+)\)/);
+                const rotation = rotMatch ? rotMatch[1] : '0deg';
+                card.style.opacity = '0';
+                card.style.transform = `rotate(${rotation}) translateY(60px)`;
+              });
+              
+              setTimeout(() => revealProjectCards(), 150);
           } else {
-              // 如果已经是显示的，确保 opacity 正确（虽然通常是1）
               graphicDesignGallery.style.opacity = 1;
           }
         }
       } else if (waveId === 1) {
-        // Visual Display
+        // Leadership
         if (visualDisplayGallery) {
-          // 只有当它是隐藏状态时，才执行动画
           if (visualDisplayGallery.style.display === 'none' || !visualDisplayGallery.classList.contains('show')) {
-             visualDisplayGallery.style.display = 'block';
+             visualDisplayGallery.style.display = 'flex';
              visualDisplayGallery.style.opacity = 1;
              visualDisplayGallery.classList.add('show');
-             runVisualDisplayAnimation();
+             
+             const cards = visualDisplayGallery.querySelectorAll('.leadership-card');
+             cards.forEach(card => {
+               const rotMatch = card.style.transform.match(/rotate\(([^)]+)\)/);
+               const rotation = rotMatch ? rotMatch[1] : '0deg';
+               card.style.opacity = '0';
+               card.style.transform = `rotate(${rotation}) translateY(60px)`;
+             });
+             
+             setTimeout(() => revealLeadershipCards(), 150);
           }
-          // 如果已经是显示的，什么都不做，保持静止
         }
       } else if (waveId === 2) {
         // Social Media Content
