@@ -244,13 +244,14 @@
 
     /* Graphic Design 图片样式 */
     .gallery-item.graphic-design {
-      flex: 1;
-      min-width: 0;
-      max-width: calc(100% / 7 - 10px);
+      width: 12.5%; /* 7个图片，留出空间自动调整间距 */
+      flex: 0 0 auto; /* 不自动拉伸 */
+      min-width: 0; /* 允许 flex item 缩小 */
       display: flex;
       flex-direction: column;
       align-items: center;
-      position: relative;
+      position: relative; /* 确保图钉相对于item定位 */
+      height: 100%; /* 占满高度 */
       opacity: 0; /* 初始隐藏，等待动画 */
       transform: translateY(100px); /* 初始位置下沉 */
     }
@@ -262,8 +263,9 @@
 
     .gallery-item.graphic-design .image-wrapper {
       width: 100%;
-      overflow: hidden;
+      overflow: hidden; /* 隐藏超出容器高度的内容 */
       position: relative;
+      height: 100%;
     }
     
     /* 长图底部内阴影 */
@@ -1596,7 +1598,7 @@
          scaleFactor = canvasWidth / 1280;
       }
 
-      let labels = ["Project", "Leadership", "Content Showcase"];
+      let labels = ["Data Projects", "Leadership", "Content Showcase"];
       // 初始位置由 updateTargetPositions 计算，这里先用临时值
       let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
       let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
@@ -1676,7 +1678,7 @@
       
       // 重新初始化波浪
       waves = [];
-      let labels = ["Project", "Leadership", "Content Showcase"];
+      let labels = ["Data Projects", "Leadership", "Content Showcase"];
       // 初始位置由 updateTargetPositions 计算
       let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
       let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
@@ -1928,191 +1930,81 @@
 
     function populateProjectCards() {
       if (!graphicDesignGallery) return;
-      
-      // Reset to horizontal flex layout (7 phone cards in a row)
-      graphicDesignGallery.style.display = 'flex';
-      graphicDesignGallery.style.flexDirection = 'row';
+      graphicDesignGallery.style.position = 'relative';
+      graphicDesignGallery.style.flexDirection = 'column';
+      graphicDesignGallery.style.alignItems = 'center';
+      graphicDesignGallery.style.padding = '30px 20px';
+      graphicDesignGallery.style.gap = '20px';
+      graphicDesignGallery.style.overflowY = 'auto';
+      graphicDesignGallery.style.top = '';
+      graphicDesignGallery.style.height = '';
+      graphicDesignGallery.style.maxHeight = '';
+      graphicDesignGallery.style.paddingLeft = '20px';
+      graphicDesignGallery.style.paddingRight = '20px';
+      graphicDesignGallery.style.justifyContent = 'flex-start';
       graphicDesignGallery.style.flexWrap = 'nowrap';
-      graphicDesignGallery.style.justifyContent = 'space-between';
-      graphicDesignGallery.style.alignItems = 'flex-start';
-      graphicDesignGallery.style.gap = '10px';
-      graphicDesignGallery.style.paddingTop = '40px';
-      graphicDesignGallery.style.paddingLeft = '80px';
-      graphicDesignGallery.style.paddingRight = '80px';
-      graphicDesignGallery.style.paddingBottom = '0';
-      graphicDesignGallery.style.overflowX = 'hidden';
-      graphicDesignGallery.style.overflowY = 'hidden';
 
-      // Silver metal pin SVG (flat-head pushpin)
-      const silverPinSvg = `data:image/svg+xml;utf8,${encodeURIComponent(`
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
-          <defs>
-            <radialGradient id="pinMetal" cx="35%" cy="35%" r="60%">
-              <stop offset="0%" stop-color="#ffffff"/>
-              <stop offset="30%" stop-color="#e8e8e8"/>
-              <stop offset="70%" stop-color="#b0b0b0"/>
-              <stop offset="100%" stop-color="#888888"/>
-            </radialGradient>
-            <radialGradient id="pinHighlight" cx="30%" cy="25%" r="25%">
-              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
-              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-            </radialGradient>
-            <radialGradient id="pinCenter" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#666666"/>
-              <stop offset="100%" stop-color="#999999"/>
-            </radialGradient>
-          </defs>
-          <!-- Pin head shadow -->
-          <ellipse cx="52" cy="54" rx="36" ry="34" fill="rgba(0,0,0,0.15)"/>
-          <!-- Pin head main body -->
-          <circle cx="50" cy="50" r="34" fill="url(#pinMetal)" stroke="#777" stroke-width="1"/>
-          <!-- Pin head highlight -->
-          <ellipse cx="40" cy="38" rx="16" ry="12" fill="url(#pinHighlight)" transform="rotate(-20 40 38)"/>
-          <!-- Pin head center dimple -->
-          <circle cx="50" cy="50" r="10" fill="url(#pinCenter)" stroke="#666" stroke-width="0.5"/>
-          <circle cx="48" cy="48" r="4" fill="rgba(255,255,255,0.3)"/>
-          <!-- Pin tip (needle) -->
-          <path d="M50 82 L46 98 L54 98 Z" fill="#999" stroke="#777" stroke-width="0.5"/>
-          <path d="M50 82 L48 95 L52 95 Z" fill="#aaa"/>
-        </svg>
-      `)}`;
+      const cards = [
+        {
+          html: `<div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">Fund Flow Forecasting</div>
+<div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">金融服务机构资金流量预测 · SARIMA · Python · 2026</div>
+<div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
+Built a daily fund-inflow time series from anonymized user-level subscription/redemption records. Conducted stationarity tests (ADF), seasonal differencing, and ACF/PACF analysis to identify SARIMA parameters. Delivered a 7-day rolling forecast with MAE/RMSE evaluation. Visualized trends, seasonality, and residual diagnostics using matplotlib.
+</div>`,
+          rotation: -1.5
+        },
+        {
+          html: `<div style="margin: -4px -4px 12px -4px;"><img src="./images/ecommerce-dashboard.png" style="width:100%;border-radius:3px 3px 0 0;display:block;"></div><div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">E-Commerce Review Analytics</div>
+<div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">电商大数据用户评论分析 · NLP · Python · 2026</div>
+<div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
+Crawled and cleaned 50,000+ e-commerce user reviews. Performed Chinese word segmentation (jieba), stopword removal, and TF-IDF keyword extraction. Conducted sentiment classification and topic modeling (LDA) to identify consumer pain points. Built an interactive visualization dashboard summarizing rating distributions, review volume trends, and high-frequency complaint categories.
+</div>`,
+          rotation: 1
+        }
+      ];
 
-      // Create 7 phone cards (9:16 ratio)
-      const cardCount = 7;
-      for (let i = 0; i < cardCount; i++) {
-        const item = document.createElement('div');
-        item.className = 'gallery-item graphic-design';
-        item.style.animationDelay = `${i * 0.12}s`;
-
-        const wrapper = document.createElement('div');
-        wrapper.className = 'image-wrapper';
-        wrapper.style.aspectRatio = '9/16';
-        wrapper.style.width = '100%';
-        wrapper.style.background = '#f5f5f0';
-        wrapper.style.border = '1px solid #ddd';
-        wrapper.style.borderRadius = '8px';
-        wrapper.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
-        wrapper.style.overflow = 'hidden';
-        wrapper.style.position = 'relative';
-        wrapper.style.display = 'flex';
-        wrapper.style.alignItems = 'center';
-        wrapper.style.justifyContent = 'center';
-
-        // Placeholder content for phone card
-        const placeholder = document.createElement('div');
-        placeholder.style.width = '100%';
-        placeholder.style.height = '100%';
-        placeholder.style.background = 'linear-gradient(180deg, #f0ebe3 0%, #e8e4dc 100%)';
-        placeholder.style.display = 'flex';
-        placeholder.style.flexDirection = 'column';
-        placeholder.style.alignItems = 'center';
-        placeholder.style.justifyContent = 'center';
-        placeholder.style.fontFamily = "'Special Elite', serif";
-        placeholder.style.color = '#bbb';
-        placeholder.style.fontSize = '12px';
-        placeholder.style.textAlign = 'center';
-        placeholder.innerHTML = `<div style="opacity:0.5;">Project ${i + 1}</div><div style="font-size:10px;margin-top:4px;opacity:0.4;">9:16</div>`;
-        wrapper.appendChild(placeholder);
-
-        // Silver pin
-        const pin = document.createElement('div');
-        pin.className = 'pin';
-        pin.style.width = '15%';
-        pin.style.aspectRatio = '1/1';
-        pin.style.position = 'absolute';
-        pin.style.top = '0';
-        pin.style.left = '50%';
-        pin.style.transform = 'translate(-50%, -50%)';
-        pin.style.zIndex = '20';
-        pin.style.pointerEvents = 'none';
-
-        const pinImg = document.createElement('img');
-        pinImg.src = silverPinSvg;
-        pinImg.alt = 'Pin';
-        pinImg.style.width = '100%';
-        pinImg.style.height = '100%';
-        pinImg.style.objectFit = 'contain';
-        pinImg.style.filter = 'drop-shadow(1px 2px 2px rgba(0,0,0,0.2))';
-        pin.appendChild(pinImg);
-
-        item.appendChild(wrapper);
-        item.appendChild(pin);
-
-        graphicDesignGallery.appendChild(item);
-      }
+      cards.forEach((card, i) => {
+        const cardEl = document.createElement('div');
+        cardEl.style.maxWidth = '600px';
+        cardEl.style.width = '100%';
+        cardEl.style.background = 'rgba(255,255,255,0.7)';
+        cardEl.style.border = '1px solid #ddd';
+        cardEl.style.borderRadius = '4px';
+        cardEl.style.padding = '18px 22px';
+        cardEl.style.position = 'relative';
+        cardEl.style.transform = `rotate(${card.rotation}deg)`;
+        cardEl.innerHTML = card.html;
+        graphicDesignGallery.appendChild(cardEl);
+      });
     }
 
     function populateLeadership() {
       if (!visualDisplayGallery) return;
-
-      // Calculate proper position similar to initGraphicDesignGallery
-      const titleElement = document.querySelector('.page-title');
-      let canvasWidth = windowWidth;
-      let canvasHeight = isMobileMode ? 500 : (canvasWidth * (623 / 1280) - 20);
-      let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
-      let effectiveGap = isMobileMode ? config.lineGapCompressed : config.lineGapInitial;
-      let firstLineY = lastLineY - (2 * effectiveGap * scaleFactor);
-
-      let isTabletMode = windowWidth > 480 && windowWidth <= 1200;
-
-      visualDisplayGallery.innerHTML = '';
-      visualDisplayGallery.style.position = 'absolute';
-      visualDisplayGallery.style.display = 'flex';
+      visualDisplayGallery.style.position = 'relative';
       visualDisplayGallery.style.flexDirection = 'column';
       visualDisplayGallery.style.alignItems = 'center';
       visualDisplayGallery.style.justifyContent = 'center';
-      visualDisplayGallery.style.left = '0';
-      visualDisplayGallery.style.width = '100%';
-      visualDisplayGallery.style.overflowY = 'hidden';
-      visualDisplayGallery.style.overflowX = 'hidden';
-      visualDisplayGallery.style.padding = '20px 20px';
-
-      if (titleElement) {
-        const titleRect = titleElement.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const topPos = titleRect.bottom + scrollTop + 10;
-
-        if (!isMobileMode) {
-          if (isTabletMode) {
-            const canvasTop = window.innerHeight - canvasHeight - 10;
-            const waveTopY = canvasTop + firstLineY;
-            const availableHeight = waveTopY - topPos - 20;
-            visualDisplayGallery.style.top = topPos + 'px';
-            visualDisplayGallery.style.height = Math.max(100, availableHeight) + 'px';
-          } else {
-            const canvasTop = 40;
-            const waveTopY = canvasTop + firstLineY;
-            const availableHeight = waveTopY - topPos - 10 + 50 - 35;
-            visualDisplayGallery.style.top = topPos + 'px';
-            visualDisplayGallery.style.height = availableHeight + 'px';
-          }
-        } else {
-          visualDisplayGallery.style.top = '90px';
-          visualDisplayGallery.style.bottom = '220px';
-          visualDisplayGallery.style.height = 'auto';
-        }
-      }
-
-      const card = document.createElement('div');
-      card.style.maxWidth = '560px';
-      card.style.width = '100%';
-      card.style.background = 'rgba(255,255,255,0.7)';
-      card.style.border = '1px solid #ddd';
-      card.style.borderRadius = '4px';
-      card.style.padding = '18px 22px';
-      card.style.transform = 'rotate(-1deg)';
-      card.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
-      card.style.maxHeight = '100%';
-      card.style.overflow = 'hidden';
-      card.innerHTML = `
-  <div style="margin: -4px -4px 10px -4px;"><img src="./images/spark-activity.jpg" style="width:100%;border-radius:3px 3px 0 0;display:block;max-height:200px;object-fit:cover;"></div>
-  <div style="font-family:'Special Elite',serif;font-size:15px;margin-bottom:6px;">Spark Society · 星火学社</div>
-  <div style="font-family:'AR One Sans',sans-serif;font-size:10px;color:#888;margin-bottom:8px;">Founder &amp; President · 2023.09 – Present · Wuhan</div>
-  <div style="font-family:'Noto Sans SC',sans-serif;font-size:12px;line-height:1.6;color:#444;">
-    Founded and led a student association of 50+ members. Organized public welfare events including nursing home visits (养老公益行) and community outreach.
+      visualDisplayGallery.style.padding = '40px 20px';
+      visualDisplayGallery.style.overflowY = 'auto';
+      visualDisplayGallery.style.top = '';
+      visualDisplayGallery.style.height = '';
+      visualDisplayGallery.style.maxHeight = '';
+      visualDisplayGallery.style.left = '';
+      visualDisplayGallery.style.right = '';
+      visualDisplayGallery.style.bottom = '';
+      visualDisplayGallery.innerHTML = `<div style="max-width:600px;width:100%;background:rgba(255,255,255,0.7);border:1px solid #ddd;border-radius:4px;padding:22px 26px;transform:rotate(-1deg);">
+  <div style="margin: -4px -4px 14px -4px;"><img src="./images/spark-activity.jpg" style="width:100%;border-radius:3px 3px 0 0;display:block;max-height:280px;object-fit:cover;"></div>
+  <div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">Spark Society · 星火学社</div>
+  <div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">Founder &amp; President · 2023.09 – Present · Wuhan</div>
+  <div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
+    Founded and led a student association of 50+ members. Organized public welfare events including nursing home visits (养老公益行) and community outreach. Managed a cross-functional team across event planning, marketing, design, and communications. Produced WeChat Official Account promotional content, handling copywriting and content strategy.
   </div>
-`;
-      visualDisplayGallery.appendChild(card);
+  <div style="font-family:'Noto Sans SC',sans-serif;font-size:12px;line-height:1.6;color:#888;margin-top:10px;">
+    · 社团成员50+人<br>
+    · 组织养老院公益探访等活动<br>
+    · 负责公众号宣发文案与内容策划
+  </div>
+</div>`;
     }
 
     function initGraphicDesignGallery() {
