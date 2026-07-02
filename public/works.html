@@ -190,27 +190,23 @@
       pointer-events: auto;
     }
 
-    /* Graphic Design 网格布局 - 7张手机长图横向排列 */
+    /* Graphic Design 网格布局 */
     .gallery-container#graphicDesignGallery {
       display: flex;
-      flex-wrap: nowrap;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 12px;
-      padding-top: 55px;
-      padding-left: 30px;
-      padding-right: 30px;
-      padding-bottom: 40px;
-      overflow-x: visible;
-      overflow-y: visible;
-      opacity: 0;
-      position: absolute;
+      flex-wrap: nowrap; /* 不换行 */
+      justify-content: space-between; /* 自动布局图片间距 */
+      align-items: flex-start; /* 顶部对齐 */
+      gap: 10px; /* 最小间距，主要由justify-content控制 */
+      padding-top: 40px; /* 增加顶部内边距，确保图钉完整显示 */
+      padding-left: 80px; /* 增加左侧间距 */
+      padding-right: 80px; /* 增加右侧间距 */
+      padding-bottom: 0;
+      overflow-x: hidden; /* 取消横向滚动 */
+      opacity: 0; /* 默认隐藏，由 JS 控制 display 和 opacity */
+      position: absolute; 
       width: 100%;
       left: 0;
-      pointer-events: auto;
-      height: auto;
-      max-height: none;
-      flex-direction: row;
+      pointer-events: none; /* 默认不响应点击，由 .show 类控制 */
     }
 
     .gallery-container#graphicDesignGallery.show {
@@ -246,37 +242,53 @@
       cursor: pointer;
     }
 
-    /* Graphic Design 图片样式 - 手机卡片 */
+    /* Graphic Design 图片样式 */
     .gallery-item.graphic-design {
-      width: calc((100% - 72px) / 7);
-      flex: 0 0 auto;
+      width: 12.5%; /* 7个图片，留出空间自动调整间距 */
+      flex: 0 0 auto; /* 不自动拉伸 */
+      min-width: 0; /* 允许 flex item 缩小 */
       display: flex;
       flex-direction: column;
       align-items: center;
-      position: relative;
-      opacity: 0;
-      transform: translateY(60px);
-      cursor: pointer;
+      position: relative; /* 确保图钉相对于item定位 */
+      height: 100%; /* 占满高度 */
+      opacity: 0; /* 初始隐藏，等待动画 */
+      transform: translateY(100px); /* 初始位置下沉 */
     }
-    
-    .gallery-item.graphic-design .image-wrapper {
-      width: 100%;
-      position: relative;
-      height: auto;
-      overflow: visible;
-    }
-    
-    .gallery-item.graphic-design.long-image .image-wrapper::after {
-      display: none;
-    }
-    
-    .gallery-item.graphic-design img {
-      display: none;
-    }
-    
-    /* 当容器显示时，触发卡片升起动画 */
+
+    /* 当容器显示时，触发动画 */
     .gallery-container#graphicDesignGallery.show .gallery-item.graphic-design {
       animation: slideUpFadeIn 0.8s cubic-bezier(0.2, 0.8, 0.8, 1) forwards;
+    }
+
+    .gallery-item.graphic-design .image-wrapper {
+      width: 100%;
+      overflow: hidden; /* 隐藏超出容器高度的内容 */
+      position: relative;
+      height: 100%;
+    }
+    
+    /* 长图底部内阴影 */
+    .gallery-item.graphic-design.long-image .image-wrapper::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 18px; /* 增加高度 */
+      background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4)); /* 加深颜色 */
+      pointer-events: none;
+      z-index: 10; /* 提高层级 */
+    }
+
+    .gallery-item.graphic-design img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      display: block;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.5s ease;
+      object-position: top center; /* 确保从顶部开始显示 */
     }
     
     /* 移除之前的动画相关样式 */
@@ -291,248 +303,25 @@
     }
     */
 
-    /* Graphic Design 图钉样式 - 银色金属平头图钉 */
+    /* Graphic Design 图钉样式 */
     .gallery-item.graphic-design .pin {
-      width: 12%;
-      aspect-ratio: 1/1;
+      width: 15%; /* 宽度与图片宽度比例 0.2:1 */
+      height: auto; /* 保持宽高比 */
+      aspect-ratio: 1/1; /* 假设图钉接近正方形，或者自适应 */
       position: absolute;
       top: 0;
       left: 50%;
-      transform: translate(-50%, -45%);
-      z-index: 20;
-      pointer-events: none;
-    }
-    
-    /* 银色金属平头图钉 - CSS绘制 */
-    .metal-pin {
-      width: 100%;
-      height: 100%;
-      position: relative;
-    }
-    
-    /* 图钉在纸张上的阴影 */
-    .metal-pin .pin-shadow {
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-      height: 25%;
-      background: radial-gradient(ellipse at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 65%);
-      border-radius: 50%;
-      z-index: 0;
-      filter: blur(1px);
-    }
-    
-    /* 平头图钉头部 - 扁平金属圆盘 - 占大部分 */
-    .metal-pin .pin-head {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      height: 62%;
-      border-radius: 50%;
-      background: 
-        radial-gradient(ellipse at 30% 25%, 
-          #ffffff 0%, 
-          #f5f5f5 8%,
-          #e8e8e8 18%,
-          #d0d0d0 32%, 
-          #b0b0b0 48%, 
-          #909090 68%, 
-          #757575 85%,
-          #606060 100%);
-      box-shadow: 
-        0 3px 7px rgba(0,0,0,0.35),
-        inset 0 -2px 4px rgba(0,0,0,0.25),
-        inset 0 2px 3px rgba(255,255,255,0.95),
-        0 1px 2px rgba(0,0,0,0.2);
-      border: 1px solid rgba(100,100,100,0.35);
-      z-index: 3;
-    }
-    
-    /* 图钉顶面高光 */
-    .metal-pin .pin-head::before {
-      content: '';
-      position: absolute;
-      top: 18%;
-      left: 22%;
-      width: 28%;
-      height: 20%;
-      border-radius: 50%;
-      background: radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 70%);
-    }
-    
-    /* 图钉边缘细节 */
-    .metal-pin .pin-head::after {
-      content: '';
-      position: absolute;
-      top: 7%;
-      left: 7%;
-      width: 86%;
-      height: 86%;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.35);
-      box-sizing: border-box;
-    }
-    
-    /* 图钉颈部（连接头和针的部分） */
-    .metal-pin .pin-neck {
-      position: absolute;
-      top: 56%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 45%;
-      height: 15%;
-      background: linear-gradient(90deg, 
-        #656565 0%, 
-        #9e9e9e 20%,
-        #c5c5c5 50%,
-        #9e9e9e 80%,
-        #656565 100%);
-      border-radius: 0 0 2px 2px;
-      z-index: 2;
-    }
-    
-    /* 图钉针部 - 短而尖，只露出一点点 */
-    .metal-pin .pin-point {
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 22%;
-      height: 30%;
-      background: linear-gradient(90deg, 
-        #555555 0%, 
-        #8a8a8a 25%,
-        #b0b0b0 50%,
-        #8a8a8a 75%,
-        #555555 100%);
-      clip-path: polygon(50% 100%, 20% 0%, 80% 0%);
-      z-index: 1;
-    }
-    
-    /* 手机/竖版长图卡片容器 - 纸张拼贴效果 */
-    .phone-card {
-      width: 100%;
-      aspect-ratio: 9/16;
-      background: #ffffff;
-      border-radius: 2px;
-      overflow: hidden;
-      position: relative;
-      box-shadow: 
-        0 3px 12px rgba(0,0,0,0.1),
-        0 1px 3px rgba(0,0,0,0.06);
-      transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
-      border: 1px solid rgba(0,0,0,0.05);
-    }
-    
-    .phone-card:hover {
-      transform: translateY(-10px) scale(1.03);
-      box-shadow: 
-        0 14px 40px rgba(0,0,0,0.18),
-        0 4px 12px rgba(0,0,0,0.1);
-    }
-    
-    /* 纸张纹理效果 */
-    .phone-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: 
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 1;
-      border-radius: 0;
-    }
-    
-    /* 手机屏幕/内容区域 */
-    .phone-screen {
-      width: 100%;
-      height: 100%;
-      background: #fff;
-      overflow: hidden;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      border-radius: 0;
-    }
-    
-    /* 手机状态栏模拟 - 简化版 */
-    .phone-status {
-      height: auto;
-      min-height: 22px;
-      background: #fff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 5px 10px;
-      font-size: 8px;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
-      font-weight: 600;
-      color: #444;
-      flex-shrink: 0;
-      border-bottom: 1px solid rgba(0,0,0,0.04);
-      box-sizing: border-box;
-      border-radius: 0;
-    }
-    
-    /* 手机内容区域 */
-    .phone-content {
-      flex: 1;
-      background: #fafafa;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-      border-radius: 0;
-    }
-    
-    /* 占位图效果 - 简洁留白 */
-    .phone-placeholder {
-      width: 100%;
-      height: 100%;
-      background: #fafafa;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      border-radius: 0;
-    }
-    
-    .phone-placeholder-icon {
-      width: 16%;
-      aspect-ratio: 1;
-      opacity: 0.15;
-    }
-    
-    .phone-placeholder-icon svg {
-      width: 100%;
-      height: 100%;
-    }
-    
-    .phone-placeholder-text {
-      font-family: "Special Elite", "Courier New", monospace;
-      font-size: 8px;
-      color: #ccc;
-      letter-spacing: 0.5px;
-    }
-    
-    /* 手机卡片的图片（当有真实图片时） */
-    .phone-card-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top center;
+      transform: translate(-50%, -50%); /* 中心位置在图片上边缘的居中位置 */
+      z-index: 20; /* 确保在图片之上 */
+      box-shadow: none !important;
     }
     
     .gallery-item.graphic-design .pin img {
-      display: none;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: none;
+      box-shadow: none !important;
     }
 
     /* Visual Display 随机分布样式 */
@@ -1809,7 +1598,7 @@
          scaleFactor = canvasWidth / 1280;
       }
 
-      let labels = ["Project", "Leadership", "Content Showcase"];
+      let labels = ["Data Projects", "Leadership", "Content Showcase"];
       // 初始位置由 updateTargetPositions 计算，这里先用临时值
       let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
       let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
@@ -1834,6 +1623,9 @@
       
       // 初始化图片展示
       initImageGalleries();
+      
+      populateProjectCards();
+      populateLeadership();
       
       console.log('Setup 完成，缩放比例：' + scaleFactor);
     }
@@ -1886,7 +1678,7 @@
       
       // 重新初始化波浪
       waves = [];
-      let labels = ["Project", "Leadership", "Content Showcase"];
+      let labels = ["Data Projects", "Leadership", "Content Showcase"];
       // 初始位置由 updateTargetPositions 计算
       let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
       let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
@@ -2138,76 +1930,52 @@
 
     function populateProjectCards() {
       if (!graphicDesignGallery) return;
-      
-      graphicDesignGallery.innerHTML = '';
-      
-      const cardCount = 7;
-      const placeholders = [
-        { title: 'Project 1' },
-        { title: 'Project 2' },
-        { title: 'Project 3' },
-        { title: 'Project 4' },
-        { title: 'Project 5' },
-        { title: 'Project 6' },
-        { title: 'Project 7' }
+      graphicDesignGallery.style.position = 'relative';
+      graphicDesignGallery.style.flexDirection = 'column';
+      graphicDesignGallery.style.alignItems = 'center';
+      graphicDesignGallery.style.padding = '30px 20px';
+      graphicDesignGallery.style.gap = '20px';
+      graphicDesignGallery.style.overflowY = 'auto';
+      graphicDesignGallery.style.top = '';
+      graphicDesignGallery.style.height = '';
+      graphicDesignGallery.style.maxHeight = '';
+      graphicDesignGallery.style.paddingLeft = '20px';
+      graphicDesignGallery.style.paddingRight = '20px';
+      graphicDesignGallery.style.justifyContent = 'flex-start';
+      graphicDesignGallery.style.flexWrap = 'nowrap';
+
+      const cards = [
+        {
+          html: `<div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">Fund Flow Forecasting</div>
+<div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">金融服务机构资金流量预测 · SARIMA · Python · 2026</div>
+<div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
+Built a daily fund-inflow time series from anonymized user-level subscription/redemption records. Conducted stationarity tests (ADF), seasonal differencing, and ACF/PACF analysis to identify SARIMA parameters. Delivered a 7-day rolling forecast with MAE/RMSE evaluation. Visualized trends, seasonality, and residual diagnostics using matplotlib.
+</div>`,
+          rotation: -1.5
+        },
+        {
+          html: `<div style="margin: -4px -4px 12px -4px;"><img src="./images/ecommerce-dashboard.png" style="width:100%;border-radius:3px 3px 0 0;display:block;"></div><div style="font-family:'Special Elite',serif;font-size:16px;margin-bottom:8px;">E-Commerce Review Analytics</div>
+<div style="font-family:'AR One Sans',sans-serif;font-size:11px;color:#888;margin-bottom:10px;">电商大数据用户评论分析 · NLP · Python · 2026</div>
+<div style="font-family:'Noto Sans SC',sans-serif;font-size:13px;line-height:1.7;color:#444;">
+Crawled and cleaned 50,000+ e-commerce user reviews. Performed Chinese word segmentation (jieba), stopword removal, and TF-IDF keyword extraction. Conducted sentiment classification and topic modeling (LDA) to identify consumer pain points. Built an interactive visualization dashboard summarizing rating distributions, review volume trends, and high-frequency complaint categories.
+</div>`,
+          rotation: 1
+        }
       ];
 
-      for (let i = 0; i < cardCount; i++) {
-        const item = document.createElement('div');
-        item.className = 'gallery-item graphic-design';
-        item.style.animationDelay = `${i * 0.1}s`;
-        
-        const wrapper = document.createElement('div');
-        wrapper.className = 'image-wrapper';
-        
-        const phoneCard = document.createElement('div');
-        phoneCard.className = 'phone-card';
-        
-        const phoneScreen = document.createElement('div');
-        phoneScreen.className = 'phone-screen';
-        
-        const statusBar = document.createElement('div');
-        statusBar.className = 'phone-status';
-        statusBar.innerHTML = `<span>9:41</span><span>● ● ●</span>`;
-        
-        const phoneContent = document.createElement('div');
-        phoneContent.className = 'phone-content';
-        
-        const placeholder = document.createElement('div');
-        placeholder.className = 'phone-placeholder';
-        placeholder.innerHTML = `
-          <div class="phone-placeholder-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-              <circle cx="8.5" cy="8.5" r="1.5"/>
-              <polyline points="21 15 16 10 5 21"/>
-            </svg>
-          </div>
-          <div class="phone-placeholder-text">${placeholders[i].title}</div>
-        `;
-        
-        phoneContent.appendChild(placeholder);
-        phoneScreen.appendChild(statusBar);
-        phoneScreen.appendChild(phoneContent);
-        phoneCard.appendChild(phoneScreen);
-        
-        const pin = document.createElement('div');
-        pin.className = 'pin';
-        pin.innerHTML = `
-          <div class="metal-pin">
-            <div class="pin-shadow"></div>
-            <div class="pin-point"></div>
-            <div class="pin-neck"></div>
-            <div class="pin-head"></div>
-          </div>
-        `;
-        
-        wrapper.appendChild(phoneCard);
-        item.appendChild(wrapper);
-        item.appendChild(pin);
-        
-        graphicDesignGallery.appendChild(item);
-      }
+      cards.forEach((card, i) => {
+        const cardEl = document.createElement('div');
+        cardEl.style.maxWidth = '600px';
+        cardEl.style.width = '100%';
+        cardEl.style.background = 'rgba(255,255,255,0.7)';
+        cardEl.style.border = '1px solid #ddd';
+        cardEl.style.borderRadius = '4px';
+        cardEl.style.padding = '18px 22px';
+        cardEl.style.position = 'relative';
+        cardEl.style.transform = `rotate(${card.rotation}deg)`;
+        cardEl.innerHTML = card.html;
+        graphicDesignGallery.appendChild(cardEl);
+      });
     }
 
     function populateLeadership() {
@@ -2241,31 +2009,112 @@
 
     function initGraphicDesignGallery() {
       if (!graphicDesignGallery) return;
+      graphicDesignGallery.innerHTML = '';
       
+      // 动态计算 Graphic Design 容器的位置和高度
       const titleElement = document.querySelector('.page-title');
+      let canvasWidth = windowWidth;
+      let canvasHeight = isMobileMode ? 500 : (canvasWidth * (623 / 1280) - 20);
+      let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
+      // 关键修改：使用 compressed 间距来计算波浪线位置，防止图片与压缩后的波浪线重叠
+      let effectiveGap = isMobileMode ? config.lineGapCompressed : config.lineGapInitial;
+      let firstLineY = lastLineY - (2 * effectiveGap * scaleFactor);
+      
+      let galleryHeight = 500;
+      
+      // Add tablet check
       let isTabletMode = windowWidth > 480 && windowWidth <= 1200;
 
       if (titleElement) {
         const titleRect = titleElement.getBoundingClientRect();
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const topPos = titleRect.bottom + scrollTop + 20;
+        const topPos = titleRect.bottom + scrollTop + 10; // 标题下方留白，加上滚动偏移
         
         if (!isMobileMode) {
-          graphicDesignGallery.style.top = topPos + 'px';
-          graphicDesignGallery.style.height = 'auto';
-          graphicDesignGallery.style.maxHeight = 'none';
-          graphicDesignGallery.style.position = 'absolute';
-          graphicDesignGallery.style.left = '0';
-          graphicDesignGallery.style.width = '100%';
+          if (isTabletMode) {
+             // Tablet: Calculate available space above waves
+             const canvasTop = window.innerHeight - canvasHeight - 10;
+             const waveTopY = canvasTop + firstLineY;
+             
+             // Calculate available height: Wave Top - Gallery Top - Padding
+             // We want the image to stop a bit above the wave
+             const availableHeight = waveTopY - topPos - 20;
+             
+             graphicDesignGallery.style.top = topPos + 'px';
+             graphicDesignGallery.style.height = Math.max(100, availableHeight) + 'px'; // Ensure min height
+             graphicDesignGallery.style.maxHeight = Math.max(100, availableHeight) + 'px';
+             graphicDesignGallery.style.paddingBottom = '0'; 
+          } else {
+             // Desktop: Canvas top is 40px
+             const canvasTop = 40;
+             const waveTopY = canvasTop + firstLineY; // 波浪线相对于文档顶部的Y坐标
+             
+             const availableHeight = waveTopY - topPos - 10 + 50 - 35; 
+             
+             graphicDesignGallery.style.top = topPos + 'px';
+             graphicDesignGallery.style.height = availableHeight + 'px';
+             // 确保图片不覆盖波浪线
+             graphicDesignGallery.style.maxHeight = availableHeight + 'px';
+          }
         } else {
+          // 移动端：样式由 CSS 控制 (height: calc(100vh - 100px))
+          // 清除 JS 设置的样式，防止干扰
           graphicDesignGallery.style.top = '';
           graphicDesignGallery.style.height = '';
           graphicDesignGallery.style.maxHeight = '';
-          graphicDesignGallery.style.position = '';
         }
       }
 
-      populateProjectCards();
+        // 随机顺序数组
+        const randomIndices = Array.from({length: workImages.length}, (_, i) => i);
+        // Shuffle
+        for (let i = randomIndices.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [randomIndices[i], randomIndices[j]] = [randomIndices[j], randomIndices[i]];
+        }
+        
+        workImages.forEach((imgPath, index) => {
+          const item = document.createElement('div');
+          // ... (省略创建元素代码) ...
+          item.className = 'gallery-item graphic-design';
+          
+          const wrapper = document.createElement('div');
+          wrapper.className = 'image-wrapper';
+          
+          const img = document.createElement('img');
+          img.src = imgPath;
+          img.alt = `Graphic Design ${index + 1}`;
+          // 移除直接打开Modal的事件，改为在 item 上处理
+          // img.onclick = () => openModal(imgPath);
+          
+          img.onload = () => {
+               if (img.offsetHeight > wrapper.offsetHeight * 1.1) {
+                   item.classList.add('long-image');
+               }
+          };
+          
+          const pinPath = seashellPins[Math.floor(Math.random() * seashellPins.length)];
+          const pin = document.createElement('div');
+          pin.className = 'pin';
+          const pinImg = document.createElement('img');
+          pinImg.src = pinPath;
+          pinImg.alt = 'Pin';
+          pin.appendChild(pinImg);
+          
+          wrapper.appendChild(img);
+          item.appendChild(wrapper);
+          item.appendChild(pin);
+          
+          // 设置随机动画延迟
+          // 找到当前 index 在随机数组中的位置（顺序）
+          const delayOrder = randomIndices.indexOf(index);
+          item.style.animationDelay = `${delayOrder * 0.15}s`; // 增加一点间隔 0.1 -> 0.15
+          
+          // 绑定点击交互
+          item.onclick = (e) => handleImageClick(e, item, imgPath, 'graphic');
+          
+          graphicDesignGallery.appendChild(item);
+        });
     }
 
     function initVisualDisplayGallery() {
