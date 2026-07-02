@@ -392,6 +392,187 @@
       object-fit: contain;
     }
 
+    /* Leadership 项目卡片（散落的纸张） */
+    .gallery-item.visual-display .leadership-card {
+      width: 280px;
+      background-color: #F6F3EA;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise2)' opacity='0.08'/%3E%3C/svg%3E");
+      border: 1px solid rgba(0,0,0,0.1);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12), inset 0 0 30px rgba(0,0,0,0.03);
+      padding: 18px 20px 16px;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.3s ease;
+      pointer-events: auto;
+    }
+
+    .gallery-item.visual-display:hover .leadership-card {
+      box-shadow: 0 12px 36px rgba(0,0,0,0.25), inset 0 0 30px rgba(0,0,0,0.03);
+    }
+
+    .ld-title {
+      font-family: "Special Elite", serif;
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 1.3;
+      margin-bottom: 6px;
+      color: #111;
+      letter-spacing: -0.3px;
+    }
+
+    .ld-meta {
+      font-family: "AR One Sans", sans-serif;
+      font-size: 10px;
+      color: #999;
+      margin-bottom: 10px;
+      line-height: 1.3;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .ld-desc {
+      font-family: "Noto Sans HK", "Noto Sans SC", sans-serif;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #444;
+      margin-bottom: 8px;
+    }
+
+    .ld-result {
+      font-family: "AR One Sans", sans-serif;
+      font-size: 10px;
+      color: #666;
+      line-height: 1.5;
+      padding-top: 8px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+      margin-bottom: 10px;
+    }
+
+    .ld-image {
+      width: 100%;
+      border-radius: 3px;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .ld-image img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+      max-width: 100% !important;
+      max-height: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Project 内容卡片（钉在墙上的纸张） */
+    .gallery-item.graphic-design .card-wrapper {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+      background-color: #F6F3EA;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+      border: 1px solid rgba(0,0,0,0.1);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1), inset 0 0 30px rgba(0,0,0,0.03);
+      padding: 14px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    .gallery-item.graphic-design:hover .card-wrapper {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18), inset 0 0 30px rgba(0,0,0,0.03);
+      transform: translateY(-2px);
+    }
+
+    .gallery-item.graphic-design .empty-wrapper {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background-color: rgba(246,243,234,0.5);
+      border: 1px dashed rgba(0,0,0,0.08);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .gallery-item.graphic-design:hover .empty-wrapper {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-color: rgba(0,0,0,0.15);
+    }
+
+    .card-project-title {
+      font-family: "Special Elite", serif;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 1.3;
+      margin-bottom: 5px;
+      color: #111;
+      letter-spacing: -0.3px;
+    }
+
+    .card-project-meta {
+      font-family: "AR One Sans", sans-serif;
+      font-size: 8px;
+      color: #999;
+      margin-bottom: 7px;
+      line-height: 1.3;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-project-desc {
+      font-family: "Noto Sans HK", "Noto Sans SC", sans-serif;
+      font-size: 8.5px;
+      line-height: 1.55;
+      color: #444;
+      flex: 1;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 8;
+      -webkit-box-orient: vertical;
+    }
+
+    .card-project-result {
+      margin-top: 7px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+      font-family: "AR One Sans", sans-serif;
+      font-size: 7.5px;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .card-project-image {
+      margin-top: 6px;
+      width: 100%;
+      border-radius: 2px;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .card-project-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      box-shadow: none !important;
+    }
+
+    .card-empty-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-5deg);
+      font-family: "Special Elite", serif;
+      font-size: 10px;
+      color: rgba(0,0,0,0.12);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
     /* 图钉通用样式 - 这里只作为基础，具体样式在各自的类中定义 */
     .pin {
       pointer-events: none;
@@ -1356,9 +1537,6 @@
       margin-top: 8px;
       letter-spacing: 0.5px;
     }
-    .sort-bar { display: none !important; }
-    .accordion-stage { display: none !important; }
-    .folder-page { display: none !important; }
     @media (max-width: 480px) {
       .phone-frame {
         width: 280px;
@@ -1487,28 +1665,46 @@
     let activeFlyingItem = null; // 当前正在飞行的图片（Visual Display）
 
     // 图片路径数组
-    const workImages = []; // Graphic Design → Project 横向画廊
-    const displayImages = []; // Visual Display → Leadership 散落布局
+    const workImages = []; // Project 横向画廊 — 使用项目卡片
+    const displayImages = []; // Leadership 散落布局 — 使用项目卡片
     const seashellPins = []; // 图钉图片
 
-    // 初始化图片路径 — Project 7张竖向长图
-    for (let i = 1; i <= 7; i++) {
-      workImages.push(`./images/workimg (${i}).webp`);
-    }
-    // Leadership 散落布局图片 — 复用现有图片作为占位
-    for (let i = 1; i <= 7; i++) {
-      displayImages.push(`./images/workimg (${i}).webp`);
-    }
-    // 再添加一些现有图片丰富散落效果
-    displayImages.push('./images/pic.png');
-    displayImages.push('./images/profile.jpg');
-    displayImages.push('./images/spark-activity.jpg');
-    displayImages.push('./images/ecommerce-dashboard.png');
-    displayImages.push('./images/1.png');
-    displayImages.push('./images/image_1.png');
-    displayImages.push('./images/image_2.png');
-    displayImages.push('./images/image_3.png');
-    displayImages.push('./images/image_4.png');
+    // Project 数据：7个槽位（2个有项目，5个预留空位）
+    const projectCards = [
+      {
+        type: 'project',
+        title: 'Fund Flow Forecasting',
+        meta: 'Financial Data Analysis · SARIMA · Python · 2026',
+        desc: 'Built a daily fund-inflow time series from anonymized user-level subscription/redemption records. Conducted stationarity tests (ADF), seasonal differencing, and ACF/PACF analysis to identify SARIMA parameters. Delivered a 7-day rolling forecast with MAE/RMSE evaluation.',
+        result: 'Output: 7-day rolling forecast with visualized trends, seasonality, and residual diagnostics.',
+        image: null
+      },
+      {
+        type: 'project',
+        title: 'E-Commerce Review Analytics',
+        meta: 'NLP · Big Data · Python · 2026',
+        desc: 'Crawled and cleaned 50,000+ e-commerce user reviews. Performed Chinese word segmentation (jieba), stopword removal, and TF-IDF keyword extraction. Conducted sentiment classification and topic modeling (LDA) to identify consumer pain points.',
+        result: 'Output: Interactive dashboard with rating distributions, review trends, and complaint category analysis.',
+        image: './images/ecommerce-dashboard.png'
+      },
+      { type: 'empty' },
+      { type: 'empty' },
+      { type: 'empty' },
+      { type: 'empty' },
+      { type: 'empty' }
+    ];
+
+    // Leadership 数据：星火学社
+    const leadershipCards = [
+      {
+        type: 'leadership',
+        title: 'Spark Society · 星火学社',
+        meta: 'Founder & President · 2023.09 – Present · Wuhan',
+        desc: 'Founded and led a student association of 50+ members. Organized public welfare events including nursing home visits and community outreach. Managed cross-functional team across event planning, marketing, design, and communications.',
+        result: '50+ members · Nursing home公益行 · WeChat Official Account content production',
+        image: './images/spark-activity.jpg'
+      }
+    ];
     // 图钉图片路径
     const pinFiles = [
       'Banana-2026-02-05-01-03-24 1.png',
@@ -1547,17 +1743,27 @@
         posts: [
           {
             title: "传播公益思想，共筑美好未来——星火学社养老院公益行活动回顾",
-            date: "2025",
+            date: "6/15/25",
             cover: "./images/spark-activity.jpg",
-            excerpt: "近日，星火学社组织成员前往养老院开展公益探访活动，为老人们送去温暖与关怀，用实际行动传递公益力量。",
-            link: "https://mp.weixin.qq.com/s/zOJ3kT-4f_0eyjcer2D56w"
+            excerpt: "近日，星火学社组织成员前往养老院开展公益探访活动，为老人们送去温暖与关怀。",
+            link: "https://mp.weixin.qq.com/s/zOJ3kT-4f_0eyjcer2D56w",
+            likes: "128",
+            favs: "45",
+            comments: "12",
+            views: "2,340",
+            shares: "38"
           },
           {
             title: "星火学社招新 | 加入我们，一起发光发热",
-            date: "2025",
+            date: "9/1/25",
             cover: "./images/spark-activity.jpg",
             excerpt: "星火学社是一个致力于公益传播与社会实践的学生社团。我们相信，每一颗星星都能照亮夜空。",
-            link: "https://mp.weixin.qq.com/s/Z-_i5gsXK2_nD-f4SSWO5g"
+            link: "https://mp.weixin.qq.com/s/Z-_i5gsXK2_nD-f4SSWO5g",
+            likes: "256",
+            favs: "89",
+            comments: "34",
+            views: "4,521",
+            shares: "67"
           }
         ]
       }
@@ -2028,32 +2234,16 @@
       }
 
         // 随机顺序数组
-        const randomIndices = Array.from({length: workImages.length}, (_, i) => i);
+        const randomIndices = Array.from({length: projectCards.length}, (_, i) => i);
         // Shuffle
         for (let i = randomIndices.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [randomIndices[i], randomIndices[j]] = [randomIndices[j], randomIndices[i]];
         }
         
-        workImages.forEach((imgPath, index) => {
+        projectCards.forEach((card, index) => {
           const item = document.createElement('div');
-          // ... (省略创建元素代码) ...
           item.className = 'gallery-item graphic-design';
-          
-          const wrapper = document.createElement('div');
-          wrapper.className = 'image-wrapper';
-          
-          const img = document.createElement('img');
-          img.src = imgPath;
-          img.alt = `Graphic Design ${index + 1}`;
-          // 移除直接打开Modal的事件，改为在 item 上处理
-          // img.onclick = () => openModal(imgPath);
-          
-          img.onload = () => {
-               if (img.offsetHeight > wrapper.offsetHeight * 1.1) {
-                   item.classList.add('long-image');
-               }
-          };
           
           const pinPath = seashellPins[Math.floor(Math.random() * seashellPins.length)];
           const pin = document.createElement('div');
@@ -2063,17 +2253,62 @@
           pinImg.alt = 'Pin';
           pin.appendChild(pinImg);
           
-          wrapper.appendChild(img);
-          item.appendChild(wrapper);
+          if (card.type === 'project') {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'card-wrapper';
+            
+            const title = document.createElement('div');
+            title.className = 'card-project-title';
+            title.textContent = card.title;
+            
+            const meta = document.createElement('div');
+            meta.className = 'card-project-meta';
+            meta.textContent = card.meta;
+            
+            const desc = document.createElement('div');
+            desc.className = 'card-project-desc';
+            desc.textContent = card.desc;
+            
+            wrapper.appendChild(title);
+            wrapper.appendChild(meta);
+            wrapper.appendChild(desc);
+            
+            if (card.result) {
+              const result = document.createElement('div');
+              result.className = 'card-project-result';
+              result.textContent = card.result;
+              wrapper.appendChild(result);
+            }
+            
+            if (card.image) {
+              const imgWrap = document.createElement('div');
+              imgWrap.className = 'card-project-image';
+              const img = document.createElement('img');
+              img.src = card.image;
+              img.alt = card.title;
+              imgWrap.appendChild(img);
+              wrapper.appendChild(imgWrap);
+            }
+            
+            item.appendChild(wrapper);
+            item.style.cursor = 'default';
+          } else {
+            // empty placeholder
+            const wrapper = document.createElement('div');
+            wrapper.className = 'empty-wrapper';
+            const label = document.createElement('div');
+            label.className = 'card-empty-label';
+            label.textContent = 'coming soon';
+            wrapper.appendChild(label);
+            item.appendChild(wrapper);
+            item.style.cursor = 'default';
+          }
+          
           item.appendChild(pin);
           
           // 设置随机动画延迟
-          // 找到当前 index 在随机数组中的位置（顺序）
           const delayOrder = randomIndices.indexOf(index);
-          item.style.animationDelay = `${delayOrder * 0.15}s`; // 增加一点间隔 0.1 -> 0.15
-          
-          // 绑定点击交互
-          item.onclick = (e) => handleImageClick(e, item, imgPath, 'graphic');
+          item.style.animationDelay = `${delayOrder * 0.15}s`;
           
           graphicDesignGallery.appendChild(item);
         });
@@ -2133,101 +2368,94 @@
              bottomBoundary = canvasTop + firstLineY - 10 + 30; 
         }
         
-        // 存储已放置图片的区域，用于碰撞检测
+        // 存储已放置卡片的区域，用于碰撞检测
         const placedRects = [];
 
-        displayImages.forEach((imgPath, index) => {
+        leadershipCards.forEach((card, index) => {
           const item = document.createElement('div');
           item.className = 'gallery-item visual-display';
           
-          // 根据移动端调整占位尺寸，与CSS保持一致
-          const imgWidth = isMobileMode ? 85 : 150; 
-          const imgHeight = isMobileMode ? 110 : 180;
+          // Leadership卡片尺寸
+          const cardWidth = isMobileMode ? 240 : 280;
+          const cardHeight = isMobileMode ? 320 : 360;
           
           const minX = leftBoundary;
-          const maxX = Math.max(minX, rightBoundary - imgWidth);
+          const maxX = Math.max(minX, rightBoundary - cardWidth);
           const minY = topBoundary;
-          const maxY = Math.max(minY, bottomBoundary - imgHeight);
+          const maxY = Math.max(minY, bottomBoundary - cardHeight);
           
-          // 尝试多次放置，避免严重重叠
-          let bestX = minX;
-          let bestY = minY;
-          let minOverlap = Infinity;
-          let foundGoodSpot = false;
-
-          for (let attempt = 0; attempt < 100; attempt++) { 
-             const x = Math.random() * (maxX - minX) + minX;
-             const y = Math.random() * (maxY - minY) + minY;
-             
-             // 计算当前尝试位置与所有已放置图片的重叠面积总和
-             let totalOverlapArea = 0;
-             const currentRect = { x: x, y: y, w: imgWidth, h: imgHeight };
-             
-             for (const rect of placedRects) {
-               const overlapW = Math.max(0, Math.min(x + imgWidth, rect.x + rect.w) - Math.max(x, rect.x));
-               const overlapH = Math.max(0, Math.min(y + imgHeight, rect.y + rect.h) - Math.max(y, rect.y));
-               totalOverlapArea += overlapW * overlapH;
-             }
-             
-             const selfArea = imgWidth * imgHeight;
-             const overlapRatio = totalOverlapArea / selfArea;
-             
-             // 记录最佳位置（重叠最小）
-             if (overlapRatio < minOverlap) {
-               minOverlap = overlapRatio;
-               bestX = x;
-               bestY = y;
-             }
-             
-             // 如果重叠少于10%，直接使用
-             if (overlapRatio < 0.1) {
-               foundGoodSpot = true;
-               break;
-             }
-          }
+          // 居中放置（只有1张卡片）
+          const bestX = (minX + maxX) / 2;
+          const bestY = (minY + maxY) / 2;
           
-          placedRects.push({ x: bestX, y: bestY, w: imgWidth, h: imgHeight });
+          placedRects.push({ x: bestX, y: bestY, w: cardWidth, h: cardHeight });
           
-          const rotation = Math.random() * 30 - 15; // 增加旋转角度 -15 到 +15 度
+          const rotation = (Math.random() - 0.5) * 10;
           
-          // 设置 CSS 变量用于 hover 动画
           item.style.setProperty('--rotation', rotation + 'deg');
           
-          // 保存最终位置到 dataset
           item.dataset.finalX = bestX;
           item.dataset.finalY = bestY;
           item.dataset.finalRot = rotation;
           
-          // 初始位置：从导航栏下方的一条线散落，且水平位置接近最终落点
-          const startOffset = (Math.random() - 0.5) * 100; // 左右偏移 -50px 到 50px
+          const startOffset = (Math.random() - 0.5) * 100;
           const startX = bestX + startOffset;
-          const startY = isMobileMode ? 0 : 120; // 移动端从容器顶部(0)开始，桌面端从120开始
+          const startY = isMobileMode ? 0 : 120;
 
           item.style.left = startX + 'px';
           item.style.top = startY + 'px';
           item.style.transform = 'rotate(0deg)';
-          item.style.opacity = '0'; // 初始透明
-          item.style.transition = 'none'; // 初始禁止 transition
+          item.style.opacity = '0';
+          item.style.transition = 'none';
+          item.style.cursor = 'default';
           
-          const img = document.createElement('img');
-          img.src = imgPath;
-          img.alt = `Visual Display ${index + 1}`;
-          // 移除直接打开Modal的事件
-          // img.onclick = () => openModal(imgPath);
+          // 创建卡片内容
+          const cardEl = document.createElement('div');
+          cardEl.className = 'leadership-card';
           
-          // 绑定点击交互
-          item.onclick = (e) => handleImageClick(e, item, imgPath, 'visual');
+          const title = document.createElement('div');
+          title.className = 'ld-title';
+          title.textContent = card.title;
+          
+          const meta = document.createElement('div');
+          meta.className = 'ld-meta';
+          meta.textContent = card.meta;
+          
+          const desc = document.createElement('div');
+          desc.className = 'ld-desc';
+          desc.textContent = card.desc;
+          
+          cardEl.appendChild(title);
+          cardEl.appendChild(meta);
+          cardEl.appendChild(desc);
+          
+          if (card.result) {
+            const result = document.createElement('div');
+            result.className = 'ld-result';
+            result.textContent = card.result;
+            cardEl.appendChild(result);
+          }
+          
+          if (card.image) {
+            const imgWrap = document.createElement('div');
+            imgWrap.className = 'ld-image';
+            const img = document.createElement('img');
+            img.src = card.image;
+            img.alt = card.title;
+            imgWrap.appendChild(img);
+            cardEl.appendChild(imgWrap);
+          }
           
           // 随机选择图钉
           const pinPath = seashellPins[Math.floor(Math.random() * seashellPins.length)];
           const pin = document.createElement('div');
-          pin.className = 'pin'; // 默认 pin 样式里 opacity: 0
+          pin.className = 'pin';
           const pinImg = document.createElement('img');
           pinImg.src = pinPath;
           pinImg.alt = 'Pin';
           pin.appendChild(pinImg);
           
-          item.appendChild(img);
+          item.appendChild(cardEl);
           item.appendChild(pin);
           visualDisplayGallery.appendChild(item);
         });
@@ -2240,8 +2468,6 @@
            visualDisplayGallery.classList.add('show');
            runVisualDisplayAnimation();
         }
-
-        populateLeadership();
         
       }, 100);
     }
@@ -2337,110 +2563,73 @@
     function initSocialMediaGallery() {
       const gallery = document.getElementById('socialMediaGallery');
       gallery.innerHTML = '';
-      gallery.style.position = 'relative';
-      gallery.style.display = 'none';
+      
+      // 设置正确的画廊样式（复刻原网站）
+      gallery.style.flexDirection = 'column';
+      gallery.style.alignItems = 'center';
+      gallery.style.justifyContent = 'flex-start';
+      gallery.style.padding = '0';
+      gallery.style.overflow = 'visible';
+      gallery.style.perspective = '2500px';
+      gallery.style.gap = '0';
+      gallery.style.transition = 'opacity 0.5s';
+      gallery.style.pointerEvents = 'auto';
+      gallery.style.width = '100%';
+      gallery.style.height = '500px';
+      gallery.style.minHeight = '0';
+      gallery.style.position = 'absolute';
+      gallery.style.top = '130px';
+      gallery.style.zIndex = '200';
+      gallery.style.marginTop = '0';
 
-      if (socialMediaData.length === 0) return;
-
-      const account = socialMediaData[0];
-      const posts = account.posts;
-
-      const phoneFrame = document.createElement('div');
-      phoneFrame.className = 'phone-frame';
-
-      const statusBar = document.createElement('div');
-      statusBar.className = 'phone-status-bar';
-      statusBar.innerHTML = '<span>9:41</span><span>●●● 📶 🔋</span>';
-      phoneFrame.appendChild(statusBar);
-
-      const screen = document.createElement('div');
-      screen.className = 'phone-screen';
-
-      const wxHeader = document.createElement('div');
-      wxHeader.className = 'wechat-header';
-      wxHeader.innerHTML = `<div class="wechat-back">‹</div><div class="wechat-header-title">${account.account}</div><div class="wechat-more">···</div>`;
-      screen.appendChild(wxHeader);
-
-      const articleScroll = document.createElement('div');
-      articleScroll.className = 'article-scroll';
-
-      posts.forEach((post, idx) => {
-        const page = document.createElement('div');
-        page.className = 'article-page' + (idx === 0 ? ' active' : '');
-
-        let coverHtml = '';
-        if (post.cover) {
-          coverHtml = `<img class="article-cover" src="${post.cover}" alt="">`;
-        }
-
-        page.innerHTML = coverHtml + `
-          <div class="article-body">
-            <div class="article-account">
-              <div class="article-avatar">星</div>
-              <div class="article-account-info">
-                <div class="article-account-name">${account.account}</div>
-                <div class="article-date">${post.date}</div>
-              </div>
-              <button class="article-follow-btn">关注</button>
-            </div>
-            <div class="article-title">${post.title}</div>
-            <div class="article-excerpt">${post.excerpt || ''}</div>
-            <a class="article-read-original" href="${post.link}" target="_blank" rel="noopener">阅读原文 Read Original →</a>
-          </div>
-        `;
-        articleScroll.appendChild(page);
+      // 扁平化posts数据
+      allSocialPosts = [];
+      socialMediaData.forEach(account => {
+        account.posts.forEach(post => {
+          allSocialPosts.push({
+            ...post,
+            account: account.account,
+            platform: account.platform,
+            likes: post.likes || '-',
+            favs: post.favs || '-',
+            comments: post.comments || '-',
+            views: post.views || '-',
+            shares: post.shares || '-'
+          });
+        });
       });
 
-      screen.appendChild(articleScroll);
-      phoneFrame.appendChild(screen);
-      gallery.appendChild(phoneFrame);
+      if (allSocialPosts.length === 0) return;
 
-      const dotsContainer = document.createElement('div');
-      dotsContainer.className = 'phone-dots';
-      posts.forEach((_, idx) => {
-        const dot = document.createElement('div');
-        dot.className = 'phone-dot' + (idx === 0 ? ' active' : '');
-        dot.addEventListener('click', () => showArticle(idx));
-        dotsContainer.appendChild(dot);
-      });
-      gallery.appendChild(dotsContainer);
+      currentSortMode = 'date';
+      activePairIndex = 0;
 
-      const hint = document.createElement('div');
-      hint.className = 'phone-hint';
-      hint.textContent = '←  Swipe to browse articles  →';
-      gallery.appendChild(hint);
+      // 创建排序栏
+      const sortBar = document.createElement('div');
+      sortBar.className = 'sort-bar';
+      
+      const dateBtn = document.createElement('button');
+      dateBtn.className = 'sort-btn active';
+      dateBtn.textContent = 'Date';
+      dateBtn.onclick = (e) => { e.stopPropagation(); handleSortChange('date', dateBtn, popBtn); };
+      
+      const popBtn = document.createElement('button');
+      popBtn.className = 'sort-btn';
+      popBtn.textContent = 'Popularity';
+      popBtn.onclick = (e) => { e.stopPropagation(); handleSortChange('popular', popBtn, dateBtn); };
+      
+      sortBar.appendChild(dateBtn);
+      sortBar.appendChild(popBtn);
+      gallery.appendChild(sortBar);
 
-      let currentIdx = 0;
+      // 创建3D折叠舞台
+      const stage = document.createElement('div');
+      stage.className = 'accordion-stage';
+      stage.id = 'accordionStage';
+      gallery.appendChild(stage);
 
-      function showArticle(idx) {
-        currentIdx = idx;
-        const pages = articleScroll.querySelectorAll('.article-page');
-        const dots = dotsContainer.querySelectorAll('.phone-dot');
-        pages.forEach((p, i) => p.classList.toggle('active', i === idx));
-        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
-        articleScroll.scrollTop = 0;
-      }
-
-      let touchStartX = 0;
-      let touchEndX = 0;
-      articleScroll.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
-      articleScroll.addEventListener('touchend', e => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-      }, {passive: true});
-      let mouseStartX = 0;
-      let isDragging = false;
-      articleScroll.addEventListener('mousedown', e => { mouseStartX = e.screenX; isDragging = true; });
-      articleScroll.addEventListener('mouseup', e => {
-        if (isDragging) { touchEndX = e.screenX; handleSwipe(); isDragging = false; }
-      });
-
-      function handleSwipe() {
-        const diff = touchStartX - touchEndX;
-        if (Math.abs(diff) < 50) return;
-        if (diff > 0 && currentIdx < posts.length - 1) showArticle(currentIdx + 1);
-        else if (diff < 0 && currentIdx > 0) showArticle(currentIdx - 1);
-      }
+      // 渲染内容
+      renderSocialMediaGallery();
     }
 
     function handleSortChange(mode, activeBtn, otherBtn) {
@@ -2506,10 +2695,8 @@
       
       let postsPerPage;
       if (isTabletMode) {
-          // Tablet: Fixed 4 posts per page
           postsPerPage = 4;
       } else {
-          // Use more space (Desktop/Mobile dynamic)
           postsPerPage = Math.max(2, Math.floor((galleryHeight * 0.85) / itemHeight)); 
       }
       
