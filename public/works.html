@@ -1125,163 +1125,248 @@
       }
     }
 
-    /* ===== Social Media Accordion Styles (matching original site) ===== */
+    /* ===== Phone mockup for WeChat Articles ===== */
     #socialMediaGallery {
       display: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100%;
-      z-index: 5;
-      pointer-events: none;
-      overflow: hidden;
-      padding-top: 40px;
-    }
-    #socialMediaGallery.show {
-      display: block !important;
-      pointer-events: auto;
-      opacity: 1;
-      transition: opacity 0.5s ease;
-    }
-
-    /* ===== Project 卡片样式（竖向卡片+图钉） ===== */
-    .gallery-item.graphic-design .card-content {
-      width: 100%;
-      height: 100%;
-      background: rgba(255,255,255,0.85);
-      border: 1px solid rgba(0,0,0,0.08);
-      border-radius: 2px;
-      padding: 14px 10px;
-      display: flex;
       flex-direction: column;
-      overflow: hidden;
-      position: relative;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      font-family: 'Special Elite', 'Noto Sans HK', sans-serif;
-    }
-    .gallery-item.graphic-design .card-content.coming-soon {
-      background: rgba(255,255,255,0.4);
-      border: 1px dashed rgba(0,0,0,0.12);
       align-items: center;
       justify-content: center;
-    }
-    .gallery-item.graphic-design .card-image {
-      width: 100%;
-      max-height: 45%;
-      object-fit: cover;
-      border-radius: 2px;
-      margin-bottom: 8px;
-      display: block;
-    }
-    .gallery-item.graphic-design .card-title {
-      font-family: 'Special Elite', serif;
-      font-size: 12px;
-      font-weight: bold;
-      line-height: 1.3;
-      margin-bottom: 4px;
-      color: #000;
-      letter-spacing: -0.3px;
-    }
-    .gallery-item.graphic-design .card-subtitle {
-      font-family: 'AR One Sans', sans-serif;
-      font-size: 8px;
-      color: #888;
-      margin-bottom: 6px;
-      line-height: 1.3;
-    }
-    .gallery-item.graphic-design .card-desc {
-      font-family: 'Noto Sans HK', 'Noto Sans SC', sans-serif;
-      font-size: 8px;
-      color: #555;
-      line-height: 1.5;
-      flex: 1;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 6;
-      -webkit-box-orient: vertical;
-    }
-    .gallery-item.graphic-design .card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 3px;
-      margin-top: 6px;
-    }
-    .gallery-item.graphic-design .card-tag {
-      font-family: 'AR One Sans', sans-serif;
-      font-size: 7px;
-      color: #666;
-      background: rgba(0,0,0,0.04);
-      padding: 2px 5px;
-      border-radius: 2px;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-    .gallery-item.graphic-design .coming-soon-text {
-      font-family: 'Special Elite', serif;
-      font-size: 11px;
-      color: #bbb;
-      letter-spacing: 1px;
-      text-align: center;
-    }
-    .gallery-item.graphic-design .coming-soon-sub {
-      font-family: 'AR One Sans', sans-serif;
-      font-size: 8px;
-      color: #ccc;
-      text-align: center;
-      margin-top: 4px;
-    }
-
-    /* ===== Leadership 散落卡片样式 ===== */
-    .gallery-item.visual-display .leadership-card {
-      background: rgba(255,255,255,0.9);
-      border: 1px solid rgba(0,0,0,0.08);
-      border-radius: 3px;
-      padding: 16px;
-      width: 280px;
-      max-width: 320px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-      font-family: 'Special Elite', 'Noto Sans HK', sans-serif;
+      padding: 20px;
       position: relative;
+      z-index: 200;
+      pointer-events: auto;
+    }
+    #socialMediaGallery.show {
+      display: flex !important;
+    }
+    .phone-frame {
+      width: 320px;
+      height: 580px;
+      background: #1a1a1a;
+      border-radius: 40px;
+      padding: 12px;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.35), inset 0 0 0 2px #333;
+      position: relative;
+      overflow: hidden;
+    }
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90px;
+      height: 26px;
+      background: #1a1a1a;
+      border-radius: 0 0 18px 18px;
+      z-index: 100;
+    }
+    .phone-frame::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 4px;
+      background: #333;
+      border-radius: 2px;
+      z-index: 100;
+    }
+    .phone-status-bar {
+      position: absolute;
+      top: 0;
+      left: 12px;
+      right: 12px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      font-family: -apple-system, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #000;
+      z-index: 50;
+      pointer-events: none;
+    }
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      border-radius: 30px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .wechat-header {
+      background: #ededed;
+      padding: 44px 12px 10px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #e0e0e0;
+      flex-shrink: 0;
+      min-height: 30px;
+    }
+    .wechat-back {
+      font-size: 20px;
+      color: #333;
+      padding: 4px 8px;
       cursor: pointer;
     }
-    .gallery-item.visual-display .leadership-card-img {
-      width: 100%;
-      height: 140px;
-      object-fit: cover;
-      border-radius: 2px;
-      margin-bottom: 12px;
+    .wechat-header-title {
+      flex: 1;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 500;
+      color: #333;
+      font-family: -apple-system, "Noto Sans SC", sans-serif;
+    }
+    .wechat-more {
+      font-size: 20px;
+      color: #333;
+      padding: 4px 8px;
+    }
+    .article-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+    }
+    .article-page {
+      display: none;
+      padding: 0;
+      background: #fff;
+    }
+    .article-page.active {
       display: block;
     }
-    .gallery-item.visual-display .leadership-card-title {
-      font-family: 'Special Elite', serif;
-      font-size: 16px;
+    .article-cover {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+    .article-body {
+      padding: 16px 18px 20px;
+    }
+    .article-account {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .article-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #07c160, #10ad54);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 14px;
       font-weight: bold;
-      margin-bottom: 4px;
-      color: #000;
+      font-family: "Noto Sans SC", sans-serif;
+      flex-shrink: 0;
     }
-    .gallery-item.visual-display .leadership-card-subtitle {
-      font-family: 'AR One Sans', sans-serif;
+    .article-account-info {
+      flex: 1;
+    }
+    .article-account-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      font-family: "Noto Sans SC", sans-serif;
+    }
+    .article-date {
       font-size: 11px;
-      color: #888;
-      margin-bottom: 10px;
-    }
-    .gallery-item.visual-display .leadership-card-desc {
-      font-family: 'Noto Sans HK', 'Noto Sans SC', sans-serif;
-      font-size: 12px;
-      line-height: 1.7;
-      color: #444;
-      margin-bottom: 10px;
-    }
-    .gallery-item.visual-display .leadership-card-bullets {
-      font-family: 'Noto Sans HK', 'Noto Sans SC', sans-serif;
-      font-size: 11px;
-      color: #666;
-      line-height: 1.6;
-    }
-    .gallery-item.visual-display .leadership-card-bullets div::before {
-      content: '· ';
       color: #999;
+      margin-top: 2px;
+    }
+    .article-follow-btn {
+      background: #07c160;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: "Noto Sans SC", sans-serif;
+      pointer-events: auto;
+    }
+    .article-title {
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 1.4;
+      color: #000;
+      margin-bottom: 14px;
+      font-family: "Noto Sans SC", sans-serif;
+    }
+    .article-excerpt {
+      font-size: 15px;
+      line-height: 1.8;
+      color: #333;
+      font-family: "Noto Sans SC", sans-serif;
+      margin-bottom: 16px;
+    }
+    .article-read-original {
+      display: inline-block;
+      background: #f7f7f7;
+      color: #576b95;
+      text-decoration: none;
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 4px;
+      font-family: "Noto Sans SC", sans-serif;
+      pointer-events: auto;
+      cursor: pointer;
+      border: 1px solid #e5e5e5;
+    }
+    .article-read-original:hover {
+      background: #eee;
+    }
+    .phone-dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      padding: 10px 0 0;
+    }
+    .phone-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ccc;
+      cursor: pointer;
+      transition: all 0.3s;
+      pointer-events: auto;
+    }
+    .phone-dot.active {
+      background: #07c160;
+      width: 20px;
+      border-radius: 4px;
+    }
+    .phone-hint {
+      text-align: center;
+      font-size: 11px;
+      color: #999;
+      font-family: "AR One Sans", sans-serif;
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+    }
+    .sort-bar { display: none !important; }
+    .accordion-stage { display: none !important; }
+    .folder-page { display: none !important; }
+    @media (max-width: 480px) {
+      .phone-frame {
+        width: 280px;
+        height: 520px;
+      }
+      .article-cover {
+        height: 170px;
+      }
     }
 
     .gallery-container#visualDisplayGallery.show {
@@ -1401,88 +1486,29 @@
     let isMobileMode = false; // 移动端标记
     let activeFlyingItem = null; // 当前正在飞行的图片（Visual Display）
 
-    // ================= Project 数据 =================
-    const projectsData = [
-      {
-        title: "Fund Flow Forecasting",
-        subtitle: "金融服务机构资金流量预测 · SARIMA · Python",
-        date: "2026",
-        description: "Built a daily fund-inflow time series model from anonymized user-level subscription and redemption records. Conducted ADF stationarity tests, seasonal differencing, and ACF/PACF analysis to identify optimal SARIMA parameters. Delivered a 7-day rolling forecast with MAE/RMSE evaluation.",
-        tags: ["Time Series", "SARIMA", "Python", "matplotlib"],
-        image: null,
-        comingSoon: false
-      },
-      {
-        title: "E-Commerce Review Analytics",
-        subtitle: "电商大数据用户评论分析 · NLP · Python",
-        date: "2026",
-        description: "Crawled and cleaned 50,000+ e-commerce user reviews. Performed Chinese word segmentation (jieba), TF-IDF keyword extraction, sentiment classification, and LDA topic modeling to identify consumer pain points. Built an interactive visualization dashboard.",
-        tags: ["NLP", "Sentiment Analysis", "LDA", "Visualization"],
-        image: "./images/ecommerce-dashboard.png",
-        comingSoon: false
-      },
-      {
-        title: "Coming Soon",
-        subtitle: "More projects on the way",
-        date: "",
-        description: "",
-        tags: [],
-        image: null,
-        comingSoon: true
-      },
-      {
-        title: "Coming Soon",
-        subtitle: "More projects on the way",
-        date: "",
-        description: "",
-        tags: [],
-        image: null,
-        comingSoon: true
-      },
-      {
-        title: "Coming Soon",
-        subtitle: "More projects on the way",
-        date: "",
-        description: "",
-        tags: [],
-        image: null,
-        comingSoon: true
-      },
-      {
-        title: "Coming Soon",
-        subtitle: "More projects on the way",
-        date: "",
-        description: "",
-        tags: [],
-        image: null,
-        comingSoon: true
-      },
-      {
-        title: "Coming Soon",
-        subtitle: "More projects on the way",
-        date: "",
-        description: "",
-        tags: [],
-        image: null,
-        comingSoon: true
-      }
-    ];
+    // 图片路径数组
+    const workImages = []; // Graphic Design → Project 横向画廊
+    const displayImages = []; // Visual Display → Leadership 散落布局
+    const seashellPins = []; // 图钉图片
 
-    // ================= Leadership 数据 =================
-    const leadershipData = [
-      {
-        title: "Spark Society · 星火学社",
-        subtitle: "Founder & President · 2023.09 – Present · Wuhan",
-        description: "Founded and led a student association of 50+ members. Organized public welfare events including nursing home visits and community outreach. Managed cross-functional teams across event planning, marketing, design, and communications.",
-        bullets: ["社团成员50+人", "组织养老院公益探访等活动", "负责公众号宣发文案与内容策划"],
-        image: "./images/spark-activity.jpg",
-        rotation: -2
-      }
-    ];
-
-    // ================= Content Showcase 数据 (先留空) =================
-    const socialPostsData = [];
-
+    // 初始化图片路径 — Project 7张竖向长图
+    for (let i = 1; i <= 7; i++) {
+      workImages.push(`./images/workimg (${i}).webp`);
+    }
+    // Leadership 散落布局图片 — 复用现有图片作为占位
+    for (let i = 1; i <= 7; i++) {
+      displayImages.push(`./images/workimg (${i}).webp`);
+    }
+    // 再添加一些现有图片丰富散落效果
+    displayImages.push('./images/pic.png');
+    displayImages.push('./images/profile.jpg');
+    displayImages.push('./images/spark-activity.jpg');
+    displayImages.push('./images/ecommerce-dashboard.png');
+    displayImages.push('./images/1.png');
+    displayImages.push('./images/image_1.png');
+    displayImages.push('./images/image_2.png');
+    displayImages.push('./images/image_3.png');
+    displayImages.push('./images/image_4.png');
     // 图钉图片路径
     const pinFiles = [
       'Banana-2026-02-05-01-03-24 1.png',
@@ -1503,7 +1529,6 @@
       'Banana-2026-02-05-01-03-24 17.png',
       'Banana-2026-02-05-01-03-24 18.png'
     ];
-    const seashellPins = [];
     pinFiles.forEach(file => {
       seashellPins.push(`./images/seashells/${file}`);
     });
@@ -1513,6 +1538,30 @@
     let visualDisplayGallery = null;
     let socialMediaGallery = null;
     let imageModal = null;
+    
+    // WeChat Articles Data
+    const socialMediaData = [
+      {
+        account: "星火学社",
+        platform: "WeChat",
+        posts: [
+          {
+            title: "传播公益思想，共筑美好未来——星火学社养老院公益行活动回顾",
+            date: "2025",
+            cover: "./images/spark-activity.jpg",
+            excerpt: "近日，星火学社组织成员前往养老院开展公益探访活动，为老人们送去温暖与关怀，用实际行动传递公益力量。",
+            link: "https://mp.weixin.qq.com/s/zOJ3kT-4f_0eyjcer2D56w"
+          },
+          {
+            title: "星火学社招新 | 加入我们，一起发光发热",
+            date: "2025",
+            cover: "./images/spark-activity.jpg",
+            excerpt: "星火学社是一个致力于公益传播与社会实践的学生社团。我们相信，每一颗星星都能照亮夜空。",
+            link: "https://mp.weixin.qq.com/s/Z-_i5gsXK2_nD-f4SSWO5g"
+          }
+        ]
+      }
+    ];
 
     function setup() {
       console.log('Setup 开始');
@@ -1924,189 +1973,88 @@
       if (!graphicDesignGallery) return;
       graphicDesignGallery.innerHTML = '';
       
-      // 动态计算容器位置和高度（复用原逻辑）
+      // 动态计算 Graphic Design 容器的位置和高度
       const titleElement = document.querySelector('.page-title');
       let canvasWidth = windowWidth;
       let canvasHeight = isMobileMode ? 500 : (canvasWidth * (623 / 1280) - 20);
       let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
+      // 关键修改：使用 compressed 间距来计算波浪线位置，防止图片与压缩后的波浪线重叠
       let effectiveGap = isMobileMode ? config.lineGapCompressed : config.lineGapInitial;
       let firstLineY = lastLineY - (2 * effectiveGap * scaleFactor);
       
+      let galleryHeight = 500;
+      
+      // Add tablet check
       let isTabletMode = windowWidth > 480 && windowWidth <= 1200;
 
       if (titleElement) {
         const titleRect = titleElement.getBoundingClientRect();
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const topPos = titleRect.bottom + scrollTop + 10;
+        const topPos = titleRect.bottom + scrollTop + 10; // 标题下方留白，加上滚动偏移
         
         if (!isMobileMode) {
           if (isTabletMode) {
+             // Tablet: Calculate available space above waves
              const canvasTop = window.innerHeight - canvasHeight - 10;
              const waveTopY = canvasTop + firstLineY;
+             
+             // Calculate available height: Wave Top - Gallery Top - Padding
+             // We want the image to stop a bit above the wave
              const availableHeight = waveTopY - topPos - 20;
+             
              graphicDesignGallery.style.top = topPos + 'px';
-             graphicDesignGallery.style.height = Math.max(100, availableHeight) + 'px';
+             graphicDesignGallery.style.height = Math.max(100, availableHeight) + 'px'; // Ensure min height
              graphicDesignGallery.style.maxHeight = Math.max(100, availableHeight) + 'px';
              graphicDesignGallery.style.paddingBottom = '0'; 
           } else {
+             // Desktop: Canvas top is 40px
              const canvasTop = 40;
-             const waveTopY = canvasTop + firstLineY;
+             const waveTopY = canvasTop + firstLineY; // 波浪线相对于文档顶部的Y坐标
+             
              const availableHeight = waveTopY - topPos - 10 + 50 - 35; 
+             
              graphicDesignGallery.style.top = topPos + 'px';
              graphicDesignGallery.style.height = availableHeight + 'px';
+             // 确保图片不覆盖波浪线
              graphicDesignGallery.style.maxHeight = availableHeight + 'px';
           }
         } else {
+          // 移动端：样式由 CSS 控制 (height: calc(100vh - 100px))
+          // 清除 JS 设置的样式，防止干扰
           graphicDesignGallery.style.top = '';
           graphicDesignGallery.style.height = '';
           graphicDesignGallery.style.maxHeight = '';
         }
       }
 
-      // 创建7个项目卡片
-      projectsData.forEach((project, index) => {
-        const item = document.createElement('div');
-        item.className = 'gallery-item graphic-design';
-        
-        const wrapper = document.createElement('div');
-        wrapper.className = 'image-wrapper';
-        
-        // 使用 card-content 代替 img
-        const card = document.createElement('div');
-        card.className = 'card-content' + (project.comingSoon ? ' coming-soon' : '');
-        
-        if (project.comingSoon) {
-          const csText = document.createElement('div');
-          csText.className = 'coming-soon-text';
-          csText.textContent = 'Coming Soon';
-          card.appendChild(csText);
-          const csSub = document.createElement('div');
-          csSub.className = 'coming-soon-sub';
-          csSub.textContent = '—';
-          card.appendChild(csSub);
-        } else {
-          if (project.image) {
-            const cardImg = document.createElement('img');
-            cardImg.className = 'card-image';
-            cardImg.src = project.image;
-            cardImg.alt = project.title;
-            card.appendChild(cardImg);
-          }
-          const title = document.createElement('div');
-          title.className = 'card-title';
-          title.textContent = project.title;
-          card.appendChild(title);
-          
-          const subtitle = document.createElement('div');
-          subtitle.className = 'card-subtitle';
-          subtitle.textContent = project.subtitle + (project.date ? ' · ' + project.date : '');
-          card.appendChild(subtitle);
-          
-          if (project.description) {
-            const desc = document.createElement('div');
-            desc.className = 'card-desc';
-            desc.textContent = project.description;
-            card.appendChild(desc);
-          }
-          
-          if (project.tags && project.tags.length > 0) {
-            const tagsWrap = document.createElement('div');
-            tagsWrap.className = 'card-tags';
-            project.tags.forEach(tag => {
-              const t = document.createElement('span');
-              t.className = 'card-tag';
-              t.textContent = tag;
-              tagsWrap.appendChild(t);
-            });
-            card.appendChild(tagsWrap);
-          }
+        // 随机顺序数组
+        const randomIndices = Array.from({length: workImages.length}, (_, i) => i);
+        // Shuffle
+        for (let i = randomIndices.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [randomIndices[i], randomIndices[j]] = [randomIndices[j], randomIndices[i]];
         }
         
-        wrapper.appendChild(card);
-        
-        // 贝壳图钉
-        const pinPath = seashellPins[Math.floor(Math.random() * seashellPins.length)];
-        const pin = document.createElement('div');
-        pin.className = 'pin';
-        const pinImg = document.createElement('img');
-        pinImg.src = pinPath;
-        pinImg.alt = 'Pin';
-        pin.appendChild(pinImg);
-        
-        item.appendChild(wrapper);
-        item.appendChild(pin);
-        
-        item.style.animationDelay = `${index * 0.15}s`;
-        item.onclick = (e) => { e.stopPropagation(); };
-        
-        graphicDesignGallery.appendChild(item);
-      });
-    }
-
-    function initVisualDisplayGallery() {
-      if (!visualDisplayGallery) return;
-      visualDisplayGallery.innerHTML = '';
-      
-      setTimeout(() => {
-        const titleElement = document.querySelector('.page-title');
-        if (!titleElement) return;
-        
-        const titleRect = titleElement.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        let canvasWidth = windowWidth;
-        let canvasHeight = canvasWidth * (623 / 1280) - 20;
-        let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
-        let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
-        
-        const canvasTop = 40;
-        let topBoundary = titleRect.bottom + scrollTop + 30;
-        let bottomBoundary = canvasTop + firstLineY - 10 + 30;
-        let centerX = window.innerWidth / 2;
-        
-        // 创建 Leadership 卡片
-        leadershipData.forEach((data, index) => {
+        workImages.forEach((imgPath, index) => {
           const item = document.createElement('div');
-          item.className = 'gallery-item visual-display';
+          // ... (省略创建元素代码) ...
+          item.className = 'gallery-item graphic-design';
           
-          const card = document.createElement('div');
-          card.className = 'leadership-card';
+          const wrapper = document.createElement('div');
+          wrapper.className = 'image-wrapper';
           
-          if (data.image) {
-            const img = document.createElement('img');
-            img.className = 'leadership-card-img';
-            img.src = data.image;
-            img.alt = data.title;
-            card.appendChild(img);
-          }
+          const img = document.createElement('img');
+          img.src = imgPath;
+          img.alt = `Graphic Design ${index + 1}`;
+          // 移除直接打开Modal的事件，改为在 item 上处理
+          // img.onclick = () => openModal(imgPath);
           
-          const titleEl = document.createElement('div');
-          titleEl.className = 'leadership-card-title';
-          titleEl.textContent = data.title;
-          card.appendChild(titleEl);
+          img.onload = () => {
+               if (img.offsetHeight > wrapper.offsetHeight * 1.1) {
+                   item.classList.add('long-image');
+               }
+          };
           
-          const subEl = document.createElement('div');
-          subEl.className = 'leadership-card-subtitle';
-          subEl.textContent = data.subtitle;
-          card.appendChild(subEl);
-          
-          const descEl = document.createElement('div');
-          descEl.className = 'leadership-card-desc';
-          descEl.textContent = data.description;
-          card.appendChild(descEl);
-          
-          if (data.bullets && data.bullets.length > 0) {
-            const bulletsEl = document.createElement('div');
-            bulletsEl.className = 'leadership-card-bullets';
-            data.bullets.forEach(b => {
-              const bEl = document.createElement('div');
-              bEl.textContent = b;
-              bulletsEl.appendChild(bEl);
-            });
-            card.appendChild(bulletsEl);
-          }
-          
-          // 图钉
           const pinPath = seashellPins[Math.floor(Math.random() * seashellPins.length)];
           const pin = document.createElement('div');
           pin.className = 'pin';
@@ -2115,41 +2063,185 @@
           pinImg.alt = 'Pin';
           pin.appendChild(pinImg);
           
-          // 计算卡片尺寸（card宽度280px，内容约320px高）
-          const cardW = isMobileMode ? 260 : 300;
-          const cardH = isMobileMode ? 380 : 400;
+          wrapper.appendChild(img);
+          item.appendChild(wrapper);
+          item.appendChild(pin);
           
-          // 居中放置
-          const bestX = centerX - cardW / 2;
-          const bestY = topBoundary + (bottomBoundary - topBoundary - cardH) / 2;
-          const rotation = data.rotation || -2;
+          // 设置随机动画延迟
+          // 找到当前 index 在随机数组中的位置（顺序）
+          const delayOrder = randomIndices.indexOf(index);
+          item.style.animationDelay = `${delayOrder * 0.15}s`; // 增加一点间隔 0.1 -> 0.15
           
+          // 绑定点击交互
+          item.onclick = (e) => handleImageClick(e, item, imgPath, 'graphic');
+          
+          graphicDesignGallery.appendChild(item);
+        });
+    }
+
+    function initVisualDisplayGallery() {
+      if (!visualDisplayGallery) return;
+      visualDisplayGallery.innerHTML = '';
+      
+      // 延迟执行以确保DOM已渲染
+      setTimeout(() => {
+        // 获取标题和波浪线的位置范围
+        const titleElement = document.querySelector('.page-title');
+        
+        // 重新计算波浪线顶部位置
+        let canvasWidth = windowWidth;
+        let canvasHeight = canvasWidth * (623 / 1280) - 20;
+        let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
+        let firstLineY = lastLineY - (2 * config.lineGapInitial * scaleFactor);
+        
+        if (!titleElement) return;
+        
+        const titleRect = titleElement.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Default Desktop Boundaries (Document Relative)
+        let topBoundary = titleRect.bottom + scrollTop + 10; 
+        let leftBoundary = 24;
+        let rightBoundary = window.innerWidth - 24;
+        
+        // Canvas top is 40px
+        const canvasTop = 40;
+        let bottomBoundary;
+
+        let isTabletMode = windowWidth > 480 && windowWidth <= 1200;
+
+        if (isMobileMode) {
+             // Mobile Adjustments
+             // 1. Vertical: Relative to container (top: 90px)
+             topBoundary = 0; // Start from top of container
+             
+             // Container Height calculation: Window - Top(90) - Bottom(220)
+             // We set bottomBoundary as the max Y coordinate available in the container
+             // 增加底部留白，确保图片不会太靠下
+             bottomBoundary = window.innerHeight - 90 - 240;   
+             
+             // 2. Horizontal: Wider spread (Reduce margin)
+             const marginX = 10; // Fixed small margin to reduce whitespace
+             leftBoundary = marginX;
+             rightBoundary = window.innerWidth - marginX;
+             
+        } else if (isTabletMode) {
+             // Tablet: Use viewport height with some padding
+             bottomBoundary = window.innerHeight - 150;
+        } else {
+             // Desktop
+             bottomBoundary = canvasTop + firstLineY - 10 + 30; 
+        }
+        
+        // 存储已放置图片的区域，用于碰撞检测
+        const placedRects = [];
+
+        displayImages.forEach((imgPath, index) => {
+          const item = document.createElement('div');
+          item.className = 'gallery-item visual-display';
+          
+          // 根据移动端调整占位尺寸，与CSS保持一致
+          const imgWidth = isMobileMode ? 85 : 150; 
+          const imgHeight = isMobileMode ? 110 : 180;
+          
+          const minX = leftBoundary;
+          const maxX = Math.max(minX, rightBoundary - imgWidth);
+          const minY = topBoundary;
+          const maxY = Math.max(minY, bottomBoundary - imgHeight);
+          
+          // 尝试多次放置，避免严重重叠
+          let bestX = minX;
+          let bestY = minY;
+          let minOverlap = Infinity;
+          let foundGoodSpot = false;
+
+          for (let attempt = 0; attempt < 100; attempt++) { 
+             const x = Math.random() * (maxX - minX) + minX;
+             const y = Math.random() * (maxY - minY) + minY;
+             
+             // 计算当前尝试位置与所有已放置图片的重叠面积总和
+             let totalOverlapArea = 0;
+             const currentRect = { x: x, y: y, w: imgWidth, h: imgHeight };
+             
+             for (const rect of placedRects) {
+               const overlapW = Math.max(0, Math.min(x + imgWidth, rect.x + rect.w) - Math.max(x, rect.x));
+               const overlapH = Math.max(0, Math.min(y + imgHeight, rect.y + rect.h) - Math.max(y, rect.y));
+               totalOverlapArea += overlapW * overlapH;
+             }
+             
+             const selfArea = imgWidth * imgHeight;
+             const overlapRatio = totalOverlapArea / selfArea;
+             
+             // 记录最佳位置（重叠最小）
+             if (overlapRatio < minOverlap) {
+               minOverlap = overlapRatio;
+               bestX = x;
+               bestY = y;
+             }
+             
+             // 如果重叠少于10%，直接使用
+             if (overlapRatio < 0.1) {
+               foundGoodSpot = true;
+               break;
+             }
+          }
+          
+          placedRects.push({ x: bestX, y: bestY, w: imgWidth, h: imgHeight });
+          
+          const rotation = Math.random() * 30 - 15; // 增加旋转角度 -15 到 +15 度
+          
+          // 设置 CSS 变量用于 hover 动画
           item.style.setProperty('--rotation', rotation + 'deg');
+          
+          // 保存最终位置到 dataset
           item.dataset.finalX = bestX;
           item.dataset.finalY = bestY;
           item.dataset.finalRot = rotation;
           
-          const startX = bestX + (Math.random() - 0.5) * 80;
-          const startY = isMobileMode ? 0 : 120;
-          
+          // 初始位置：从导航栏下方的一条线散落，且水平位置接近最终落点
+          const startOffset = (Math.random() - 0.5) * 100; // 左右偏移 -50px 到 50px
+          const startX = bestX + startOffset;
+          const startY = isMobileMode ? 0 : 120; // 移动端从容器顶部(0)开始，桌面端从120开始
+
           item.style.left = startX + 'px';
           item.style.top = startY + 'px';
           item.style.transform = 'rotate(0deg)';
-          item.style.opacity = '0';
-          item.style.transition = 'none';
+          item.style.opacity = '0'; // 初始透明
+          item.style.transition = 'none'; // 初始禁止 transition
           
-          item.appendChild(card);
+          const img = document.createElement('img');
+          img.src = imgPath;
+          img.alt = `Visual Display ${index + 1}`;
+          // 移除直接打开Modal的事件
+          // img.onclick = () => openModal(imgPath);
+          
+          // 绑定点击交互
+          item.onclick = (e) => handleImageClick(e, item, imgPath, 'visual');
+          
+          // 随机选择图钉
+          const pinPath = seashellPins[Math.floor(Math.random() * seashellPins.length)];
+          const pin = document.createElement('div');
+          pin.className = 'pin'; // 默认 pin 样式里 opacity: 0
+          const pinImg = document.createElement('img');
+          pinImg.src = pinPath;
+          pinImg.alt = 'Pin';
+          pin.appendChild(pinImg);
+          
+          item.appendChild(img);
           item.appendChild(pin);
-          item.onclick = (e) => { e.stopPropagation(); };
-          
           visualDisplayGallery.appendChild(item);
         });
         
+        // 如果当前应该是显示状态（比如 resize 后），立即触发动画
+        // 或者是第一次加载且已经处于显示状态
         if (visualDisplayGallery.classList.contains('show') || (currentDisplayedImageId === 1 && !visualDisplayGallery.style.display.includes('none'))) {
+           // 确保 display 是 block
            visualDisplayGallery.style.display = 'block';
            visualDisplayGallery.classList.add('show');
            runVisualDisplayAnimation();
         }
+
+        populateLeadership();
         
       }, 100);
     }
@@ -2245,66 +2337,110 @@
     function initSocialMediaGallery() {
       const gallery = document.getElementById('socialMediaGallery');
       gallery.innerHTML = '';
-      gallery.style.position = 'absolute';
-      gallery.style.left = '0';
-      gallery.style.width = '100vw';
-      gallery.style.paddingTop = '40px';
-      gallery.style.pointerEvents = 'auto';
+      gallery.style.position = 'relative';
+      gallery.style.display = 'none';
 
-      // 动态计算高度
-      const titleElement = document.querySelector('.page-title');
-      let canvasWidth = windowWidth;
-      let canvasHeight = isMobileMode ? 500 : (canvasWidth * (623 / 1280) - 20);
-      let lastLineY = canvasHeight - config.paddingBottom * scaleFactor;
-      let effectiveGap = isMobileMode ? config.lineGapCompressed : config.lineGapInitial;
-      let firstLineY = lastLineY - (2 * effectiveGap * scaleFactor);
+      if (socialMediaData.length === 0) return;
 
-      if (titleElement) {
-        const titleRect = titleElement.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const topPos = titleRect.bottom + scrollTop + 10;
-        const canvasTop = isMobileMode ? 0 : 40;
-        const waveTopY = canvasTop + firstLineY;
-        const availableHeight = waveTopY - topPos - 10;
-        gallery.style.top = topPos + 'px';
-        gallery.style.height = availableHeight + 'px';
+      const account = socialMediaData[0];
+      const posts = account.posts;
+
+      const phoneFrame = document.createElement('div');
+      phoneFrame.className = 'phone-frame';
+
+      const statusBar = document.createElement('div');
+      statusBar.className = 'phone-status-bar';
+      statusBar.innerHTML = '<span>9:41</span><span>●●● 📶 🔋</span>';
+      phoneFrame.appendChild(statusBar);
+
+      const screen = document.createElement('div');
+      screen.className = 'phone-screen';
+
+      const wxHeader = document.createElement('div');
+      wxHeader.className = 'wechat-header';
+      wxHeader.innerHTML = `<div class="wechat-back">‹</div><div class="wechat-header-title">${account.account}</div><div class="wechat-more">···</div>`;
+      screen.appendChild(wxHeader);
+
+      const articleScroll = document.createElement('div');
+      articleScroll.className = 'article-scroll';
+
+      posts.forEach((post, idx) => {
+        const page = document.createElement('div');
+        page.className = 'article-page' + (idx === 0 ? ' active' : '');
+
+        let coverHtml = '';
+        if (post.cover) {
+          coverHtml = `<img class="article-cover" src="${post.cover}" alt="">`;
+        }
+
+        page.innerHTML = coverHtml + `
+          <div class="article-body">
+            <div class="article-account">
+              <div class="article-avatar">星</div>
+              <div class="article-account-info">
+                <div class="article-account-name">${account.account}</div>
+                <div class="article-date">${post.date}</div>
+              </div>
+              <button class="article-follow-btn">关注</button>
+            </div>
+            <div class="article-title">${post.title}</div>
+            <div class="article-excerpt">${post.excerpt || ''}</div>
+            <a class="article-read-original" href="${post.link}" target="_blank" rel="noopener">阅读原文 Read Original →</a>
+          </div>
+        `;
+        articleScroll.appendChild(page);
+      });
+
+      screen.appendChild(articleScroll);
+      phoneFrame.appendChild(screen);
+      gallery.appendChild(phoneFrame);
+
+      const dotsContainer = document.createElement('div');
+      dotsContainer.className = 'phone-dots';
+      posts.forEach((_, idx) => {
+        const dot = document.createElement('div');
+        dot.className = 'phone-dot' + (idx === 0 ? ' active' : '');
+        dot.addEventListener('click', () => showArticle(idx));
+        dotsContainer.appendChild(dot);
+      });
+      gallery.appendChild(dotsContainer);
+
+      const hint = document.createElement('div');
+      hint.className = 'phone-hint';
+      hint.textContent = '←  Swipe to browse articles  →';
+      gallery.appendChild(hint);
+
+      let currentIdx = 0;
+
+      function showArticle(idx) {
+        currentIdx = idx;
+        const pages = articleScroll.querySelectorAll('.article-page');
+        const dots = dotsContainer.querySelectorAll('.phone-dot');
+        pages.forEach((p, i) => p.classList.toggle('active', i === idx));
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        articleScroll.scrollTop = 0;
       }
 
-      // 创建排序按钮
-      const sortBar = document.createElement('div');
-      sortBar.className = 'sort-bar';
-      sortBar.style.pointerEvents = 'auto';
+      let touchStartX = 0;
+      let touchEndX = 0;
+      articleScroll.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+      articleScroll.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      }, {passive: true});
+      let mouseStartX = 0;
+      let isDragging = false;
+      articleScroll.addEventListener('mousedown', e => { mouseStartX = e.screenX; isDragging = true; });
+      articleScroll.addEventListener('mouseup', e => {
+        if (isDragging) { touchEndX = e.screenX; handleSwipe(); isDragging = false; }
+      });
 
-      const dateBtn = document.createElement('button');
-      dateBtn.className = 'sort-btn active';
-      dateBtn.textContent = 'Date';
-      const popBtn = document.createElement('button');
-      popBtn.className = 'sort-btn';
-      popBtn.textContent = 'Popularity';
-      sortBar.appendChild(dateBtn);
-      sortBar.appendChild(popBtn);
-      gallery.appendChild(sortBar);
-
-      // 创建手风琴舞台
-      const stage = document.createElement('div');
-      stage.className = 'accordion-stage';
-      stage.id = 'accordionStage';
-      gallery.appendChild(stage);
-
-      // 占位提示（Content Coming Soon）
-      if (!allSocialPosts || allSocialPosts.length === 0) {
-        // 不渲染folder-page，显示一个简单的占位
-        const placeholder = document.createElement('div');
-        placeholder.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;font-family:"Special Elite",serif;color:#bbb;font-size:18px;letter-spacing:1px;pointer-events:none;';
-        placeholder.innerHTML = '<div>Content Showcase</div><div style="font-size:11px;color:#ccc;margin-top:6px;font-family:\'AR One Sans\',sans-serif;letter-spacing:0.5px;">Coming soon —</div>';
-        stage.appendChild(placeholder);
-      } else {
-        renderSocialMediaGallery();
+      function handleSwipe() {
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) < 50) return;
+        if (diff > 0 && currentIdx < posts.length - 1) showArticle(currentIdx + 1);
+        else if (diff < 0 && currentIdx > 0) showArticle(currentIdx - 1);
       }
-
-      // 排序按钮事件
-      dateBtn.onclick = () => handleSortChange('date', dateBtn, popBtn);
-      popBtn.onclick = () => handleSortChange('popular', popBtn, dateBtn);
     }
 
     function handleSortChange(mode, activeBtn, otherBtn) {
@@ -2814,17 +2950,18 @@
           // 如果已经是显示的，什么都不做，保持静止
         }
       } else if (waveId === 2) {
-        // Social Media Content (手风琴折叠)
+        // Social Media Content
         if (socialMediaGallery) {
           if (socialMediaGallery.style.display === 'none') {
-             socialMediaGallery.style.display = 'block';
+             socialMediaGallery.style.display = 'flex';
+             // 重新计算位置，防止resize后位置不准
              initSocialMediaGallery(); 
              
+             // 强制重绘
              void socialMediaGallery.offsetWidth;
              
              socialMediaGallery.style.opacity = 1;
              socialMediaGallery.classList.add('show');
-             socialMediaGallery.style.pointerEvents = 'auto';
           }
         }
       }
