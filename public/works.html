@@ -392,78 +392,7 @@
       object-fit: contain;
     }
 
-    /* Leadership 项目卡片（散落的纸张） */
-    .gallery-item.visual-display .leadership-card {
-      width: 280px;
-      background-color: #F6F3EA;
-      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise2)' opacity='0.08'/%3E%3C/svg%3E");
-      border: 1px solid rgba(0,0,0,0.1);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.12), inset 0 0 30px rgba(0,0,0,0.03);
-      padding: 18px 20px 16px;
-      display: flex;
-      flex-direction: column;
-      transition: box-shadow 0.3s ease;
-      pointer-events: auto;
-    }
 
-    .gallery-item.visual-display:hover .leadership-card {
-      box-shadow: 0 12px 36px rgba(0,0,0,0.25), inset 0 0 30px rgba(0,0,0,0.03);
-    }
-
-    .ld-title {
-      font-family: "Special Elite", serif;
-      font-size: 16px;
-      font-weight: bold;
-      line-height: 1.3;
-      margin-bottom: 6px;
-      color: #111;
-      letter-spacing: -0.3px;
-    }
-
-    .ld-meta {
-      font-family: "AR One Sans", sans-serif;
-      font-size: 10px;
-      color: #999;
-      margin-bottom: 10px;
-      line-height: 1.3;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .ld-desc {
-      font-family: "Noto Sans HK", "Noto Sans SC", sans-serif;
-      font-size: 12px;
-      line-height: 1.6;
-      color: #444;
-      margin-bottom: 8px;
-    }
-
-    .ld-result {
-      font-family: "AR One Sans", sans-serif;
-      font-size: 10px;
-      color: #666;
-      line-height: 1.5;
-      padding-top: 8px;
-      border-top: 1px solid rgba(0,0,0,0.08);
-      margin-bottom: 10px;
-    }
-
-    .ld-image {
-      width: 100%;
-      border-radius: 3px;
-      overflow: hidden;
-      border: 1px solid rgba(0,0,0,0.06);
-    }
-
-    .ld-image img {
-      width: 100%;
-      height: 140px;
-      object-fit: cover;
-      display: block;
-      max-width: 100% !important;
-      max-height: none !important;
-      box-shadow: none !important;
-    }
 
     /* Project 内容卡片（钉在墙上的纸张） */
     .gallery-item.graphic-design .card-wrapper {
@@ -1678,25 +1607,6 @@
       display: block;
     }
 
-    /* Leadership coming soon placeholder cards */
-    .leadership-card.coming-soon {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 280px;
-      min-height: 100px;
-      gap: 4px;
-      cursor: default;
-    }
-    .coming-soon-text {
-      font-family: "Special Elite", serif;
-      font-size: 12px;
-      color: rgba(0,0,0,0.2);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
     /* Content showcase detail page style */
     .content-detail-page {
       text-align: center;
@@ -2500,6 +2410,9 @@
       if (!visualDisplayGallery) return;
       visualDisplayGallery.innerHTML = '';
 
+      // Coming Soon 占位 SVG data URI
+      const comingSoonSvg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='180' viewBox='0 0 150 180'%3E%3Crect width='150' height='180' fill='%23F6F3EA'/%3E%3Ctext x='75' y='95' text-anchor='middle' font-family='serif' font-size='13' fill='%23ccc' letter-spacing='1'%3EComing Soon%3C/text%3E%3C/svg%3E";
+
       // 延迟执行以确保DOM已渲染
       setTimeout(() => {
         // 获取标题和波浪线的位置范围
@@ -2542,12 +2455,16 @@
         // 存储已放置卡片的区域，用于碰撞检测
         const placedRects = [];
 
-        // Helper to find a non-overlapping position
-        function findPosition(cardWidth, cardHeight, preferCenter) {
+        // 使用图片尺寸而非卡片尺寸进行散布
+        const imgWidth = isMobileMode ? 85 : 150;
+        const imgHeight = isMobileMode ? 110 : 180;
+
+        // Helper to find a non-overlapping position (100 attempts, <10% overlap)
+        function findPosition(itemWidth, itemHeight, preferCenter) {
           const minX = leftBoundary;
-          const maxX = Math.max(minX, rightBoundary - cardWidth);
+          const maxX = Math.max(minX, rightBoundary - itemWidth);
           const minY = topBoundary;
-          const maxY = Math.max(minY, bottomBoundary - cardHeight);
+          const maxY = Math.max(minY, bottomBoundary - itemHeight);
 
           if (preferCenter) {
             const bestX = (minX + maxX) / 2;
@@ -2555,39 +2472,72 @@
             return { x: bestX, y: bestY };
           }
 
-          // Try random positions, avoid overlap
-          for (let attempt = 0; attempt < 30; attempt++) {
+          // Try 100 random positions, avoid >10% overlap
+          let bestPos = null;
+          let minOverlap = Infinity;
+
+          for (let attempt = 0; attempt < 100; attempt++) {
             const x = minX + Math.random() * (maxX - minX);
             const y = minY + Math.random() * (maxY - minY);
-            let overlaps = false;
+            let overlapArea = 0;
+
             for (const rect of placedRects) {
-              if (x < rect.x + rect.w + 20 && x + cardWidth > rect.x - 20 &&
-                  y < rect.y + rect.h + 20 && y + cardHeight > rect.y - 20) {
-                overlaps = true;
-                break;
-              }
+              const overlapX = Math.max(0, Math.min(x + itemWidth, rect.x + rect.w) - Math.max(x, rect.x));
+              const overlapY = Math.max(0, Math.min(y + itemHeight, rect.y + rect.h) - Math.max(y, rect.y));
+              overlapArea += overlapX * overlapY;
             }
-            if (!overlaps) return { x, y };
+
+            const itemArea = itemWidth * itemHeight;
+            const overlapRatio = overlapArea / itemArea;
+
+            if (overlapRatio < 0.1) return { x, y };
+
+            if (overlapArea < minOverlap) {
+              minOverlap = overlapArea;
+              bestPos = { x, y };
+            }
           }
-          // Fallback: just place it
-          return { x: minX + Math.random() * (maxX - minX), y: minY + Math.random() * (maxY - minY) };
+
+          // Fallback: minimum overlap position
+          return bestPos || { x: minX + Math.random() * (maxX - minX), y: minY + Math.random() * (maxY - minY) };
         }
 
-        // Real leadership cards
-        leadershipCards.forEach((card, index) => {
+        // Helper to create a visual display item (bare image + pin)
+        function createVisualDisplayItem(imgSrc, imgAlt, isComingSoon) {
           const item = document.createElement('div');
           item.className = 'gallery-item visual-display';
 
-          const cardWidth = isMobileMode ? 240 : 280;
-          const cardHeight = isMobileMode ? 200 : 240;
+          const img = document.createElement('img');
+          img.src = imgSrc;
+          img.alt = imgAlt;
 
-          const pos = findPosition(cardWidth, cardHeight, true); // Prefer center for real cards
-          placedRects.push({ x: pos.x, y: pos.y, w: cardWidth, h: cardHeight });
+          // 点击事件：coming soon 也使用相同的撕裂飞行动画，但 modal 显示占位图
+          item.onclick = (e) => handleImageClick(e, item, imgSrc, 'visual');
 
-          const rotation = (Math.random() - 0.5) * 10;
+          // 随机选择贝壳图钉
+          const pinPath = seashellPins[Math.floor(Math.random() * seashellPins.length)];
+          const pin = document.createElement('div');
+          pin.className = 'pin';
+          const pinImg = document.createElement('img');
+          pinImg.src = pinPath;
+          pinImg.alt = 'Pin';
+          pin.appendChild(pinImg);
+
+          item.appendChild(img);
+          item.appendChild(pin);
+          return item;
+        }
+
+        // 1. 创建 Spark Society 项目项（唯一真实项目）
+        leadershipCards.forEach((card) => {
+          const item = createVisualDisplayItem(card.image, card.title, false);
+
+          const pos = findPosition(imgWidth, imgHeight, true);
+          placedRects.push({ x: pos.x, y: pos.y, w: imgWidth, h: imgHeight });
+
+          const rotation = (Math.random() - 0.5) * 30; // -15° to +15°
 
           item.style.setProperty('--rotation', rotation + 'deg');
-
           item.dataset.finalX = pos.x;
           item.dataset.finalY = pos.y;
           item.dataset.finalRot = rotation;
@@ -2601,68 +2551,26 @@
           item.style.transform = 'rotate(0deg)';
           item.style.opacity = '0';
           item.style.transition = 'none';
-          item.style.cursor = 'default';
 
-          // 创建卡片内容 — 只显示 title + image
-          const cardEl = document.createElement('div');
-          cardEl.className = 'leadership-card';
-
-          const title = document.createElement('div');
-          title.className = 'ld-title';
-          title.textContent = card.title;
-
-          cardEl.appendChild(title);
-
-          if (card.image) {
-            const imgWrap = document.createElement('div');
-            imgWrap.className = 'ld-image';
-            const img = document.createElement('img');
-            img.src = card.image;
-            img.alt = card.title;
-            imgWrap.appendChild(img);
-            cardEl.appendChild(imgWrap);
-          }
-
-          // 随机选择图钉
-          const pinPath = seashellPins[Math.floor(Math.random() * seashellPins.length)];
-          const pin = document.createElement('div');
-          pin.className = 'pin';
-          const pinImg = document.createElement('img');
-          pinImg.src = pinPath;
-          pinImg.alt = 'Pin';
-          pin.appendChild(pinImg);
-
-          item.appendChild(cardEl);
-          item.appendChild(pin);
           visualDisplayGallery.appendChild(item);
         });
 
-        // Coming soon placeholder cards (3 cards)
-        const comingSoonCards = [
-          { title: 'Project Alpha' },
-          { title: 'Venture Beta' },
-          { title: 'Initiative Gamma' }
-        ];
+        // 2. 创建 6 个 Coming Soon 占位项
+        const comingSoonCount = 6;
+        for (let i = 0; i < comingSoonCount; i++) {
+          const item = createVisualDisplayItem(comingSoonSvg, 'Coming Soon', true);
 
-        comingSoonCards.forEach((csCard, index) => {
-          const item = document.createElement('div');
-          item.className = 'gallery-item visual-display';
+          const pos = findPosition(imgWidth, imgHeight, false);
+          placedRects.push({ x: pos.x, y: pos.y, w: imgWidth, h: imgHeight });
 
-          const cardWidth = isMobileMode ? 240 : 280;
-          const cardHeight = isMobileMode ? 80 : 100;
-
-          const pos = findPosition(cardWidth, cardHeight, false); // Scatter, don't center
-          placedRects.push({ x: pos.x, y: pos.y, w: cardWidth, h: cardHeight });
-
-          const rotation = (Math.random() - 0.5) * 14; // Slightly more rotation variety
+          const rotation = (Math.random() - 0.5) * 30; // -15° to +15°
 
           item.style.setProperty('--rotation', rotation + 'deg');
-
           item.dataset.finalX = pos.x;
           item.dataset.finalY = pos.y;
           item.dataset.finalRot = rotation;
 
-          const startOffset = (Math.random() - 0.5) * 80;
+          const startOffset = (Math.random() - 0.5) * 100;
           const startX = pos.x + startOffset;
           const startY = isMobileMode ? 0 : 120;
 
@@ -2671,31 +2579,9 @@
           item.style.transform = 'rotate(0deg)';
           item.style.opacity = '0';
           item.style.transition = 'none';
-          item.style.cursor = 'default';
 
-          // Create coming soon card
-          const cardEl = document.createElement('div');
-          cardEl.className = 'leadership-card coming-soon';
-
-          const csText = document.createElement('div');
-          csText.className = 'coming-soon-text';
-          csText.textContent = 'Coming Soon';
-
-          cardEl.appendChild(csText);
-
-          // 图钉 — 使用 .pin 类，与主卡片一致
-          const pinPath = seashellPins[Math.floor(Math.random() * seashellPins.length)];
-          const pin = document.createElement('div');
-          pin.className = 'pin';
-          const pinImg = document.createElement('img');
-          pinImg.src = pinPath;
-          pinImg.alt = 'Pin';
-          pin.appendChild(pinImg);
-
-          item.appendChild(cardEl);
-          item.appendChild(pin);
           visualDisplayGallery.appendChild(item);
-        });
+        }
 
         // 如果当前应该是显示状态（比如 resize 后），立即触发动画
         if (visualDisplayGallery.classList.contains('show') || (currentDisplayedImageId === 1 && !visualDisplayGallery.style.display.includes('none'))) {
